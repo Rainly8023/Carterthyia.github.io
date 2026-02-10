@@ -1,24 +1,23 @@
 const siteConfig = {
+  // 核心：将角色数据分开
   characters: {
-    // 角色 A：卡提希娅
+    // 卡提希娅的配置 (适用于 index.html)
     carter: {
       siteName: "卡提希娅的星光小站",
-      siteDescription: "于光影中守护的温柔使者 · 双形态战斗达人",
-      avatar: "favicon/1.png", 
+      siteDescription: "守护的温柔使者",
+      avatar: "favicon/1.png",
       smallVideo: "videos/111.mp4",
       bigVideo: "videos/12.mp4"
     },
-    // 角色 B：爱弥斯
+    // 爱弥斯的配置 (适用于 index2.html 或 character2.html)
     aimis: {
       siteName: "爱弥斯的璀璨星穹",
-      siteDescription: "在星海间穿梭的自由之翼 · 幻梦掌控者",
-      avatar: "images/P1.png",  // P1作为头像
-      // 爱弥斯目前没有视频，所以不写视频配置
-      smallVideo: null,
+      siteDescription: "自由的幻梦掌控者",
+      avatar: "images/P1.png", // 你要求的P1头像
+      smallVideo: null,       // 没有视频
       bigVideo: null
     }
   },
-  defaultTheme: "purple",
-  defaultMode: "light"
+  // ... 其他通用配置
 };
 window.siteConfig = siteConfig;
