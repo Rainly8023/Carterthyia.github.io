@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>角色选择 - 星光小站</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  
+  <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "楷体", "PingFang SC", "Microsoft YaHei", sans-serif;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --primary-color-purple: #9c7ee6;
+    --secondary-color-purple: #b8a3f5;
+    --bg-color-purple: rgba(156, 126, 230, 0.05);
+    
+    --primary-color-blue: #6ec6ff;
+    --secondary-color-blue: #99d1ff;
+    --bg-color-blue: rgba(110, 198, 255, 0.05);
+    
+    --primary-color: var(--primary-color-purple);
+    --secondary-color: var(--secondary-color-purple);
+    --bg-color: var(--bg-color-purple);
+    --card-bg: #ffffff;
+    --card-shadow: 0 8px 32px rgba(156, 126, 230, 0.2);
+    
+    --white-color: #fff;
+    --transition: all 0.3s ease-in-out;
+    --border-radius: 12px;
+}
+
+.dark-mode {
+    --card-bg: #2d2d2d;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --bg-color: #1a1a1a;
+    background-color: #1a1a1a;
+}
+
+.dark-mode * {
+    color: #f5f5f5 !important;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-color) 0%, rgba(110, 198, 255, 0.03) 100%);
+    min-height: 100vh;
+    transition: var(--transition);
+    color: #333333 !important;
+}
+
+/* 导航栏 */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background: var(--card-bg);
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    padding: 15px 0;
+}
+
+.navbar.scrolled {
+    padding: 10px 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-logo i {
+    color: var(--primary-color) !important;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-item .nav-link {
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: var(--transition);
+    position: relative;
+    color: #333333 !important;
+}
+
+.nav-item .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* 控制面板 */
+.control-panel {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    z-index: 998;
+    transition: var(--transition);
+    min-width: 200px;
+}
+
+.control-btn {
+    display: block;
+    width: 100%;
+    padding: 12px 10px;
+    margin-bottom: 15px;
+    background: var(--bg-color);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 13px;
+    text-align: center;
+    color: #333333 !important;
+}
+
+.control-btn:hover {
+    background: var(--primary-color);
+    color: #fff !important;
+}
+
+/* 板块动效 */
+.section-animate {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    padding: 100px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-size: 26px;
+    margin-bottom: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header h2 i {
+    color: var(--primary-color) !important;
+}
+
+.section-divider {
+    width: 80px;
+    height: 3px;
+    background-color: var(--primary-color);
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+/* 主容器 */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px 40px;
+    min-height: 100vh;
+}
+
+/* 标题区域 */
+.header-section {
+    text-align: center;
+    margin-bottom: 80px;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.header-section h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+}
+
+.header-section p {
+    font-size: 18px;
+    color: #999 !important;
+    margin-bottom: 10px;
+}
+
+.decorative-line {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    margin: 20px auto;
+}
+
+/* 角色卡片网格 */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+/* 单个角色卡片 */
+.character-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    cursor: pointer;
+    position: relative;
+    animation: cardFadeIn 0.8s ease-out both;
+}
+
+.character-card:nth-child(1) { animation-delay: 0.1s; }
+.character-card:nth-child(2) { animation-delay: 0.3s; }
+.character-card:nth-child(3) { animation-delay: 0.5s; }
+
+@keyframes cardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* 卡片背景装饰 */
+.character-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg,
+        rgba(156, 126, 230, 0.1) 0%,
+        rgba(110, 198, 255, 0.05) 50%,
+        transparent 100%);
+    animation: rotate 30s linear infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.character-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 卡片图片区域 */
+.card-image {
+    width: 100%;
+    height: 280px;
+    background: linear-gradient(135deg, 
+        var(--primary-color) 0%,
+        var(--secondary-color) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* 卡片内容 */
+.card-content {
+    padding: 30px 25px;
+}
+
+.card-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #333333 !important;
+    font-weight: bold;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: var(--primary-color) !important;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.card-description {
+    font-size: 15px;
+    color: #666 !important;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 卡片按钮 */
+.card-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片悬停效果 */
+.character-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(156, 126, 230, 0.3);
+}
+
+.character-card:hover .card-image img {
+    transform: scale(1.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .header-section h1 {
+        font-size: 32px;
+    }
+    
+    .character-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .nav-menu {
+        gap: 15px;
+    }
+    
+    .nav-item .nav-link {
+        font-size: 14px;
+    }
+}
+
+/* 回到顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    z-index: 997;
+}
+
+.back-to-top:hover {
+    transform: translateY(-3px);
+}
+
+.back-to-top.hidden {
+    display: none;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 深色模式下的卡片 */
+.dark-mode .character-card {
+    border: 1px solid rgba(156, 126, 230, 0.1);
+}
+
+.dark-mode .card-title {
+    color: #f5f5f5 !important;
+}
+
+.dark-mode .card-description {
+    color: #bbb !important;
+}
+  </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <i class="fa fa-star"></i>
+      星光小站
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="#" class="nav-link">首页</a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">角色中心</a>
+      </li>
+      <li class="nav-item">
+        <a href="#" class="nav-link">关于</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 控制面板 -->
+<div class="control-panel">
+  <h3 style="font-size: 14px; margin-bottom: 15px; text-align: center;">
+    <i class="fa fa-cog"></i> 设置
+  </h3>
+  <button class="control-btn" onclick="switchTheme('purple')">
+    <i class="fa fa-paint-brush"></i> 紫色
+  </button>
+  <button class="control-btn" onclick="switchTheme('blue')">
+    <i class="fa fa-paint-brush"></i> 蓝色
+  </button>
+  <button class="control-btn" onclick="toggleDarkMode()">
+    <i class="fa fa-moon"></i> 夜间
+  </button>
+</div>
+
+<!-- 主容器 -->
+<div class="main-container">
+  <!-- 标题区域 -->
+  <section class="header-section">
+    <h1>✨ 角色中心 ✨</h1>
+    <p>选择你喜欢的角色，开始探索他们的故事</p>
+    <div class="decorative-line"></div>
+  </section>
+
+  <!-- 角色卡片网格 -->
+  <section class="character-grid">
+    <!-- 角色1卡片 - 卡提希娅 -->
+    <div class="character-card">
+      <div class="card-image">
+        <img src="1.jpg" alt="卡提希娅">
+      </div>
+      <div class="card-content">
+        <h2 class="card-title">卡提希娅</h2>
+        <p class="card-subtitle">✨ 光影守护者 ✨</p>
+        <p class="card-description">
+          于光影中守护的温柔使者 · 双形态战斗达人卡提希娅专属站点
+        </p>
+        <a href="index.html" class="card-button">
+          <i class="fa fa-arrow-right"></i> 进入主站
+        </a>
+      </div>
+    </div>
+
+    <!-- 角色2卡片 - 爱弥斯 -->
+    <div class="character-card">
+      <div class="card-image">
+        <img src="140927936_p0.png" alt="爱弥斯">
+      </div>
+      <div class="card-content">
+        <h2 class="card-title">爱弥斯</h2>
+        <p class="card-subtitle">🌙 星炬的电子幽灵 ✨</p>
+        <p class="card-description">
+          长航的星辉 · 网络人气歌手 · 活跃于无尽夜色的飞行雪绒
+        </p>
+        <a href="character2.html" class="card-button">
+          <i class="fa fa-arrow-right"></i> 探索故事
+        </a>
+      </div>
+    </div>
+
+    <!-- 角色3卡片（可选） -->
+    <div class="character-card">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/400x280?text=Character3" alt="第三个角色">
+      </div>
+      <div class="card-content">
+        <h2 class="card-title">敬请期待</h2>
+        <p class="card-subtitle">⭐ 更多角色</p>
+        <p class="card-description">
+          未来会有更多角色加入，敬请期待她们的故事
+        </p>
+        <button class="card-button" disabled style="opacity: 0.6; cursor: not-allowed;">
+          <i class="fa fa-clock"></i> 即将上线
+        </button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 回到顶部按钮 -->
+<button class="back-to-top hidden" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+  <i class="fa fa-arrow-up"></i>
+</button>
+
+<!-- JavaScript 脚本 -->
+<script>
+let currentTheme = 'purple';
+let isDarkMode = false;
+
+// 初始化
+window.addEventListener('DOMContentLoaded', () => {
+  initNavbar();
+  initBackToTop();
+  initDefaultThemeAndMode();
+  initStarfield();
+});
+
+function initDefaultThemeAndMode() {
+  const root = document.documentElement;
+  
+  if (!root.style.getPropertyValue('--primary-color-purple')) {
+    root.style.setProperty('--primary-color-purple', '#9c7ee6');
+    root.style.setProperty('--secondary-color-purple', '#b8a3f5');
+    root.style.setProperty('--bg-color-purple', 'rgba(156, 126, 230, 0.05)');
+    root.style.setProperty('--primary-color-blue', '#6ec6ff');
+    root.style.setProperty('--secondary-color-blue', '#99d1ff');
+    root.style.setProperty('--bg-color-blue', 'rgba(110, 198, 255, 0.05)');
+  }
+  
+  switchTheme(currentTheme);
+}
+
+function switchTheme(theme) {
+  const root = document.documentElement;
+  currentTheme = theme;
+  
+  if (theme === 'purple') {
+    root.style.setProperty('--primary-color', '#9c7ee6');
+    root.style.setProperty('--secondary-color', '#b8a3f5');
+    root.style.setProperty('--bg-color', 'rgba(156, 126, 230, 0.05)');
+  } else if (theme === 'blue') {
+    root.style.setProperty('--primary-color', '#6ec6ff');
+    root.style.setProperty('--secondary-color', '#99d1ff');
+    root.style.setProperty('--bg-color', 'rgba(110, 198, 255, 0.05)');
+  }
+  
+  document.body.style.background = 'linear-gradient(135deg, var(--bg-color) 0%, rgba(110, 198, 255, 0.03) 100%)';
+}
+
+function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode');
+}
+
+function initNavbar() {
+  const navbar = document.querySelector('.navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+}
+
+function initBackToTop() {
+  const backToTopBtn = document.querySelector('.back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn?.classList.remove('hidden');
+    } else {
+      backToTopBtn?.classList.add('hidden');
+    }
+  });
+}
+
+// 星空粒子效果
+function initStarfield() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'starCanvas';
+  canvas.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;';
+  document.body.appendChild(canvas);
+  
+  const ctx = canvas.getContext('2d');
+  let w, h, mx, my, particles = [];
+  
+  function resize() {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+  }
+  
+  window.addEventListener('resize', resize);
+  resize();
+  
+  mx = w / 2;
+  my = h / 2;
+  
+  window.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+  });
+  
+  class Particle {
+    constructor() {
+      this.x = Math.random() * w;
+      this.y = h + 20;
+      this.vy = -(1 + Math.random() * 2);
+      this.vx = (Math.random() - 0.5) * 0.6;
+      this.r = Math.random() * 1.5 + 0.5;
+    }
+    
+    update() {
+      this.y += this.vy;
+      this.x += this.vx;
+      
+      const dx = this.x - mx;
+      const dy = this.y - my;
+      const d = Math.hypot(dx, dy);
+      
+      if (d < 120) {
+        this.x += (dx / d) * 1.2;
+        this.y += (dy / d) * 1.2;
+      }
+      
+      if (this.y < -20) this.y = h + 20;
+    }
+    
+    draw() {
+      ctx.beginPath();
+      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+      g.addColorStop(0, 'rgba(255,255,255,1)');
+      g.addColorStop(1, 'rgba(180,160,255,0)');
+      ctx.fillStyle = g;
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    
+    if (particles.length < (window.innerWidth < 768 ? 60 : 120)) {
+      particles.push(new Particle());
+    }
+    
+    particles = particles.filter(p => {
+      p.update();
+      p.draw();
+      return p.y > -30;
+    });
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+}
+</script>
+
+</body>
+</html>

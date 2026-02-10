@@ -964,7 +964,7 @@ function toggleDarkMode() {
   modeBtn?.classList.toggle('fa-sun');
 }
 
-/* ------------ 滚动动效 ------------ */
+/* ------------ 添加滚动动效 ------------ */
 function initAnimations() {
   window.addEventListener('scroll', () => {
     document.querySelectorAll('.section-animate').forEach(el => {
@@ -977,7 +977,7 @@ function initAnimations() {
   window.dispatchEvent(new Event('scroll'));
 }
 
-/* ------------ 导航 ------------ */
+/* ------------ 面板导航 ------------ */
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
   const navToggle = document.querySelector('.nav-toggle');
@@ -992,14 +992,14 @@ function initNavbar() {
   });
 }
 
-/* ------------ 回到顶部 ------------ */
+/* ------------ 导航页面回到顶部 ------------ */
 function initBackToTop() {
   const btn = document.querySelector('.back-to-top');
   window.addEventListener('scroll', () => window.scrollY > 300 ? btn?.classList.remove('hidden') : btn?.classList.add('hidden'));
   btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-/* ------------ 图库筛选 ------------ */
+/* ------------ 角色图库筛选 ------------ */
 function initGalleryFilter() {
   document.querySelectorAll('.gallery-tab').forEach(tab => {
     tab.addEventListener('click', function () {
@@ -1035,7 +1035,7 @@ function filterGallery(type) {
   });
 }
 
-/* ------------ 攻略标签 ------------ */
+/* ------------ 角色的攻略标签 ------------ */
 function initGuideTab() {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.guide-content').forEach(c => c.classList.add('hidden'));
@@ -1050,7 +1050,7 @@ function switchGuideTab(tab) {
   document.querySelector(`.tab-btn[data-tab="${tab}"]`)?.classList.add('active');
 }
 
-/* ------------ 故事展开/收起 ------------ */
+/* ------------ 卡提希娅宝宝故事展开/收起 ------------ */
 function toggleStory() {
   const content = document.getElementById('storyContent');
   const toggle = document.getElementById('storyToggle');
@@ -1065,7 +1065,7 @@ function toggleStory() {
   }
 }
 
-/* ------------ 图片预览 ------------ */
+/* ------------ 卡提希娅图片预览 ------------ */
 function previewImage(src) {
   const modal = document.getElementById('imagePreviewModal');
   const img = document.getElementById('previewImage');
@@ -1080,7 +1080,7 @@ function closeImagePreview() {
   document.body.style.overflow = 'auto';
 }
 
-/* ------------ 视频播放 ------------ */
+/* ------------ 实机演示视频播放 ------------ */
 function playVideo(playerId, coverElement) {
   const videoElement = document.getElementById(playerId);
   if (!videoElement || !coverElement) return;
@@ -1116,7 +1116,7 @@ function switchVideo(type) {
 }
 
 /* ========== 您的原始特效 ========== */
-/* ------------ 星空粒子 ------------ */
+/* ------------ 在暗黑模式下显示星空粒子 ------------ */
 let starCanvas, starCtx, particles = [], mx = 0, my = 0;
 
 function initStarCanvas() {
@@ -1195,7 +1195,7 @@ function animateStars() {
   requestAnimationFrame(animateStars);
 }
 
-/* ------------ 水滴涟漪 ------------ */
+/* ------------ 显示水滴涟漪 ------------ */
 function initRipple() {
   document.body.addEventListener('click', function (e) {
     const card = e.target.closest('.card-animate,.video-container,.gallery-img,.btn');
@@ -1219,7 +1219,7 @@ function initRipple() {
   });
 }
 
-/* ========== 我的优化特效 ========== */
+/* ========== 本卡提希娅的特效注释 ========== */
 /* ------------ 高级特效系统 ------------ */
 function initEnhancedEffects() {
   if (window.enhancedEffectsManager) return;
@@ -1227,7 +1227,7 @@ function initEnhancedEffects() {
   window.enhancedEffectsManager = {
     effects: [],
     enabled: true,
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|/i.test(navigator.userAgent),
     
     init() {
       // 1. 3D视差效果（仅桌面）
@@ -1301,7 +1301,7 @@ function initEnhancedEffects() {
       const container = document.querySelector('.home-section');
       if (!container) return;
       
-      // 创建粒子容器
+      // 创建粒子容器 random.ly
       const particlesContainer = document.createElement('div');
       particlesContainer.className = 'particles-container';
       particlesContainer.style.cssText = `
@@ -1326,6 +1326,7 @@ function initEnhancedEffects() {
         const size = Math.random() * 3 + 1;
         const posX = Math.random() * 100;
         const posY = Math.random() * 100;
+        const postZ = Math.random() * 500;
         const duration = Math.random() * 20 + 10;
         const delay = Math.random() * 5;
         

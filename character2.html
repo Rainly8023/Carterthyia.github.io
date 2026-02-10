@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱弥斯 - 星光小站</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  
+  <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "楷体", "PingFang SC", "Microsoft YaHei", sans-serif;
+    scroll-behavior: smooth;
+    color: #333333 !important;
+}
+
+:root {
+    --primary-color-purple: #9c7ee6;
+    --secondary-color-purple: #b8a3f5;
+    --bg-color-purple: rgba(156, 126, 230, 0.05);
+    --card-bg-purple: #ffffff;
+    --shadow-purple: 0 8px 32px rgba(156, 126, 230, 0.2);
+
+    --primary-color-blue: #6ec6ff;
+    --secondary-color-blue: #99d1ff;
+    --bg-color-blue: rgba(110, 198, 255, 0.05);
+    --card-bg-blue: #ffffff;
+    --shadow-blue: 0 8px 32px rgba(110, 198, 255, 0.2);
+
+    --primary-color: var(--primary-color-purple);
+    --secondary-color: var(--secondary-color-purple);
+    --bg-color: var(--bg-color-purple);
+    --card-bg: var(--card-bg-purple);
+    --card-shadow: var(--shadow-purple);
+    --card-shadow-hover: 0 12px 40px rgba(156, 126, 230, 0.3);
+
+    --white-color: #fff;
+    --transition: all 0.3s ease-in-out;
+    --border-radius: 12px;
+}
+
+.dark-mode {
+    --card-bg: #2d2d2d;
+    --shadow-purple: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-blue: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --bg-color: #1a1a1a;
+    background-color: #1a1a1a;
+}
+
+.dark-mode * {
+    color: #f5f5f5 !important;
+}
+
+body { 
+    background: var(--bg-color); 
+    transition: var(--transition);
+}
+
+/* 隐藏类 */
+.hidden { display: none !important; }
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-color) !important;
+    border: 2px solid var(--primary-color);
+    box-shadow: none;
+}
+
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+
+/* 导航栏 */
+.navbar {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
+    background: var(--card-bg); box-shadow: var(--card-shadow); transition: var(--transition);
+    padding: 15px 0;
+}
+
+.navbar.scrolled { padding: 10px 0; }
+
+.nav-container { 
+    max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; 
+    justify-content: space-between; align-items: center; 
+}
+
+.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
+.nav-logo i { color: var(--primary-color) !important; }
+
+.nav-menu { display: flex; list-style: none; gap: 30px; }
+.nav-item .nav-link { 
+    text-decoration: none; font-size: 15px; font-weight: 500; 
+    transition: var(--transition); position: relative; color: #333333 !important;
+}
+.nav-item .nav-link:hover { color: var(--primary-color) !important; }
+
+/* 控制面板 */
+.control-panel {
+    position: fixed; top: 50%; right: 20px; transform: translateY(-50%);
+    background: var(--card-bg); border-radius: var(--border-radius); 
+    box-shadow: var(--card-shadow); padding: 20px; z-index: 998; transition: var(--transition);
+    min-width: 200px;
+}
+
+.control-btn {
+    display: block; width: 100%; padding: 12px 10px; margin-bottom: 15px;
+    background: var(--bg-color); border: 1px solid var(--primary-color); 
+    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition); 
+    font-size: 13px; text-align: center; color: #333333 !important;
+}
+
+.control-btn:hover { background: var(--primary-color); color: #fff !important; }
+
+/* 首页样式 */
+.home-section { 
+    height: 100vh; display: flex; align-items: center; justify-content: center; 
+    background: var(--bg-color); padding: 0 20px; 
+}
+
+/* 第二个角色特殊样式：神秘卡片进入 */
+.character-card-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.character-reveal-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 60px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(156, 126, 230, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: cardEntrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 渐变背景装饰 */
+.character-reveal-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(135deg, 
+        rgba(156, 126, 230, 0.1) 0%,
+        rgba(110, 198, 255, 0.05) 50%,
+        transparent 100%);
+    animation: rotate 20s linear infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.character-reveal-card > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* 角色头像样式 */
+.character-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid var(--primary-color);
+    margin: 0 auto 30px;
+    box-shadow: 0 15px 40px rgba(156, 126, 230, 0.3);
+    transition: var(--transition);
+    animation: avatarPulse 2s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+    0%, 100% {
+        box-shadow: 0 15px 40px rgba(156, 126, 230, 0.3);
+    }
+    50% {
+        box-shadow: 0 20px 50px rgba(156, 126, 230, 0.5);
+    }
+}
+
+.character-avatar:hover {
+    transform: scale(1.05) rotate(5deg);
+}
+
+/* 角色名称 */
+.character-name {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 20px 0 10px 0;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+    animation: slideIn 0.8s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 角色副标题 */
+.character-subtitle {
+    font-size: 18px;
+    color: #999 !important;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    animation: slideIn 0.8s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+/* 描述文本 */
+.character-description {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #666 !important;
+    margin-bottom: 40px;
+    animation: slideIn 0.8s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+/* 按钮组 */
+.character-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: slideIn 0.8s ease-out 0.8s forwards;
+    opacity: 0;
+}
+
+/* 返回按钮 */
+.back-to-main {
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    background: var(--primary-color);
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    z-index: 10;
+}
+
+.back-to-main:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* 图库区域 */
+.gallery-section {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    margin-top: 60px;
+    box-shadow: var(--card-shadow);
+    animation: slideIn 0.8s ease-out 1s forwards;
+    opacity: 0;
+}
+
+.gallery-section h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: var(--primary-color) !important;
+}
+
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.gallery-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--card-shadow);
+}
+
+.gallery-img:hover {
+    transform: scale(1.05);
+    box-shadow: var(--card-shadow-hover);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .character-reveal-card {
+        padding: 40px 20px;
+    }
+    
+    .character-avatar {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .character-name {
+        font-size: 32px;
+    }
+    
+    .character-subtitle {
+        font-size: 16px;
+    }
+    
+    .character-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .gallery-section {
+        padding: 20px;
+    }
+    
+    .gallery-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+}
+
+/* 深色模式适配 */
+.dark-mode .character-reveal-card {
+    border-color: rgba(156, 126, 230, 0.2);
+}
+
+.dark-mode .character-reveal-card::before {
+    background: linear-gradient(135deg, 
+        rgba(156, 126, 230, 0.15) 0%,
+        rgba(110, 198, 255, 0.08) 50%,
+        transparent 100%);
+}
+
+.dark-mode .character-description {
+    color: #bbb !important;
+}
+
+.dark-mode .character-subtitle {
+    color: #aaa !important;
+}
+
+/* 回到顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    z-index: 997;
+}
+
+.back-to-top:hover {
+    transform: translateY(-3px);
+}
+
+.back-to-top.hidden {
+    display: none;
+}
+  </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <i class="fa fa-star"></i>
+      爱弥斯的星光小站
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="characters.html" class="nav-link">角色中心</a>
+      </li>
+      <li class="nav-item">
+        <a href="#gallery" class="nav-link">图库</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- 控制面板 -->
+<div class="control-panel">
+  <h3 style="font-size: 14px; margin-bottom: 15px;">
+    <i class="fa fa-cog"></i> 设置
+  </h3>
+  <button class="control-btn" onclick="switchTheme('purple')">
+    <i class="fa fa-paint-brush"></i> 紫色主题
+  </button>
+  <button class="control-btn" onclick="switchTheme('blue')">
+    <i class="fa fa-paint-brush"></i> 蓝色主题
+  </button>
+  <button class="control-btn" onclick="toggleDarkMode()">
+    <i class="fa fa-moon"></i> 深色模式
+  </button>
+</div>
+
+<!-- 角色展示区域 -->
+<div class="home-section">
+  <div class="character-card-wrapper">
+    <button class="back-to-main" onclick="window.location.href='characters.html'">
+      <i class="fa fa-arrow-left"></i> 返回选择
+    </button>
+    
+    <div class="character-reveal-card">
+      <!-- 爱弥斯信息 -->
+      <img src="140927936_p0.png" alt="爱弥斯" class="character-avatar">
+      
+      <h1 class="character-name">爱弥斯</h1>
+      <p class="character-subtitle">🌙 长航的星辉 ✨</p>
+      
+      <p class="character-description">
+        曾是星炬学院的隧者适格者，现已成为无人可见的"电子幽灵"。
+        以活泼俏皮的姿态与身边的人们来往，兴趣爱好颇多，既享受着自己的校园生活，也喜爱和众人分享自己的快乐。
+        轻盈地化作星辉，轻歌着于无尽的夜色中飞行，点亮黑暗中的群星。
+        网络人气歌手"飞行雪绒"，活跃于微博、BiliBili、抖音等各大平台。
+      </p>
+      
+      <div class="character-actions">
+        <button class="btn" onclick="alert('爱弥斯的核心能力：长航的星辉 - 使用共鸣能力时，显化出「隧者兵装」并与之融合，变身为机兵形态，可在两种形态间自由切换战斗！')">
+          <i class="fa fa-heart"></i> 核心能力
+        </button>
+        <button class="btn btn-secondary" onclick="window.location.href='#gallery'">
+          <i class="fa fa-image"></i> 查看图库
+        </button>
+      </div>
+    </div>
+
+    <!-- 图库区域 -->
+    <div class="gallery-section" id="gallery">
+      <h2><i class="fa fa-images"></i> 爱弥斯的美图集</h2>
+      <div class="gallery-container">
+        <img src="140927936_p0.png" alt="爱弥斯1" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140913947_p1.jpg" alt="爱弥斯2" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140902463_p0_master1200.jpg" alt="爱弥斯3" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140872895_p3_master1200.jpg" alt="爱弥斯4" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140889431_p0_master1200.jpg" alt="爱弥斯5" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140872895_p0_master1200.jpg" alt="爱弥斯6" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="139458712_p0_master1200.jpg" alt="爱弥斯7" class="gallery-img" onclick="previewImage(this.src)">
+        <img src="140717674_p0_master1200.jpg" alt="爱弥斯8" class="gallery-img" onclick="previewImage(this.src)">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 图片预览弹窗 -->
+<div id="imagePreviewModal" class="modal-hidden" onclick="closeImagePreview()" style="
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+">
+  <div class="preview-content" style="position: relative; max-width: 90%; max-height: 90%;">
+    <span class="preview-close" style="
+        position: absolute; top: -40px; right: 0; font-size: 30px;
+        cursor: pointer; color: #fff !important; transition: all 0.3s ease;
+    " onclick="closeImagePreview()">&times;</span>
+    <img src="" alt="预览图" id="previewImage" style="
+        width: 100%; height: auto; border-radius: 12px; 
+        box-shadow: 0 12px 40px rgba(156, 126, 230, 0.3);
+    ">
+  </div>
+</div>
+
+<!-- 回到顶部按钮 -->
+<button class="back-to-top hidden" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+  <i class="fa fa-arrow-up"></i>
+</button>
+
+<!-- JavaScript 脚本 -->
+<script>
+let currentTheme = 'purple';
+let isDarkMode = false;
+
+// 初始化
+window.addEventListener('DOMContentLoaded', () => {
+  initNavbar();
+  initBackToTop();
+  initDefaultThemeAndMode();
+  initStarfield();
+});
+
+function initDefaultThemeAndMode() {
+  const root = document.documentElement;
+  
+  root.style.setProperty('--primary-color-purple', '#9c7ee6');
+  root.style.setProperty('--secondary-color-purple', '#b8a3f5');
+  root.style.setProperty('--bg-color-purple', 'rgba(156, 126, 230, 0.05)');
+  root.style.setProperty('--primary-color-blue', '#6ec6ff');
+  root.style.setProperty('--secondary-color-blue', '#99d1ff');
+  root.style.setProperty('--bg-color-blue', 'rgba(110, 198, 255, 0.05)');
+  
+  switchTheme(currentTheme);
+}
+
+function switchTheme(theme) {
+  const root = document.documentElement;
+  currentTheme = theme;
+  
+  if (theme === 'purple') {
+    root.style.setProperty('--primary-color', '#9c7ee6');
+    root.style.setProperty('--secondary-color', '#b8a3f5');
+    root.style.setProperty('--bg-color', 'rgba(156, 126, 230, 0.05)');
+  } else if (theme === 'blue') {
+    root.style.setProperty('--primary-color', '#6ec6ff');
+    root.style.setProperty('--secondary-color', '#99d1ff');
+    root.style.setProperty('--bg-color', 'rgba(110, 198, 255, 0.05)');
+  }
+  
+  document.body.style.background = 'var(--bg-color)';
+}
+
+function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode');
+}
+
+function initNavbar() {
+  const navbar = document.querySelector('.navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+}
+
+function initBackToTop() {
+  const backToTopBtn = document.querySelector('.back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn?.classList.remove('hidden');
+    } else {
+      backToTopBtn?.classList.add('hidden');
+    }
+  });
+}
+
+// 图片预览
+function previewImage(src) {
+  const modal = document.getElementById('imagePreviewModal');
+  const previewImg = document.getElementById('previewImage');
+  previewImg.src = src;
+  modal.style.opacity = '1';
+  modal.style.pointerEvents = 'auto';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeImagePreview() {
+  const modal = document.getElementById('imagePreviewModal');
+  modal.style.opacity = '0';
+  modal.style.pointerEvents = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// 星空粒子效果
+function initStarfield() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'starCanvas';
+  canvas.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;';
+  document.body.appendChild(canvas);
+  
+  const ctx = canvas.getContext('2d');
+  let w, h, mx, my, particles = [];
+  
+  function resize() {
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+  }
+  
+  window.addEventListener('resize', resize);
+  resize();
+  
+  mx = w / 2;
+  my = h / 2;
+  
+  window.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+  });
+  
+  class Particle {
+    constructor() {
+      this.x = Math.random() * w;
+      this.y = h + 20;
+      this.vy = -(1 + Math.random() * 2);
+      this.vx = (Math.random() - 0.5) * 0.6;
+      this.r = Math.random() * 1.5 + 0.5;
+    }
+    
+    update() {
+      this.y += this.vy;
+      this.x += this.vx;
+      
+      const dx = this.x - mx;
+      const dy = this.y - my;
+      const d = Math.hypot(dx, dy);
+      
+      if (d < 120) {
+        this.x += (dx / d) * 1.2;
+        this.y += (dy / d) * 1.2;
+      }
+      
+      if (this.y < -20) this.y = h + 20;
+    }
+    
+    draw() {
+      ctx.beginPath();
+      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+      g.addColorStop(0, 'rgba(255,255,255,1)');
+      g.addColorStop(1, 'rgba(180,160,255,0)');
+      ctx.fillStyle = g;
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  
+  function animate() {
+    ctx.clearRect(0, 0, w, h);
+    
+    if (particles.length < (window.innerWidth < 768 ? 60 : 120)) {
+      particles.push(new Particle());
+    }
+    
+    particles = particles.filter(p => {
+      p.update();
+      p.draw();
+      return p.y > -30;
+    });
+    
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+}
+</script>
+
+</body>
+</html>
