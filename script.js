@@ -1,72 +1,71 @@
-// ================= 全局状态 =================
-let currentTheme = 'purple';
-let isDarkMode = false;
-
-// ================= 初始化入口 =================
+// ================= 1. 初始化与角色加载 =================
 window.addEventListener('DOMContentLoaded', () => {
-  if (typeof window.siteConfig === 'undefined') {
-    console.error("config.js 加载失败！");
+  if (!window.siteConfig) {
+    console.error("配置文件 config.js 未正确加载！");
     return;
   }
   
-  // 1. 核心：根据页面自动切换角色数据
-  loadCharacterData();
+  // 执行角色智能加载
+  autoLoadRole();
   
-  // 2. 初始化其他功能
+  // 初始化通用 UI 功能
   initAnimations();
   initNavbar();
   initBackToTop();
-  initGalleryFilter();
-  initGuideTab();
   initDefaultThemeAndMode();
 });
 
-// ================= 角色数据加载逻辑 =================
-function loadCharacterData() {
-  const fileName = window.location.pathname.split("/").pop();
-  let role = "carterthyia"; // 默认角色
+function autoLoadRole() {
+  const pageName = window.location.pathname.toLowerCase();
+  // 识别页面：文件名包含 '2' 或是 'aimis' 就加载爱弥斯配置
+  const roleKey = (pageName.includes("2") || pageName.includes("aimis")) ? "aimis" : "carter";
+  const data = window.siteConfig.characters[roleKey];
 
-  // 判断是否为第二个角色页面
-  if (fileName.includes("2") || fileName.includes("aimis")) {
-    role = "aimis";
-  }
-
-  const data = window.siteConfig.characters[role];
   if (!data) return;
 
-  // 更新文字内容
+  // A. 替换文本信息
   document.title = data.siteName;
-  const desc = document.querySelector('.site-description');
-  if (desc) desc.textContent = data.siteDescription;
+  const descTag = document.querySelector('.site-description');
+  if (descTag) descTag.textContent = data.siteDescription;
 
-  // 更新视频路径
+  // B. 替换头像 (P1)
+  const avatarImg = document.getElementById('userAvatar');
+  if (avatarImg && data.avatar) {
+    avatarImg.src = data.avatar;
+  }
+
+  // C. 视频区域逻辑处理
+  const videoSection = document.querySelector('.video-section'); 
   const smallVid = document.getElementById('smallVideo');
   const bigVid = document.getElementById('bigVideo');
 
-  if (smallVid) {
-    smallVid.src = data.videos.smallCardVideo;
-    smallVid.load(); // 强制重新加载视频源
-  }
-  if (bigVid) {
-    bigVid.src = data.videos.bigCardVideo;
-    bigVid.load();
+  if (!data.smallVideo && !data.bigVideo) {
+    // 如果没有视频数据（如爱弥斯），直接隐藏整个视频区域
+    if (videoSection) videoSection.style.display = 'none';
+  } else {
+    // 如果有视频（如卡提），显示并加载路径
+    if (videoSection) videoSection.style.display = 'block';
+    if (smallVid && data.smallVideo) { smallVid.src = data.smallVideo; smallVid.load(); }
+    if (bigVid && data.bigVideo) { bigVid.src = data.bigVideo; bigVid.load(); }
   }
 }
 
-// ================= 其它基础功能 (保持不变) =================
+// ================= 2. 核心 UI 功能 =================
+
 function initAnimations() {
-  window.addEventListener('scroll', () => {
-    document.querySelectorAll('.section-animate, .card-animate').forEach(el => {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.85) el.classList.add('visible');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-  });
-  window.dispatchEvent(new Event('scroll'));
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.section-animate, .card-animate').forEach(el => observer.observe(el));
 }
 
 function initNavbar() {
-  const navbar = document.querySelector('.navbar');
+  const nav = document.querySelector('.navbar');
   window.addEventListener('scroll', () => {
-    window.scrollY > 50 ? navbar?.classList.add('scrolled') : navbar?.classList.remove('scrolled');
+    window.scrollY > 50 ? nav?.classList.add('scrolled') : nav?.classList.remove('scrolled');
   });
 }
 
@@ -79,19 +78,17 @@ function initBackToTop() {
 }
 
 function initDefaultThemeAndMode() {
-  currentTheme = window.siteConfig.defaultTheme;
-  document.documentElement.style.setProperty('--primary-color', currentTheme === 'purple' ? '#8a5cf7' : '#3b82f6');
+  // 设置默认主题色
+  document.documentElement.style.setProperty('--primary-color', '#8a5cf7');
 }
 
-// 视频切换逻辑 (小卡/大卡切换)
+// 供按钮调用的视频切换函数
 function switchVideo(type) {
-  const small = document.getElementById('smallVideo');
-  const big = document.getElementById('bigVideo');
-  if (type === 'small') {
-    small?.classList.remove('hidden');
-    big?.classList.add('hidden');
+  const s = document.getElementById('smallVideo');
+  const b = document.getElementById('bigVideo');
+  if(type === 'small') {
+    s?.classList.remove('hidden'); b?.classList.add('hidden');
   } else {
-    small?.classList.add('hidden');
-    big?.classList.remove('hidden');
+    s?.classList.add('hidden'); b?.classList.remove('hidden');
   }
 }
