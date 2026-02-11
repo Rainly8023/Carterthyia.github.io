@@ -2,51 +2,636 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>加载中...</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>爱弥斯的璀璨星穹</title>
+
+  <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/16.png?v=20240626">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/1.png?v=20240626">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  
+  <style>
+/* 全局样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "楷体", "PingFang SC", "Microsoft YaHei", sans-serif;
+    scroll-behavior: smooth;
+    color: #333333 !important;
+}
+
+:root {
+    /* 爱弥斯主题配色（梦幻粉紫色） */
+    --primary-color: #e67ea8;
+    --secondary-color: #f5a3c7;
+    --bg-color: rgba(230, 126, 168, 0.05);
+    --card-bg: #ffffff;
+    --card-shadow: 0 8px 32px rgba(230, 126, 168, 0.2);
+    --card-shadow-hover: 0 12px 40px rgba(230, 126, 168, 0.3);
+    --primary-dark: #d6628a;
+    --primary-lightest: rgba(230, 126, 168, 0.05);
+
+    --white-color: #fff;
+    --transition: all 0.3s ease-in-out;
+    --border-radius: 12px;
+}
+
+/* 深色模式 */
+.dark-mode {
+    --card-bg: #2d2d2d;
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --bg-color: #1a1a1a;
+    background-color: #1a1a1a;
+}
+.dark-mode * {
+    color: #f5f5f5 !important;
+}
+
+/* 打字机效果 */
+.typewriter {
+    overflow: hidden;
+    border-right: 2px solid var(--primary-color) !important;
+    white-space: nowrap;
+    margin: 0 auto;
+    letter-spacing: 0.1em;
+    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+@keyframes typing { from { width: 0 } to { width: 100% } }
+@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary-color) } }
+
+/* 隐藏类 */
+.hidden { display: none !important; }
+.modal-hidden { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: #fff !important;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-color) !important;
+    border: 2px solid var(--primary-color);
+    box-shadow: none;
+}
+.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
+
+/* 导航栏 */
+.navbar {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
+    background: var(--card-bg); box-shadow: var(--card-shadow); transition: var(--transition);
+}
+.navbar.scrolled { padding: 10px 0; box-shadow: var(--card-shadow-hover); }
+.nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; text-decoration: none; }
+.nav-logo i { color: var(--primary-color) !important; }
+.nav-menu { display: flex; list-style: none; gap: 30px; }
+.nav-item .nav-link { text-decoration: none; font-size: 15px; font-weight: 500; transition: var(--transition); position: relative; }
+.nav-item .nav-link:hover { color: var(--primary-color) !important; }
+.nav-item .nav-link::after {
+    content: ""; position: absolute; bottom: -5px; left: 0;
+    width: 0; height: 2px; background-color: var(--primary-color); transition: var(--transition);
+}
+.nav-item .nav-link:hover::after { width: 100%; }
+
+/* 控制面板 */
+.control-panel {
+    position: fixed; top: 50%; right: 20px; transform: translateY(-50%);
+    background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--card-shadow);
+    padding: 20px; z-index: 998; transition: var(--transition);
+    min-width: 220px;
+}
+.control-panel h3 { font-size: 16px; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.control-panel h3 i { color: var(--primary-color) !important; }
+.control-btn {
+    display: block; width: 100%; padding: 12px 10px; margin-bottom: 15px;
+    background: var(--bg-color); border: 1px solid var(--primary-color); border-radius: var(--border-radius);
+    cursor: pointer; transition: var(--transition); font-size: 13px; text-align: center;
+}
+.control-btn:hover { background: var(--primary-color); color: #fff !important; }
+.control-panel .color-picker-wrap {
+    margin: 10px 0; display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap; justify-content: center;
+}
+.control-panel .color-picker-wrap label {
+    color: var(--primary-color) !important;
+    font-size: 14px; white-space: nowrap;
+}
+.control-panel .color-picker-wrap input[type="color"] {
+    width: 40px; height: 30px; border: none; cursor: pointer;
+    border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.control-panel .color-picker-wrap .control-btn {
+    padding: 8px 12px; margin-bottom: 0; font-size: 12px;
+    width: auto; flex-shrink: 0;
+}
+
+/* 板块动效 */
+.section-animate {
+    opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease, transform 0.8s ease;
+    padding: 100px 20px; max-width: 1200px; margin: 0 auto;
+}
+.section-animate.visible { opacity: 1; transform: translateY(0); }
+.section-header { text-align: center; margin-bottom: 40px; }
+.section-header h2 { font-size: 26px; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 10px; }
+.section-header h2 i { color: var(--primary-color) !important; }
+.section-divider { width: 80px; height: 3px; background-color: var(--primary-color); margin: 0 auto; border-radius: 3px; }
+
+/* 卡片样式 */
+.card-animate {
+    opacity: 0; transform: scale(0.95); transition: opacity 0.6s ease, transform 0.6s ease;
+    background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--card-shadow);
+    padding: 30px; margin-bottom: 30px;
+}
+.card-animate.visible { opacity: 1; transform: scale(1); }
+.card-animate:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-5px); }
+
+/* 首页样式 */
+.home-section { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color); padding: 0 20px; }
+.home-container { text-align: center; }
+.aimis-avatar {
+    width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+    border: 5px solid var(--primary-color); margin-bottom: 25px;
+    box-shadow: var(--card-shadow); transition: var(--transition); cursor: pointer;
+}
+.aimis-avatar:hover { transform: scale(1.05) rotate(5deg); box-shadow: var(--card-shadow-hover); }
+.character-title { font-size: 36px; margin-bottom: 15px; letter-spacing: 2px; }
+.character-desc { font-size: 18px; margin-bottom: 35px; letter-spacing: 1px; color: #666 !important; }
+
+/* 文字内容样式 */
+.about-info { font-size: 16px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; }
+.info-label { color: var(--primary-color) !important; font-weight: bold; }
+.story-title { color: var(--primary-color) !important; font-size: 18px; margin-bottom: 15px; font-weight: 500; }
+.story-paragraph { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
+
+/* 标签样式 */
+.gallery-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+.gallery-tab {
+    padding: 10px 20px; background: var(--bg-color); border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition);
+}
+.gallery-tab.active { background: var(--primary-color); color: #fff !important; }
+
+/* 图库横向排列 */
+.gallery-container {
+    display: flex; gap: 20px; padding: 10px 0; overflow-x: auto;
+    scrollbar-width: thin; scrollbar-color: var(--primary-color) var(--bg-color);
+    margin: 0 -10px; padding: 10px;
+}
+.gallery-container::-webkit-scrollbar { height: 8px; }
+.gallery-container::-webkit-scrollbar-track { background: var(--bg-color); border-radius: 4px; }
+.gallery-container::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
+.gallery-img {
+    flex: 0 0 auto; width: 280px; height: 380px; object-fit: cover;
+    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition);
+    box-shadow: var(--card-shadow);
+}
+.gallery-img:hover { transform: scale(1.03); box-shadow: var(--card-shadow-hover); }
+
+/* 图片预览弹窗 */
+#imagePreviewModal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+#imagePreviewModal.show { opacity: 1; pointer-events: all; }
+.preview-content { position: relative; max-width: 90%; max-height: 90%; }
+#previewImage { width: 100%; height: auto; border-radius: var(--border-radius); box-shadow: var(--card-shadow-hover); }
+.preview-close {
+    position: absolute; top: -40px; right: 0; font-size: 30px;
+    cursor: pointer; color: #fff !important; transition: var(--transition);
+}
+.preview-close:hover { color: var(--primary-color) !important; transform: rotate(90deg); }
+
+/* 回到顶部 */
+.back-to-top {
+    position: fixed; bottom: 30px; right: 30px;
+    background: var(--primary-color); color: #fff !important;
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: var(--card-shadow); transition: var(--transition);
+    z-index: 997;
+}
+.back-to-top:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+
+/* 涟漪效果 */
+.btn, .nav-link, .gallery-img, .card-animate {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(0);
+    animation: rippleEffect 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes rippleEffect {
+    to { transform: scale(4); opacity: 0; }
+}
+
+/* 梦幻背景 */
+body{
+  background:linear-gradient(135deg,#ffd0e8 0%,#f8a8d0 50%,#e8c2fb 100%);
+  background-attachment:fixed;
+}
+.dark-mode body{
+  background:linear-gradient(135deg,#552b3d 0%,#4a2d4a 50%,#3d2b55 100%);
+}
+body::before{
+  content:"";position:fixed;inset:0;width:100%;height:100%;
+  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".06"/></svg>');
+  pointer-events:none;z-index:-1;
+}
+
+/* 玻璃卡片效果 */
+.card-animate,
+.control-panel,
+.gallery-container{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.25);
+  box-shadow:0 8px 32px rgba(0,0,0,.1);
+}
+.dark-mode .card-animate,
+.dark-mode .control-panel,
+.dark-mode .gallery-container{
+  background:rgba(0,0,0,0.15);
+  border:1px solid rgba(255,255,255,0.15);
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .nav-menu {
+        flex-direction: column; gap: 15px; position: fixed; top: 70px; left: 0; width: 100%;
+        background: var(--card-bg); padding: 20px 0; box-shadow: var(--card-shadow);
+        transform: translateY(-150%); opacity: 0; pointer-events: none; transition: var(--transition);
+    }
+    .nav-menu.active { transform: translateY(0); opacity: 1; pointer-events: all; }
+    .character-title { font-size: 28px; }
+    .gallery-img { width: 220px; height: 300px; }
+    .control-panel {
+        min-width: 180px; padding: 15px;
+        top: auto; bottom: 80px; right: 10px;
+        transform: translateY(0);
+    }
+    .control-panel .color-picker-wrap { gap: 5px; }
+}
+  </style>
 </head>
 <body>
-
   <nav class="navbar">
     <div class="nav-container">
-      <a href="index.html" class="nav-logo"><i class="fa fa-home"></i> 返回主站</a>
+      <div class="nav-logo"><i class="fa fa-magic"></i><span>爱弥斯的璀璨星穹</span></div>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="#home" class="nav-link">首页</a></li>
+        <li class="nav-item"><a href="#about" class="nav-link">角色设定</a></li>
+        <li class="nav-item"><a href="#story" class="nav-link">故事背景</a></li>
+        <li class="nav-item"><a href="#gallery" class="nav-link">幻梦展柜</a></li>
+        <li class="nav-item"><a href="index.html" class="nav-link" style="color: var(--primary-color) !important; font-weight: bold;"><i class="fa fa-star"></i> 卡提希娅站点</a></li>
+      </ul>
+      <div class="nav-toggle" onclick="toggleNavMenu()"><i class="fa fa-bars"></i></div>
     </div>
   </nav>
 
-  <section class="hero-section">
-    <div class="profile-card card-animate">
-      <div class="avatar-wrapper">
-        <img id="userAvatar" src="" alt="头像" class="avatar-img">
+  <div class="control-panel">
+    <h3><i class="fa fa-sliders"></i> 个性化设置</h3>
+    <button class="control-btn" onclick="switchTheme('pink')"><i class="fa fa-heart"></i> 梦幻粉主题</button>
+    <button class="control-btn" onclick="switchTheme('purple')"><i class="fa fa-magic"></i> 幻梦紫主题</button>
+    <div class="color-picker-wrap">
+      <label><i class="fa fa-eyedropper"></i> 自定义主色调：</label>
+      <input type="color" id="customColorPicker" value="#e67ea8">
+      <button class="control-btn" onclick="applyCustomTheme()">应用</button>
+    </div>
+    <button class="control-btn" onclick="toggleDarkMode()"><i class="fa fa-moon-o"></i> 深色模式</button>
+    <button class="control-btn" id="effectsToggleBtn"><i class="fa fa-magic"></i> 关闭特效</button>
+  </div>
+
+  <div class="back-to-top hidden" onclick="scrollToTop()"><i class="fa fa-arrow-up"></i></div>
+
+  <section id="home" class="home-section section-animate">
+    <div class="home-container">
+      <img src="images/P1.png" alt="爱弥斯头像" class="aimis-avatar" id="userAvatar">
+      <h1 class="character-title typewriter">爱弥斯（Aimis）</h1>
+      <p class="character-desc site-description">自由的幻梦掌控者 · 璀璨星海梦境领主</p>
+      <div class="home-btns">
+        <a href="#gallery" class="btn">进入幻梦展柜</a>
+        <a href="index.html" class="btn" style="background: linear-gradient(135deg, #9c7ee6, #e67ea8);"><i class="fa fa-star"></i> 访问卡提希娅站点</a>
       </div>
-      <h1 class="site-title">爱弥斯</h1>
-      <p class="site-description">正在加载星海资料...</p>
     </div>
   </section>
 
-  <section class="video-section">
-    <div class="video-container">
-      <video id="smallVideo" controls></video>
-      <video id="bigVideo" class="hidden" controls></video>
+  <section id="about" class="section-animate">
+    <div class="section-header"><h2><i class="fa fa-user-circle"></i> 角色设定</h2><div class="section-divider"></div></div>
+    <div class="card-animate">
+      <div class="about-info"><span class="info-label">姓名：</span><span>爱弥斯（Aimis）</span></div>
+      <div class="about-info"><span class="info-label">特质：</span><span>自由不羁的幻梦掌控者，拥有操控梦境与星海的神秘力量</span></div>
+      <div class="about-info"><span class="info-label">能力：</span><span>梦境编织、星辉召唤、幻梦领域</span></div>
+      <div class="about-info"><span class="info-label">称号：</span><span>璀璨星海梦境领主</span></div>
+      <div class="about-info"><span class="info-label">核心技能：</span><span>星辉绽放、梦境漩涡、幻梦终章「星辰坠落」</span></div>
     </div>
   </section>
 
-  <section class="gallery-section">
-    <h2 class="section-title">幻梦展柜</h2>
-    <div class="gallery-grid">
-      <img src="images/P2.png" class="gallery-img card-animate">
-      <img src="images/P3.png" class="gallery-img card-animate">
-      <img src="images/P4.png" class="gallery-img card-animate">
-      <img src="images/P5.png" class="gallery-img card-animate">
-      <img src="images/P6.png" class="gallery-img card-animate">
-      <img src="images/P7.png" class="gallery-img card-animate">
-      <img src="images/P8.png" class="gallery-img card-animate">
+  <section id="story" class="section-animate">
+    <div class="section-header"><h2><i class="fa fa-book-open"></i> 角色故事背景</h2><div class="section-divider"></div></div>
+    <div class="card-animate">
+      <button id="storyToggle" class="btn" onclick="toggleStory()"><i class="fa fa-chevron-up"></i> 收起故事</button>
+      <div id="storyContent" class="story-paragraph">
+        <p class="story-title">【星海的呼唤】</p>
+        <p>爱弥斯诞生于星海的深处，是星辰与梦境的化身。她拥有操控梦境的神秘力量，能够自由穿梭于现实与幻梦之间。她的存在如同璀璨的星光，既美丽又神秘。</p>
+        <p class="story-title">【幻梦的掌控者】</p>
+        <p>作为幻梦领域的领主，爱弥斯守护着梦境与现实的边界。她能够编织出最绚丽的梦境，也能够将噩梦化为虚无。她的力量源于星海的深处，每一次施展都伴随着星辉的绽放。</p>
+        <p class="story-title">【自由的灵魂】</p>
+        <p>爱弥斯崇尚自由，不受任何束缚。她在星海中漫游，在梦境中舞蹈，用她的力量守护着每一个美好的梦想。她的笑容如同星光般温暖，她的眼眸中倒映着整个宇宙。</p>
+        <p class="story-title">【现况与未来】</p>
+        <p>如今的爱弥斯继续在她的幻梦领域中守护着什么。她的力量日益强大，但她始终保持着那颗自由而温柔的心。未来的道路充满未知，但她将带着星海的祝福继续前行。</p>
+      </div>
     </div>
   </section>
 
-  <button class="back-to-top hidden"><i class="fa fa-arrow-up"></i></button>
+  <section id="gallery" class="section-animate">
+    <div class="section-header"><h2><i class="fa fa-images"></i> 幻梦展柜</h2><div class="section-divider"></div></div>
+    <div class="card-animate">
+      <div class="gallery-tabs">
+        <button class="gallery-tab active" data-type="all" onclick="filterGallery('all')">全部</button>
+        <button class="gallery-tab" data-type="portrait" onclick="filterGallery('portrait')">肖像</button>
+        <button class="gallery-tab" data-type="dream" onclick="filterGallery('dream')">幻梦</button>
+        <button class="gallery-tab" data-type="star" onclick="filterGallery('star')">星海</button>
+      </div>
+      <div class="gallery-container">
+        <img src="images/P2.png" data-type="portrait" class="gallery-img" onclick="previewImage(this.src)" alt="肖像1">
+        <img src="images/P3.png" data-type="dream" class="gallery-img" onclick="previewImage(this.src)" alt="幻梦1">
+        <img src="images/P4.png" data-type="star" class="gallery-img" onclick="previewImage(this.src)" alt="星海1">
+        <img src="images/P5.png" data-type="portrait" class="gallery-img" onclick="previewImage(this.src)" alt="肖像2">
+        <img src="images/P6.png" data-type="dream" class="gallery-img" onclick="previewImage(this.src)" alt="幻梦2">
+        <img src="images/P7.png" data-type="star" class="gallery-img" onclick="previewImage(this.src)" alt="星海2">
+        <img src="images/P8.png" data-type="portrait" class="gallery-img" onclick="previewImage(this.src)" alt="肖像3">
+      </div>
+    </div>
+  </section>
 
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+  <div id="imagePreviewModal" class="modal-hidden" onclick="closeImagePreview()">
+    <div class="preview-content">
+      <span class="preview-close">&times;</span>
+      <img src="" alt="角色预览图" id="previewImage">
+    </div>
+  </div>
+
+<script>
+/* ------------ 站点配置 ------------ */
+const siteConfig = {
+  adminAccount: "admin",
+  adminPassword: "aimis",
+  siteName: "爱弥斯的璀璨星穹",
+  siteDomain: "www.aimis.com",
+  siteDescription: "自由的幻梦掌控者 · 璀璨星海梦境领主",
+  defaultTheme: "pink",
+  defaultMode: "light",
+  galleryTypes: ["all", "portrait", "dream", "star"],
+  effectsConfig: {
+    enableAdvancedEffects: true,
+    maxParticles: 80,
+    enableParallax: true,
+    performanceMode: false
+  }
+};
+window.siteConfig = siteConfig;
+
+/* ------------ 全局变量 ------------ */
+let currentTheme = window.siteConfig.defaultTheme;
+let isDarkMode = window.siteConfig.defaultMode === 'dark';
+let isStoryVisible = true;
+let enhancedEffectsEnabled = window.siteConfig.effectsConfig.enableAdvancedEffects;
+
+/* ========== 核心功能 ========== */
+/* ------------ 初始化 ------------ */
+window.addEventListener('DOMContentLoaded', () => {
+  initAnimations();
+  initNavbar();
+  initBackToTop();
+  initGalleryFilter();
+  initDefaultThemeAndMode();
+  initCustomColorPicker();
+  
+  // 绑定涟漪效果
+  initRipple();
+  
+  // 初始化特效控制按钮
+  initEffectsControls();
+});
+
+/* ------------ 滚动动效 ------------ */
+function initAnimations() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.section-animate, .card-animate').forEach(el => observer.observe(el));
+}
+
+/* ------------ 导航栏 ------------ */
+function initNavbar() {
+  const nav = document.querySelector('.navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  });
+}
+
+function toggleNavMenu() {
+    const menu = document.querySelector('.nav-menu');
+    menu.classList.toggle('active');
+}
+
+/* ------------ 回到顶部 ------------ */
+function initBackToTop() {
+  const btn = document.querySelector('.back-to-top');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      btn.classList.remove('hidden');
+    } else {
+      btn.classList.add('hidden');
+    }
+  });
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ------------ 主题 & 深色模式 ------------ */
+function initDefaultThemeAndMode() {
+  const modeBtn = document.querySelector('.control-btn:nth-child(5) i');
+  
+  switchTheme(currentTheme);
+  
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    if (modeBtn) modeBtn.classList.replace('fa-moon-o', 'fa-sun-o');
+  } else {
+    document.body.classList.remove('dark-mode');
+    if (modeBtn) modeBtn.classList.replace('fa-sun-o', 'fa-moon-o');
+  }
+}
+
+function switchTheme(theme) {
+    const root = document.documentElement;
+    currentTheme = theme;
+    if (theme === 'purple') {
+        root.style.setProperty('--primary-color', '#b67ee6');
+        root.style.setProperty('--secondary-color', '#d4a3f5');
+        root.style.setProperty('--bg-color', 'rgba(182, 126, 230, 0.05)');
+        root.style.setProperty('--primary-rgb', '182, 126, 230');
+    } else {
+        root.style.setProperty('--primary-color', '#e67ea8');
+        root.style.setProperty('--secondary-color', '#f5a3c7');
+        root.style.setProperty('--bg-color', 'rgba(230, 126, 168, 0.05)');
+        root.style.setProperty('--primary-rgb', '230, 126, 168');
+    }
+}
+
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    const modeBtn = document.querySelector('.control-btn:nth-child(5) i');
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        if (modeBtn) modeBtn.classList.replace('fa-moon-o', 'fa-sun-o');
+    } else {
+        document.body.classList.remove('dark-mode');
+        if (modeBtn) modeBtn.classList.replace('fa-sun-o', 'fa-moon-o');
+    }
+}
+
+function initCustomColorPicker() {
+    const picker = document.getElementById('customColorPicker');
+    if(picker) picker.value = '#e67ea8';
+}
+
+function applyCustomTheme() {
+    const color = document.getElementById('customColorPicker').value;
+    const root = document.documentElement;
+    root.style.setProperty('--primary-color', color);
+    root.style.setProperty('--secondary-color', color);
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    root.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
+}
+
+/* ------------ 图库过滤 ------------ */
+function initGalleryFilter() {
+    filterGallery('all');
+}
+
+function filterGallery(type) {
+    const images = document.querySelectorAll('.gallery-img');
+    const tabs = document.querySelectorAll('.gallery-tab');
+    
+    tabs.forEach(tab => {
+        if(tab.getAttribute('data-type') === type) tab.classList.add('active');
+        else tab.classList.remove('active');
+    });
+
+    images.forEach(img => {
+        if (type === 'all' || img.getAttribute('data-type') === type) {
+            img.style.display = 'block';
+        } else {
+            img.style.display = 'none';
+        }
+    });
+}
+
+/* ------------ 预览弹窗 ------------ */
+function previewImage(src) {
+    const modal = document.getElementById('imagePreviewModal');
+    const img = document.getElementById('previewImage');
+    img.src = src;
+    modal.classList.add('show');
+    modal.classList.remove('modal-hidden');
+}
+
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    modal.classList.remove('show');
+    modal.classList.add('modal-hidden');
+}
+
+/* ------------ 故事切换 ------------ */
+function toggleStory() {
+    const content = document.getElementById('storyContent');
+    const btn = document.getElementById('storyToggle');
+    isStoryVisible = !isStoryVisible;
+    if(isStoryVisible) {
+        content.style.display = 'block';
+        btn.innerHTML = '<i class="fa fa-chevron-up"></i> 收起故事';
+    } else {
+        content.style.display = 'none';
+        btn.innerHTML = '<i class="fa fa-chevron-down"></i> 展开故事';
+    }
+}
+
+/* ------------ 粒子特效开关 ------------ */
+function initEffectsControls() {
+    const toggleBtn = document.getElementById('effectsToggleBtn');
+    if(!toggleBtn) return;
+    
+    toggleBtn.addEventListener('click', () => {
+        enhancedEffectsEnabled = !enhancedEffectsEnabled;
+        if(enhancedEffectsEnabled) {
+            toggleBtn.innerHTML = '<i class="fa fa-magic"></i> 关闭特效';
+        } else {
+            toggleBtn.innerHTML = '<i class="fa fa-magic"></i> 开启特效';
+        }
+    });
+}
+
+/* ------------ 涟漪效果 ------------ */
+function initRipple() {
+    document.querySelectorAll('.btn, .nav-link, .gallery-img, .card-animate').forEach(el => {
+        el.addEventListener('click', function (e) {
+            let x = e.clientX - e.target.getBoundingClientRect().left;
+            let y = e.clientY - e.target.getBoundingClientRect().top;
+            
+            let ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+}
+</script>
 </body>
 </html>
