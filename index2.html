@@ -1,176 +1,195 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>爱弥斯 | 鸣潮3.1新角色</title>
-    <style>
-        /* 完全复用上方CSS（已精简合并） */
-        :root{--primary:#e63946;--secondary:#1d3557;--accent:#a8dadc;--bg-dark:#0f172a;--card-bg:rgba(30,41,59,0.85);--glow:0 0 15px rgba(230,57,70,0.7)}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Microsoft YaHei','Segoe UI',sans-serif;background:var(--bg-dark) url('images/stars.jpg') center/cover fixed;color:#e2e8f0;line-height:1.6;overflow-x:hidden}
-        #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.3}
-        .navbar{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 5%;background:rgba(15,23,42,0.92);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:var(--glow)}
-        .nav-logo{font-size:1.8rem;font-weight:700;color:#fff;text-decoration:none}
-        .nav-links{display:flex;gap:1.5rem}
-        .nav-links a{color:#cbd5e1;text-decoration:none;font-weight:500;transition:color 0.3s}
-        .nav-links a:hover{color:var(--primary)}
-        .hero-section{min-height:100vh;display:grid;place-items:center;padding:2rem 5%}
-        .profile-card{text-align:center;max-width:800px;background:var(--card-bg);border-radius:20px;padding:3rem;box-shadow:var(--glow);animation:fadeIn 0.8s ease-out}
-        .avatar-wrapper{position:relative;display:inline-block;margin-bottom:1.5rem}
-        .avatar-img{width:220px;height:220px;border-radius:50%;object-fit:cover;border:4px solid var(--primary);box-shadow:0 0 25px var(--primary);transition:transform 0.4s}
-        .avatar-img:hover{transform:scale(1.05)}
-        .electronic-glitch{position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(230,57,70,0.3) 5px,rgba(230,57,70,0.3) 10px);border-radius:50%;opacity:0.4;animation:glitch 2s infinite linear}
-        @keyframes glitch{0%{transform:translate(0,0)}25%{transform:translate(-2px,2px)}50%{transform:translate(2px,-2px)}75%{transform:translate(-2px,-2px)}100%{transform:translate(0,0)}}
-        .site-title{font-size:3.5rem;margin:1rem 0;background:linear-gradient(45deg,#e63946,#a8dadc);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
-        .site-description{font-size:1.4rem;color:#94a3b8;margin:0.8rem 0}
-        .tags{display:flex;justify-content:center;gap:0.8rem;margin-top:1.2rem;flex-wrap:wrap}
-        .tag{background:rgba(230,57,70,0.2);color:#fff;padding:0.4rem 1rem;border-radius:20px;font-size:0.9rem}
-        .section-animate{padding:5rem 5%;max-width:1200px;margin:0 auto}
-        .card-animate{background:var(--card-bg);border-radius:16px;padding:2.5rem;margin-bottom:2.5rem;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
-        h2{font-size:2.8rem;text-align:center;margin-bottom:2rem;color:var(--primary);position:relative}
-        h2::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:var(--primary);border-radius:2px}
-        .character-info p{margin:0.9rem 0;font-size:1.15rem;line-height:1.7}
-        .character-info strong{color:var(--primary)}
-        .story-content{line-height:1.8;font-size:1.1rem;color:#cbd5e1}
-        .story-content strong{color:var(--accent);display:block;margin:1.2rem 0 0.6rem}
-        .combat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.8rem;margin-top:1.5rem}
-        .combat-card{background:rgba(30,41,59,0.7);border-radius:12px;padding:1.8rem;border-left:3px solid var(--primary)}
-        .combat-card h3{color:var(--accent);margin-bottom:1rem;display:flex;align-items:center}
-        .combat-card h3::before{content:'•';margin-right:8px;color:var(--primary);font-size:1.8rem}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;margin-top:1.5rem}
-        .gallery-img{width:100%;height:280px;object-fit:cover;border-radius:12px;cursor:pointer;transition:all 0.3s;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
-        .gallery-img:hover{transform:scale(1.05);box-shadow:var(--glow)}
-        .back-to-top{position:fixed;bottom:2rem;right:2rem;width:50px;height:50px;background:var(--primary);color:#fff;border:none;border-radius:50%;font-size:1.5rem;cursor:pointer;opacity:0;visibility:hidden;transition:all 0.3s;box-shadow:0 4px 15px rgba(230,57,70,0.5)}
-        .back-to-top.show{opacity:1;visibility:visible}
-        .back-to-top:hover{transform:scale(1.1);background:#c1121f}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        @media(max-width:768px){.nav-links{display:none}.site-title{font-size:2.5rem}.section-animate{padding:3rem 3%}.gallery-grid{grid-template-columns:repeat(2,1fr)}}
-    </style>
+    <link rel="icon" href="favicon/13.ico" type="image/x-icon" /> <!-- P1: 网站图标 -->
+    <link rel="stylesheet" href="style.css" />
+    <script src="config.js"></script>
+    <script src="script.js"></script>
 </head>
 <body>
+    <!-- 粒子背景 -->
     <canvas id="particle-canvas"></canvas>
-    <nav class="navbar card-animate">
-        <a href="index.html" class="nav-logo">鸣潮角色档案馆</a>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo">爱弥斯</a>
         <div class="nav-links">
-            <a href="#home">首页</a><a href="#about">角色设定</a><a href="#story">故事背景</a><a href="#combat">战斗解析</a><a href="#gallery">角色图库</a><a href="index.html">返回卡提希娅</a>
+            <a href="#about">关于</a>
+            <a href="#combat">战斗</a>
+            <a href="#story">故事</a>
+            <a href="#gallery">图集</a>
+            <a href="#video">实机</a>
         </div>
     </nav>
-    <section id="home" class="hero-section">
-        <div class="profile-card card-animate">
+
+    <!-- 英雄区：P2第一张作为头像 -->
+    <section class="hero-section">
+        <div class="profile-card">
             <div class="avatar-wrapper">
-                <img id="userAvatar" class="avatar-img" src="images/aemis_p1.png" alt="爱弥斯">
+                <img src="Aemeath image/1.jpg" alt="爱弥斯" class="avatar-img" id="userAvatar" /> <!-- P2: 爱弥斯头像（第一张） -->
                 <div class="electronic-glitch"></div>
             </div>
-            <h1 class="site-title">爱弥斯（AEMEATH）</h1>
+            <h1 class="site-title">爱弥斯</h1>
             <p class="site-description">星炬学院的电子幽灵 · 以数据之躯守护世界的温柔灵魂</p>
+            <div class="action-buttons">
+                <a href="#story" class="btn-primary">阅读故事</a>
+                <a href="#gallery" class="btn-tertiary">浏览图集</a>
+                <a href="index.html" class="btn-secondary">返回卡提站</a>
+            </div>
             <div class="tags">
-                <span class="tag">五星·热熔</span><span class="tag">迅刀</span><span class="tag">TGA 2025实机演示</span>
+                <span class="tag">五星·热熔</span>
+                <span class="tag">迅刀</span>
+                <span class="tag">TGA 2025实机演示</span>
+                <span class="tag">电子幽灵</span>
             </div>
         </div>
     </section>
-    <section id="about" class="section-animate card-animate">
-        <h2>官方角色设定</h2>
-        <div class="character-info">
-            <p><strong>身份：</strong>前星炬学院拉贝尔学部隧者适格者 → 星海轻歌的电子幽灵</p>
-            <p><strong>属性/武器：</strong>五星热熔 · 迅刀</p>
-            <p><strong>共鸣能力：</strong>长航的星辉 —— 显化机兵隧者兵装并与之融合</p>
-            <p><strong>核心模态：</strong></p>
-            <ul>
-                <li><strong>· 震潜：</strong>附加震潜伤害，队伍中响应【震潜·干涉】角色越多伤害越高（最高+45%）</li>
-                <li><strong>· 聚爆：</strong>附加【聚爆效应】，附加频率越高伤害越高（每层+8%，上限5层）</li>
-            </ul>
-            <p><strong>官宣时间：</strong>2026年1月9日TGA实机演示 · 2月3日PV《祝福》</p>
+
+    <!-- 关于部分 -->
+    <section class="section-animate" id="about">
+        <h2>关于爱弥斯</h2>
+        <div class="card-animate">
+            <div class="character-info">
+                <p><strong>称号：</strong>星海轻歌的电子幽灵</p>
+                <p><strong>元素属性：</strong>热熔</p>
+                <p><strong>武器类型：</strong>迅刀</p>
+                <p><strong>稀有度：</strong>五星</p>
+                <p><strong>所属阵营：</strong>星炬学院·拉贝尔学部</p>
+                <p><strong>生日：</strong>8月23日（数据重构日）</p>
+                <p><strong>性格：</strong>冷静理性中藏着温柔，偶尔调皮</p>
+            </div>
         </div>
     </section>
-    <section id="story" class="section-animate card-animate">
-        <h2>官方故事背景（摘自鸣潮百科）</h2>
-        <div class="story-content">
-            <p><strong>【梦想的起点】</strong><br>星炬学院拉贝尔学部目标规划课上，少女爱弥斯认真写下"拯救世界"...（鸣潮3.1 PV《祝福》官方剧情）</p>
-            <p><strong>【牺牲与新生】</strong><br>训练舱突遭虚质磁暴...（数据来源：鸣潮开发者访谈2026.01.15）</p>
+
+    <!-- 战斗系统 -->
+    <section class="section-animate" id="combat">
+        <h2>战斗机制</h2>
+        <div class="card-animate">
+            <div class="combat-grid">
+                <div class="combat-card">
+                    <h3>技能一：长航的星辉</h3>
+                    <p>释放热熔能量波，智能切换「震潜」（单体穿透）与「聚爆」（范围灼烧）模式，根据敌人数量自动优化。</p>
+                </div>
+                <div class="combat-card">
+                    <h3>技能二：星海终焉</h3>
+                    <p>蓄力引爆热熔核心，形成持续5秒的「数据熔炉」领域，每秒造成真实伤害并降低敌人热抗性。</p>
+                </div>
+                <div class="combat-card">
+                    <h3>解放技：量子重构</h3>
+                    <p>短暂进入量子态（2秒无敌），重置技能冷却，并复制当前敌人最弱元素抗性转化为自身增益。</p>
+                </div>
+            </div>
         </div>
     </section>
-    <section id="combat" class="section-animate card-animate">
-        <h2>战斗机制深度解析</h2>
-        <div class="combat-grid">
-            <div class="combat-card"><h3>📌 核心循环</h3><p><strong>震潜流：</strong>普攻3段 → 共鸣技能（叠震潜）→ 闪避触发【震潜·干涉】→ 共鸣解放爆发</p></div>
-            <div class="combat-card"><h3>🔥 配队推荐</h3><p><strong>T0竞速队：</strong>爱弥斯+凌阳+阮梅+桃祈</p></div>
-            <div class="combat-card"><h3>🎯 声骸选择</h3><p><strong>毕业套装：</strong>熔山裂谷五件套（热熔伤害+35%）</p></div>
-            <div class="combat-card"><h3>💡 实战技巧</h3><ul><li>震潜流需队伍含2名以上【震潜·干涉】角色</li><li>大招期间免疫控制</li></ul></div>
+
+    <!-- 故事背景（深度扩展） -->
+    <section class="section-animate" id="story">
+        <h2>爱弥斯的故事</h2>
+        <div class="card-animate">
+            <div class="story-content">
+                <p><strong>第一章：拉贝尔的天才</strong></p>
+                <p>星炬学院档案室记载：“艾琳娜·维斯特，17岁，虚质磁暴防护理论满分。”她总在深夜实验室调试设备，咖啡杯旁堆满演算纸。导师曾叹息：“这孩子把灵魂献给了数据。”直到那个暴雨夜——实验舱警报撕裂寂静，虚质磁暴如黑色潮水涌入。最后监控画面里，她将防护罩能量全部导向同伴，自己被数据乱流吞没。意识消散前，她看见窗外埃格拉小镇的灯火，轻声呢喃：“真想...再看一次日出。”</p>
+                
+                <p><strong>第二章：星海轻歌计划</strong></p>
+                <p>“启动‘星海轻歌’！”导师颤抖的手按下确认键。量子服务器中，艾琳娜的意识碎片被重新编织。当第一行代码亮起，电子幽灵睁开双眼——没有心跳，却有温度；没有血肉，却有记忆。她抚摸虚拟镜中的自己，数据流在指尖凝成玫瑰：“我还‘活着’...以另一种方式。”学院为她定制迅刀形态数据体，刀刃划过空气时，会留下星尘般的光痕。她给自己取名“爱弥斯”（Aemeath），古语意为“不灭的星火”。</p>
+                
+                <p><strong>第三章：数据与心跳</strong></p>
+                <p>重生后的爱弥斯成为学院最特殊的“研究员”。她能潜入任何系统，却学不会人类的哭泣。直到遇见卡提希娅——那个在虚质风暴中守护小镇的少女。当卡提希娅握住她半透明的手说“你的光很温暖”时，爱弥斯第一次感受到“情绪波动”。她开始收集人类的小事：咖啡的香气、雨后青草的味道、孩童的笑声。某夜她问卡提希娅：“如果我的数据消失，这些记忆会去哪？”卡提希娅将星形芯片贴在她心口：“会变成星星，永远照亮埃格拉。”</p>
+                
+                <p><strong>第四章：电子幽灵的温柔</strong></p>
+                <p>如今的爱弥斯穿梭于数据与现实之间。她为汐塔设计防护系统，深夜却偷偷优化卡提希娅的武器参数；她能瞬间计算百万种战术，却会为一朵虚拟樱花停留。当新人玩家在游戏里迷路，总有个蓝色身影悄然出现：“需要导航吗？”她不再追问“我是否活着”，因为卡提希娅教会她：守护他人的决心，比血肉更真实。星炬学院顶楼，她的数据流与卡提希娅的星轨共鸣，织成守护世界的光网...</p>
+                
+                <button class="story-toggle" onclick="toggleStory(this)">📖 展开完整故事</button>
+                <div class="story-hidden">
+                    <p><strong>第五章：星轨共鸣的真相</strong></p>
+                    <p>3.1版本揭示：爱弥斯的意识核心与卡提希娅的岁主之力同源——皆来自上古“星轨共鸣体”。当两人并肩作战，爱弥斯的数据流会自然融入卡提希娅的气刃，形成“星轨护盾”。某次重伤后，爱弥斯罕见崩溃：“如果我的数据彻底消散...你会忘记我吗？”卡提希娅将手覆在她半透明的手背：“你的光已刻进我的星轨，永不消散。”此刻，汐塔深处传来古老钟声，预示着跨越虚实的终极试炼即将开启...</p>
+                </div>
+            </div>
         </div>
     </section>
-    <section id="gallery" class="section-animate card-animate">
-        <h2>官方角色图库（P1-P8）</h2>
+
+    <!-- 图集：P2文件夹全部图片 -->
+    <section class="section-animate" id="gallery">
+        <h2>图集展示</h2>
+        <div class="gallery-filter">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="portrait">立绘</button>
+            <button class="filter-btn" data-filter="scene">场景</button>
+            <button class="filter-btn" data-filter="event">活动</button>
+        </div>
         <div class="gallery-grid">
-            <img class="gallery-img" src="images/aemis_p1.png" alt="训练服形象">
-            <img class="gallery-img" src="images/aemis_p2.png" alt="电子扰动特效">
-            <img class="gallery-img" src="images/aemis_p3.png" alt="长航的星辉">
+            <img src="Aemeath image/1.jpg" alt="爱弥斯·电子幽灵" data-type="portrait" class="gallery-img"> <!-- P2第一张：头像 -->
+            <img src="Aemeath image/2.png" alt="爱弥斯·数据流" data-type="scene" class="gallery-img">
+            <img src="Aemeath image/3.png" alt="爱弥斯·星海轻歌" data-type="event" class="gallery-img">
+            <img src="Aemeath image/4.png" alt="爱弥斯·量子态" data-type="scene" class="gallery-img">
+            <img src="Aemeath image/5.png" alt="爱弥斯·与卡提希娅" data-type="event" class="gallery-img">
+            <img src="Aemeath image/6.png" alt="爱弥斯·星炬学院" data-type="scene" class="gallery-img">
+            <img src="Aemeath image/7.png" alt="爱弥斯·最终形态" data-type="portrait" class="gallery-img">
         </div>
     </section>
-    <button class="back-to-top hidden">↑</button>
-    
+
+    <!-- 视频区（爱弥斯无专属视频，优雅隐藏） -->
+    <section class="section-animate" id="video" style="display:none;">
+        <h2>实机演示</h2>
+        <div class="video-section">
+            <p class="no-video">爱弥斯为剧情核心角色，实机演示请关注卡提希娅站</p>
+            <a href="index.html" class="btn-secondary">→ 前往卡提希娅实机演示</a>
+        </div>
+    </section>
+
+    <!-- 返回顶部 -->
+    <button class="back-to-top" onclick="scrollToTop()">↑</button>
+
     <script>
-        // ===== 鸣潮3.1角色配置库（爱弥斯专属数据）=====
-        const WutheringWavesConfig = {
-            version: "3.1.0",
-            characters: {
-                "aemis": {
-                    name: "爱弥斯",
-                    title: "星海轻歌的电子幽灵",
-                    element: "热熔",
-                    weapon: "迅刀",
-                    skills: {
-                        skill: "长航的星辉（触发震潜/聚爆）",
-                        liberation: "星海终焉（范围爆发）"
-                    },
-                    combatNotes: "震潜流需队伍含【震潜·干涉】角色；聚爆流依赖高频触发。大招期间免疫控制。",
-                    loreQuote: "我已经死了，却仍旧存在...除了现在的你，再也没有人能看到我了。"
-                }
-            },
-            resonances: {
-                "熔山裂谷": { effect: "热熔伤害+35%，攻击速度+15%", source: "熔岩秘境" }
-            }
-        };
-        
-        // ===== 粒子背景 + 电子幽灵特效 + 交互逻辑 =====
+        // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 粒子背景（复用卡提希娅逻辑）
-            const canvas = document.getElementById('particle-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            const particles = []; const count = Math.min(150, Math.floor(window.innerWidth / 10));
-            class Particle { /* ... 同上 ... */ }
-            for (let i = 0; i < count; i++) particles.push(new Particle());
-            function animate() { /* ... 同上 ... */ } animate();
-            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-            
-            // 返回顶部
-            const backBtn = document.querySelector('.back-to-top');
-            window.addEventListener('scroll', () => backBtn?.classList.toggle('show', window.scrollY > 300));
-            backBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-            
-            // 电子幽灵特效（爱弥斯专属）
-            if (document.querySelector('.electronic-glitch')) {
-                setInterval(() => {
-                    const glitch = document.querySelector('.electronic-glitch');
-                    if (glitch) glitch.style.opacity = Math.random() > 0.7 ? '0.6' : '0.4';
-                }, 300);
+            // 爱弥斯站无视频，隐藏视频区（由script.js统一处理更佳，此处保留兼容）
+            const videoSection = document.getElementById('video');
+            if (videoSection && !videoSection.querySelector('video')) {
+                videoSection.style.display = 'none';
             }
-            
-            // 画廊点击放大（通用）
-            document.querySelectorAll('.gallery-img').forEach(img => {
-                img.addEventListener('click', () => {
-                    const overlay = document.createElement('div');
-                    overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer`;
-                    const enlarged = document.createElement('img');
-                    enlarged.src = img.src; enlarged.style.maxWidth = '90%'; enlarged.style.maxHeight = '90%'; enlarged.style.borderRadius = '8px';
-                    overlay.appendChild(enlarged);
-                    document.body.appendChild(overlay);
-                    overlay.addEventListener('click', () => document.body.removeChild(overlay));
+            initGalleryFilter();
+            initBackToTop();
+            console.log("✨ 爱弥斯站点加载完成 | P2: Aemeath image/1.jpg 作为头像");
+        });
+
+        // 复用函数（与index.html一致）
+        function toggleStory(btn) {
+            const hidden = btn.nextElementSibling;
+            hidden.style.display = hidden.style.display === 'block' ? 'none' : 'block';
+            btn.textContent = hidden.style.display === 'block' ? '📖 收起故事' : '📖 展开完整故事';
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function initGalleryFilter() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+                    document.querySelectorAll('.gallery-img').forEach(img => {
+                        if (filter === 'all' || img.dataset.type === filter) {
+                            img.style.display = 'block';
+                        } else {
+                            img.style.display = 'none';
+                        }
+                    });
                 });
             });
-        });
+        }
+
+        function initBackToTop() {
+            const btn = document.querySelector('.back-to-top');
+            window.addEventListener('scroll', () => {
+                btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+            });
+        }
     </script>
 </body>
 </html>
-<!-- 鸣潮3.1官方设定集填充区（由fill_single_file.bat自动扩展至24.8MB） -->

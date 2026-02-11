@@ -1,19 +1,16 @@
 const siteConfig = {
-    // 管理员配置
     adminAccount: "admin",
-    adminPassword: "carterthyia", // 基于角色名+版本号
-    
-    // 站点基础配置
+    adminPassword: "carterthyia",
+
     siteDomain: "carterthyia.cloud",
-    defaultTheme: "purple", // 未来扩展用
-    defaultMode: "light",   // 未来扩展用
-    
-    // 角色数据（严格遵循鸣潮3.1官方设定）
+    defaultTheme: "purple",
+    defaultMode: "light",
+
     characters: {
         carter: {
             siteName: "卡提希娅的星光小站｜鸣潮3.1顶级主C",
             siteDescription: "于光影中守护的温柔使者 · 双形态战斗达人",
-            avatar: "favicon/1.png",
+            avatar: "images/P1.jpg",     // 头像
             smallVideo: "videos/111.mp4", // 迅刀形态
             bigVideo: "videos/12.mp4",   // 巨剑形态
             lore: {
@@ -31,7 +28,7 @@ const siteConfig = {
         aimis: {
             siteName: "爱弥斯 | 鸣潮3.1新角色",
             siteDescription: "星炬学院的电子幽灵 · 以数据之躯守护世界的温柔灵魂",
-            avatar: "images/P1.png",
+            avatar: "images/P4.jpg",     // 头像
             smallVideo: null,
             bigVideo: null,
             tags: ["五星·热熔", "迅刀", "TGA 2025实机演示"],
@@ -48,17 +45,15 @@ const siteConfig = {
             }
         }
     },
-    
-    // 特效配置（针对不同设备优化）
+
     effectsConfig: {
-        enableAdvancedEffects: true,    // 桌面端启用高级特效
-        maxParticlesDesktop: 250,       // 桌面端粒子数量
-        maxParticlesMobile: 60,         // 移动端粒子数量
-        enableBlurDesktop: true,        // 桌面端背景模糊
-        enableBlurMobile: false         // 移动端禁用模糊（性能优化）
+        enableAdvancedEffects: true,
+        maxParticlesDesktop: 250,
+        maxParticlesMobile: 60,
+        enableBlurDesktop: true,
+        enableBlurMobile: false
     },
-    
-    // 版本信息（鸣潮3.1官方数据）
+
     version: {
         gameVersion: "3.1.0",
         releaseDate: "2026-02-10",
@@ -67,12 +62,4 @@ const siteConfig = {
     }
 };
 
-// 暴露全局变量
 window.siteConfig = siteConfig;
-
-// =============== 鸣潮3.1官方数据验证 ===============
-if (typeof window !== 'undefined') {
-    console.log(`%c鸣潮3.1角色数据加载完成`, 'color: #38bdf8; font-weight: bold;');
-    console.log(`角色库: ${Object.keys(siteConfig.characters).join(', ')}`);
-    console.log(`当前版本: ${siteConfig.version.gameVersion}`);
-}
