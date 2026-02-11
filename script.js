@@ -1,210 +1,301 @@
-// ======================
-// 图集过滤功能（完整实现）
-// ======================
+let currentTheme = window.siteConfig.defaultTheme;
+let isDarkMode = window.siteConfig.defaultMode === 'dark';
+let isStoryVisible = true;
+// ================= 初始化 =================
+window.addEventListener('DOMContentLoaded', () => {
+  if (!window.siteConfig) console.warn("config.js 未加载成功，使用默认配置");
+  initAnimations();
+  initNavbar();
+  initBackToTop();
+  initGalleryFilter();
+  initGuideTab();
+  initDefaultThemeAndMode();
+  initCustomColorPicker();
+  // 移除 initVideoTabs 函数，避免动态修改视频路径
+});
+
+// ================= 主题 & 深色模式 =================
+function initDefaultThemeAndMode() {
+  const root = document.documentElement;
+  const modeBtn = document.querySelector('.control-btn:nth-child(4) i'); // 调整索引：因新增调色器，深色模式按钮变为第4个
+  // 初始化CSS变量（确保主题色变量存在）
+  if (!root.style.getPropertyValue('--primary-color-purple')) {
+    root.style.setProperty('--primary-color-purple', '#8a5cf7');
+    root.style.setProperty('--secondary-color-purple', '#a78bfa');
+    root.style.setProperty('--bg-color-purple', '#f5f3ff');
+    root.style.setProperty('--primary-color-blue', '#3b82f6');
+    root.style.setProperty('--secondary-color-blue', '#60a5fa');
+    root.style.setProperty('--bg-color-blue', '#eff6ff');
+  }
+  switchTheme(currentTheme);
+  if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    modeBtn?.classList.replace('fa-moon', 'fa-sun');
+  } else {
+    document.body.classList.remove('dark-mode');
+    modeBtn?.classList.replace('fa-sun', 'fa-moon');
+  }
+  document.title = window.siteConfig?.siteName || "卡提希娅的星光小站";
+}
+
+// 新增：初始化自定义调色器
+function initCustomColorPicker() {
+  const colorPicker = document.getElementById('customColorPicker');
+  if (colorPicker) {
+    // 同步调色器初始值为当前主题色
+    const root = document.documentElement;
+    const currentPrimary = root.style.getPropertyValue('--primary-color').replace('var(', '').replace(')', '').split('-color-')[1]
+      ? (currentTheme === 'purple' ? '#8a5cf7' : '#3b82f6')
+      : root.style.getPropertyValue('--primary-color');
+    colorPicker.value = currentPrimary;
+  }
+}
+
+// 滚动动效
+function initAnimations() {
+  window.addEventListener('scroll', function() {
+    document.querySelectorAll('.section-animate').forEach(element => {
+      if (element.getBoundingClientRect().top < window.innerHeight * 0.8) element.classList.add('visible');
+    });
+    document.querySelectorAll('.card-animate').forEach(element => {
+      if (element.getBoundingClientRect().top < window.innerHeight * 0.9) element.classList.add('visible');
+    });
+  });
+  window.dispatchEvent(new Event('scroll'));
+}
+
+// 导航栏
+function initNavbar() {
+  const navbar = document.querySelector('.navbar');
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  window.addEventListener('scroll', () => window.scrollY > 50 ? navbar.classList.add('scrolled') : navbar.classList.remove('scrolled'));
+  navToggle?.addEventListener('click', () => {
+    navMenu?.classList.toggle('active');
+    const icon = navToggle.querySelector('i');
+    navMenu?.classList.contains('active') ? icon.classList.replace('fa-bars', 'fa-times') : icon.classList.replace('fa-times', 'fa-bars');
+  });
+}
+
+// 回到顶部
+function initBackToTop() {
+  const backToTopBtn = document.querySelector('.back-to-top');
+  window.addEventListener('scroll', () => window.scrollY > 300 ? backToTopBtn?.classList.remove('hidden') : backToTopBtn?.classList.add('hidden'));
+  backToTopBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+// 图库筛选
 function initGalleryFilter() {
-    const filters = document.querySelectorAll('.filter-btn');
-    const galleryItems = document.querySelectorAll('.gallery-img');
-    
-    // 初始化：确保所有图片可见并添加错误处理
-    galleryItems.forEach(img => {
-        img.style.opacity = '1';
-        img.style.transform = 'translateY(0)';
-        img.style.display = 'block';
-        
-        // 添加加载错误处理（关键修复）
-        img.onerror = function() {
-            console.warn(`⚠️ 图片加载失败: ${this.src}`);
-            // 替换为占位图并更新alt文本
-            this.src = 'https://via.placeholder.com/300x400/2a1b4a/ffffff?text=图片缺失';
-            this.alt = "资源加载失败";
-            this.style.opacity = '0.7';
-            this.style.border = '2px dashed #8a2be2';
-        };
-        
-        // 添加加载成功提示
-        img.onload = function() {
-            console.log(`✅ 图片加载成功: ${this.src.split('/').pop()}`);
-        };
-    });
-
-    // 绑定过滤事件
-    filters.forEach(filter => {
-        filter.addEventListener('click', () => {
-            // 更新激活状态
-            filters.forEach(f => f.classList.remove('active'));
-            filter.classList.add('active');
-
-            const type = filter.dataset.filter;
-            
-            // 过滤图片（带动画效果）
-            galleryItems.forEach((item, index) => {
-                if (type === 'all' || item.dataset.type === type) {
-                    item.style.display = 'block';
-                    // 延迟显示实现入场动画
-                    setTimeout(() => {
-                        item.style.transition = 'opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease';
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateY(0)';
-                        item.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
-                    }, 50 * index); // 阶梯式延迟
-                } else {
-                    item.style.opacity = '0';
-                    item.style.transform = 'translateY(20px)';
-                    item.style.boxShadow = 'none';
-                    setTimeout(() => {
-                        item.style.display = 'none';
-                    }, 300);
-                }
-            });
-        });
-    });
-
-    // 默认触发"全部"筛选（确保页面加载时图集可见）
-    const allFilter = document.querySelector('.filter-btn[data-filter="all"]');
-    if (allFilter) {
-        allFilter.click();
-    }
-}
-
-// ======================
-// 页面加载初始化（完整流程）
-// ======================
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. 输出站点标识（使用window.currentSite确保可访问）
-    const siteName = window.currentSite === 'carter' ? '卡提希娅' : '爱弥斯';
-    console.log(`🚀 ${siteName} 站点已加载 | 路径: ${window.location.pathname}`);
-    
-    // 2. 初始化图集过滤器
-    initGalleryFilter();
-    
-    // 3. 添加图片悬停效果
-    document.querySelectorAll('.gallery-img').forEach(img => {
-        img.addEventListener('mouseenter', () => {
-            img.style.transform = 'scale(1.05)';
-            img.style.boxShadow = '0 0 25px rgba(138, 43, 226, 0.85)';
-            img.style.zIndex = '20';
-        });
-        img.addEventListener('mouseleave', () => {
-            img.style.transform = 'scale(1)';
-            img.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
-            img.style.zIndex = '1';
-        });
-    });
-    
-    // 4. 头像点击跳转增强（添加视觉反馈）
-    const avatarWrapper = document.querySelector('.avatar-wrapper');
-    if (avatarWrapper) {
-        avatarWrapper.addEventListener('click', () => {
-            avatarWrapper.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                avatarWrapper.style.transform = '';
-            }, 150);
-        });
-    }
-    
-    // 5. 检查关键资源加载状态（2秒后执行）
-    setTimeout(() => {
-        const missingImages = Array.from(document.images).filter(img => 
-            !img.complete || (img.naturalWidth === 0 && img.naturalHeight === 0)
-        );
-        
-        if (missingImages.length > 0) {
-            console.warn(`⚠️ 检测到 ${missingImages.length} 张图片加载失败`);
-            missingImages.forEach(img => {
-                console.warn(`  - 文件: ${img.src.split('/').pop()} | 路径: ${img.src}`);
-            });
-            
-            // 在页面顶部显示警告（仅开发环境）
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                const warning = document.createElement('div');
-                warning.innerHTML = `
-                    <div style="
-                        position: fixed;
-                        top: 10px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        background: #ff4757;
-                        color: white;
-                        padding: 10px 20px;
-                        border-radius: 8px;
-                        z-index: 9999;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                        font-weight: bold;
-                        animation: pulse 2s infinite;
-                    ">
-                        ⚠️ ${missingImages.length} 张图片加载失败！请检查 images/ 和 images2/ 文件夹
-                    </div>
-                    <style>
-                        @keyframes pulse {
-                            0% { box-shadow: 0 0 0 0 rgba(255,71,87,0.7); }
-                            70% { box-shadow: 0 0 0 10px rgba(255,71,87,0); }
-                            100% { box-shadow: 0 0 0 0 rgba(255,71,87,0); }
-                        }
-                    </style>
-                `;
-                document.body.appendChild(warning);
-                
-                // 5秒后自动消失
-                setTimeout(() => {
-                    warning.style.opacity = '0';
-                    warning.style.transition = 'opacity 0.5s';
-                    setTimeout(() => warning.remove(), 500);
-                }, 5000);
-            }
+  document.querySelectorAll('.gallery-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      const filterType = this.dataset.type;
+      document.querySelectorAll('.gallery-img').forEach(img => {
+        if (filterType === 'all' || img.dataset.type === filterType) {
+          img.style.display = 'block';
+          setTimeout(() => img.style.opacity = '1', 100);
         } else {
-            console.log('✅ 所有图片资源加载正常 | 共检测 ' + document.images.length + ' 张图片');
+          img.style.opacity = '0';
+          setTimeout(() => img.style.display = 'none', 300);
         }
-    }, 2000);
-    
-    // 6. 按钮悬停音效（可选增强）
-    document.querySelectorAll('.btn-primary, .btn-secondary, .btn-tertiary').forEach(btn => {
-        btn.addEventListener('mouseenter', () => {
-            if (typeof window.AudioContext !== 'undefined' && Math.random() > 0.7) {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.type = 'sine';
-                oscillator.frequency.value = 300 + Math.random() * 200;
-                gainNode.gain.value = 0.05;
-                oscillator.start();
-                setTimeout(() => {
-                    oscillator.stop();
-                }, 100);
-            }
-        });
+      });
     });
-});
-
-// ======================
-// 跳转辅助函数（完整实现）
-// ======================
-function goToCharacter(site) {
-    if (site === 'carter') {
-        console.log('→ 跳转至卡提希娅站点');
-        window.location.href = 'index.html';
-    } else if (site === 'aimis') {
-        console.log('→ 跳转至爱弥斯站点');
-        window.location.href = 'index2.html';
-    } else {
-        console.error('❌ 无效的站点标识:', site);
-    }
+  });
 }
 
-// ======================
-// 全局错误捕获（增强稳定性）
-// ======================
-window.addEventListener('error', (e) => {
-    if (e.message.includes('Failed to load resource')) {
-        console.error('🚨 资源加载错误:', e.message);
-        // 不阻止默认行为，仅记录
-    }
-});
+// 攻略标签
+function initGuideTab() {
+  const guideTabs = document.querySelectorAll('.tab-btn');
+  guideTabs[0]?.classList.add('active');
+  document.querySelectorAll('.guide-content')[0]?.classList.remove('hidden');
+  guideTabs.forEach(tab => {
+    tab.addEventListener('click', () => switchGuideTab(tab.dataset.tab));
+  });
+}
 
-// ======================
-// 页面卸载前清理（可选）
-// ======================
-window.addEventListener('beforeunload', () => {
-    console.log('👋 离开页面，清理资源...');
-});
+// 主题切换（兼容原有固定主题 + 自定义调色）
+function switchTheme(theme) {
+  const root = document.documentElement;
+  currentTheme = theme;
+  if (theme === 'purple') {
+    root.style.setProperty('--primary-color', 'var(--primary-color-purple)');
+    root.style.setProperty('--secondary-color', 'var(--secondary-color-purple)');
+    root.style.setProperty('--bg-color', 'var(--bg-color-purple)');
+  } else if (theme === 'blue') {
+    root.style.setProperty('--primary-color', 'var(--primary-color-blue)');
+    root.style.setProperty('--secondary-color', 'var(--secondary-color-blue)');
+    root.style.setProperty('--bg-color', 'var(--bg-color-blue)');
+  }
+  // 同步更新自定义调色器的值
+  const colorPicker = document.getElementById('customColorPicker');
+  if (colorPicker) {
+    colorPicker.value = root.style.getPropertyValue('--primary-color').replace('var(', '').replace(')', '').split('-color-')[1]
+      ? (theme === 'purple' ? '#8a5cf7' : '#3b82f6')
+      : root.style.getPropertyValue('--primary-color');
+  }
+}
+
+// 新增：自定义调色应用
+function applyCustomTheme() {
+  const colorPicker = document.getElementById('customColorPicker');
+  if (!colorPicker) return;
+
+  const customColor = colorPicker.value;
+  const root = document.documentElement;
+  // 生成浅/深色调（保证视觉协调）
+  const lightColor = lightenColor(customColor, 20);
+  const darkColor = darkenColor(customColor, 20);
+
+  // 覆盖主题色变量
+  root.style.setProperty('--primary-color', customColor);
+  root.style.setProperty('--secondary-color', lightColor);
+  root.style.setProperty('--bg-color', lightenColor(customColor, 85)); // 背景色超浅
+  currentTheme = 'custom'; // 标记为自定义主题
+}
+
+// 新增：颜色变浅辅助函数
+function lightenColor(color, percent) {
+  const num = parseInt(color.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.min(255, (num >> 16) + amt);
+  const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
+  const B = Math.min(255, (num & 0x0000FF) + amt);
+  return "#" + (0x1000000 + R*0x10000 + G*0x100 + B).toString(16).slice(1);
+}
+
+// 新增：颜色变深辅助函数
+function darkenColor(color, percent) {
+  const num = parseInt(color.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(0, (num >> 16) - amt);
+  const G = Math.max(0, (num >> 8 & 0x00FF) - amt);
+  const B = Math.max(0, (num & 0x0000FF) - amt);
+  return "#" + (0x1000000 + R*0x10000 + G*0x100 + B).toString(16).slice(1);
+}
+
+// 深色模式切换
+function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  document.body.classList.toggle('dark-mode');
+  const modeBtn = document.querySelector('.control-btn:nth-child(4) i'); // 调整索引：深色模式按钮变为第4个
+  modeBtn?.classList.toggle('fa-moon');
+  modeBtn?.classList.toggle('fa-sun');
+}
+
+// 故事展开收起
+function toggleStory() {
+  const storyContent = document.getElementById('storyContent');
+  const storyToggle = document.getElementById('storyToggle');
+  isStoryVisible = !isStoryVisible;
+  if (isStoryVisible) {
+    storyContent.style.display = 'block';
+    storyToggle.innerHTML = '<i class="fa fa-chevron-up"></i> 收起故事';
+  } else {
+    storyContent.style.display = 'none';
+    storyToggle.innerHTML = '<i class="fa fa-chevron-down"></i> 展开故事';
+  }
+}
+
+// 攻略标签切换
+function switchGuideTab(tabType) {
+  document.querySelectorAll('.guide-content').forEach(content => content.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(`${tabType}Content`)?.classList.remove('hidden');
+  document.querySelector(`.tab-btn[data-tab="${tabType}"]`)?.classList.add('active');
+}
+
+// 图片预览
+function previewImage(src) {
+  const modal = document.getElementById('imagePreviewModal');
+  const previewImg = document.getElementById('previewImage');
+  previewImg.src = src;
+  modal.classList.remove('modal-hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeImagePreview() {
+  const modal = document.getElementById('imagePreviewModal');
+  modal.classList.add('modal-hidden');
+  document.body.style.overflow = 'auto';
+}
+
+// 视频播放
+function playVideo(playerId, coverElement) {
+  const videoElement = document.getElementById(playerId);
+  if (!videoElement || !coverElement) {
+    alert('视频元素初始化失败，请刷新页面重试');
+    return;
+  }
+  const playPromise = videoElement.play();
+  if (playPromise) {
+    playPromise.then(() => coverElement.style.display = 'none')
+      .catch(() => {
+        coverElement.style.display = 'none';
+        alert('视频自动播放被浏览器限制，请手动点击视频控件播放');
+      });
+  } else coverElement.style.display = 'none';
+  videoElement.addEventListener('ended', () => {
+    videoElement.currentTime = 0;
+    coverElement.style.display = 'flex';
+  });
+}
+
+// 视频切换
+function switchVideo(type) {
+  document.querySelectorAll('.gallery-tab[data-type]').forEach(tab => tab.classList.remove('active'));
+  document.querySelector(`.gallery-tab[data-type="${type}"]`)?.classList.add('active');
+  if (type === 'small') {
+    document.getElementById('smallVideo').classList.remove('hidden');
+    document.getElementById('bigVideo').classList.add('hidden');
+  } else if (type === 'big') {
+    document.getElementById('smallVideo').classList.add('hidden');
+    document.getElementById('bigVideo').classList.remove('hidden');
+  }
+}
+
+/* ===== 二次元玻璃水滴 追加区 ===== */
+(function(){
+  // 1. 星空粒子
+  const canvas=document.createElement('canvas');
+  canvas.id='starCanvas';
+  document.body.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  let w,h,mx,my,particles=[];
+  function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  mx=w/2;my=h/2;window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  class P{constructor(){this.x=Math.random()*w;this.y=h+20;this.vy=-(1+Math.random()*2);this.vx=(Math.random()-0.5)*0.6;this.r=Math.random()*1.5+0.5;}update(){this.y+=this.vy;this.x+=this.vx;const dx=this.x-mx,dy=this.y-my,d=Math.hypot(dx,dy);if(d<120){this.x+=dx/d*1.2;this.y+=dy/d*1.2;}if(this.y<-20)this.y=h+20;}draw(){ctx.beginPath();const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(1,'rgba(180,160,255,0)');ctx.fillStyle=g;ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();}}
+  function animate(){ctx.clearRect(0,0,w,h);if(particles.length<(window.innerWidth<768?60:120))particles.push(new P());particles=particles.filter(p=>{p.update();p.draw();return p.y>-30;});requestAnimationFrame(animate);}
+  animate();
+
+  // 2. 水滴涟漪
+  document.body.addEventListener('click',function(e){
+    const card=e.target.closest('.card-animate,.video-container,.gallery-img,.btn');
+    if(!card)return;
+    const rect=card.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
+    const ripple=document.createElement('span');
+    ripple.className='ripple';
+    ripple.style.width=ripple.style.height='20px';
+    ripple.style.left=x-10+'px';ripple.style.top=y-10+'px';
+    card.style.position='relative';card.style.overflow='hidden';
+    card.appendChild(ripple);
+    setTimeout(()=>ripple.remove(),600);
+  });
+
+  // 3. 导航水滴
+  const drop=document.createElement('svg');
+  drop.id='navDrop';
+  drop.setAttribute('viewBox','0 0 40 40');
+  drop.setAttribute('width','38');
+  drop.setAttribute('height','38');
+  drop.innerHTML=`
+    <defs>
+      <linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="var(--primary-color)" stop-opacity="0.7"/>
+      </linearGradient>
+    </defs>
+    <path d="M20 2C10 2 2 10 2 20s8 18 18 18 18-8 18-18S30 2 20 2zm0 30c-6.6 0-12-5.4-12-12 0-3.4 1.4-6.5 3.7-8.7l8.3 8.7 8.3-8.7C30.6 15.5 32 18.6 32 22c0 6.6-5.4 12-12 12z" fill="url(#dropGrad)"/>
+  `;
+  document.body.appendChild(drop);
+})();
