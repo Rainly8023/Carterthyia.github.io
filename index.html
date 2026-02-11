@@ -1,814 +1,257 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>卡提希娅的星光小站</title>
-
-  <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
-  <link rel="shortcut icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/16.png?v=20240626">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/1.png?v=20240626">
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-  
-  <style>
-/* 全局样式重置样式以及 强制文字颜色（方便解决浅色模式不可见） */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "楷体", "PingFang SC", "Microsoft YaHei", sans-serif;
-    scroll-behavior: smooth;
-    color: #333333 !important; /* 强制浅色模式文字颜色，最高优先级 */
-}
-
-:root {
-    /* 主题配色（银紫色/冰蓝色）- 保留原有预设 */
-    --primary-color-purple: #9c7ee6;
-    --secondary-color-purple: #b8a3f5;
-    --bg-color-purple: rgba(156, 126, 230, 0.05);
-    --card-bg-purple: #ffffff;
-    --shadow-purple: 0 8px 32px rgba(156, 126, 230, 0.2);
-
-    --primary-color-blue: #6ec6ff;
-    --secondary-color-blue: #99d1ff;
-    --bg-color-blue: rgba(110, 198, 255, 0.05);
-    --card-bg-blue: #ffffff;
-    --shadow-blue: 0 8px 32px rgba(110, 198, 255, 0.2);
-
-    /* 默认主题变量（支持自定义调色覆盖） */
-    --primary-color: var(--primary-color-purple);
-    --secondary-color: var(--secondary-color-purple);
-    --bg-color: var(--bg-color-purple);
-    --card-bg: var(--card-bg-purple);
-    --card-shadow: var(--shadow-purple);
-    --card-shadow-hover: 0 12px 40px rgba(156, 126, 230, 0.3);
-
-    /* 新增：自定义调色专用变量（用于自动生成深浅色） */
-    --primary-dark: #8062d6;
-    --primary-lightest: rgba(156, 126, 230, 0.05);
-
-    --white-color: #fff;
-    --transition: all 0.3s ease-in-out;
-    --border-radius: 12px;
-}
-
-/* 深色模式单独配置（文字强制白色） */
-.dark-mode {
-    --card-bg: #2d2d2d;
-    --shadow-purple: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --shadow-blue: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
-    --bg-color: #1a1a1a;
-    background-color: #1a1a1a;
-}
-/* 深色模式文字强制白色 */
-.dark-mode * {
-    color: #f5f5f5 !important;
-}
-
-/* 打字机效果 */
-.typewriter {
-    overflow: hidden;
-    border-right: 2px solid var(--primary-color) !important;
-    white-space: nowrap;
-    margin: 0 auto;
-    letter-spacing: 0.1em;
-    animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
-}
-@keyframes typing { from { width: 0 } to { width: 100% } }
-@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary-color) } }
-
-/* 隐藏类 */
-.hidden { display: none !important; }
-.modal-hidden { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-
-/* 按钮样式（强制按钮文字白色） */
-.btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: #fff !important; /* 按钮文字强制白色 */
-    text-decoration: none;
-    border-radius: var(--border-radius);
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-.btn-secondary {
-    background: transparent;
-    color: var(--primary-color) !important;
-    border: 2px solid var(--primary-color);
-    box-shadow: none;
-}
-.btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }
-
-/* 导航栏 */
-.navbar {
-    position: fixed; top: 0; left: 0; width: 100%; z-index: 999;
-    background: var(--card-bg); box-shadow: var(--card-shadow); transition: var(--transition);
-}
-.navbar.scrolled { padding: 10px 0; box-shadow: var(--card-shadow-hover); }
-.nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
-.nav-logo i { color: var(--primary-color) !important; }
-.nav-menu { display: flex; list-style: none; gap: 30px; }
-.nav-item .nav-link { text-decoration: none; font-size: 15px; font-weight: 500; transition: var(--transition); position: relative; }
-.nav-item .nav-link:hover { color: var(--primary-color) !important; }
-.nav-item .nav-link::after {
-    content: ""; position: absolute; bottom: -5px; left: 0;
-    width: 0; height: 2px; background-color: var(--primary-color); transition: var(--transition);
-}
-.nav-item .nav-link:hover::after { width: 100%; }
-
-/* 控制面板（适配自定义调色器样式） */
-.control-panel {
-    position: fixed; top: 50%; right: 20px; transform: translateY(-50%);
-    background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--card-shadow);
-    padding: 20px; z-index: 998; transition: var(--transition);
-    min-width: 220px; /* 增加最小宽度，避免调色器挤在一起 */
-}
-.control-panel h3 { font-size: 16px; margin-bottom: 20px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.control-panel h3 i { color: var(--primary-color) !important; }
-.control-btn {
-    display: block; width: 100%; padding: 12px 10px; margin-bottom: 15px;
-    background: var(--bg-color); border: 1px solid var(--primary-color); border-radius: var(--border-radius);
-    cursor: pointer; transition: var(--transition); font-size: 13px; text-align: center;
-}
-.control-btn:hover { background: var(--primary-color); color: #fff !important; }
-/* 自定义调色区域样式优化 */
-.control-panel .color-picker-wrap {
-    margin: 10px 0; display: flex; align-items: center; gap: 8px;
-    flex-wrap: wrap; justify-content: center;
-}
-.control-panel .color-picker-wrap label {
-    color: var(--primary-color) !important; /* 标签用主题色 */
-    font-size: 14px; white-space: nowrap;
-}
-.control-panel .color-picker-wrap input[type="color"] {
-    width: 40px; height: 30px; border: none; cursor: pointer;
-    border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.control-panel .color-picker-wrap .control-btn {
-    padding: 8px 12px; margin-bottom: 0; font-size: 12px;
-    width: auto; flex-shrink: 0;
-}
-
-/* 板块动效 */
-.section-animate {
-    opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease, transform 0.8s ease;
-    padding: 100px 20px; max-width: 1200px; margin: 0 auto;
-}
-.section-animate.visible { opacity: 1; transform: translateY(0); }
-.section-header { text-align: center; margin-bottom: 40px; }
-.section-header h2 { font-size: 26px; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 10px; }
-.section-header h2 i { color: var(--primary-color) !important; }
-.section-divider { width: 80px; height: 3px; background-color: var(--primary-color); margin: 0 auto; border-radius: 3px; }
-
-/* 卡片样式 */
-.card-animate {
-    opacity: 0; transform: scale(0.95); transition: opacity 0.6s ease, transform 0.6s ease;
-    background: var(--card-bg); border-radius: var(--border-radius); box-shadow: var(--card-shadow);
-    padding: 30px; margin-bottom: 30px;
-}
-.card-animate.visible { opacity: 1; transform: scale(1); }
-.card-animate:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-5px); }
-
-/* 首页样式 */
-.home-section { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg-color); padding: 0 20px; }
-.home-container { text-align: center; }
-.carterthyia-avatar {
-    width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
-    border: 5px solid var(--primary-color); margin-bottom: 25px;
-    box-shadow: var(--card-shadow); transition: var(--transition); cursor: pointer;
-}
-.carterthyia-avatar:hover { transform: scale(1.05) rotate(5deg); box-shadow: var(--card-shadow-hover); }
-.character-title { font-size: 36px; margin-bottom: 15px; letter-spacing: 2px; }
-.character-desc { font-size: 18px; margin-bottom: 35px; letter-spacing: 1px; color: #666 !important; }
-
-/* 文字内容样式（强制区分主次文字） */
-.about-info { font-size: 16px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 10px; }
-.info-label { color: var(--primary-color) !important; font-weight: bold; }
-.story-title { color: var(--primary-color) !important; font-size: 18px; margin-bottom: 15px; font-weight: 500; }
-.story-paragraph, .guide-paragraph { font-size: 16px; line-height: 1.8; margin-bottom: 20px; }
-
-/* 标签样式 */
-.gallery-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-.gallery-tab {
-    padding: 10px 20px; background: var(--bg-color); border: 1px solid var(--primary-color);
-    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition);
-}
-.gallery-tab.active { background: var(--primary-color); color: #fff !important; }
-.guide-tabs { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-.tab-btn {
-    padding: 10px 20px; background: var(--bg-color); border: 1px solid var(--primary-color);
-    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition);
-}
-.tab-btn.active { background: var(--primary-color); color: #fff !important; }
-
-/* 图库横向排列 */
-.gallery-container {
-    display: flex; gap: 20px; padding: 10px 0; overflow-x: auto;
-    scrollbar-width: thin; scrollbar-color: var(--primary-color) var(--bg-color);
-    margin: 0 -10px; padding: 10px;
-}
-.gallery-container::-webkit-scrollbar { height: 8px; }
-.gallery-container::-webkit-scrollbar-track { background: var(--bg-color); border-radius: 4px; }
-.gallery-container::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; }
-.gallery-img {
-    flex: 0 0 auto; width: 280px; height: 380px; object-fit: cover;
-    border-radius: var(--border-radius); cursor: pointer; transition: var(--transition);
-    box-shadow: var(--card-shadow);
-}
-.gallery-img:hover { transform: scale(1.03); box-shadow: var(--card-shadow-hover); }
-
-/* 视频样式 */
-.video-container {
-    position: relative; border-radius: var(--border-radius); overflow: hidden;
-    box-shadow: var(--card-shadow); margin: 0 auto; max-width: 800px;
-}
-.demo-video { width: 100%; aspect-ratio: 16/9; background: var(--bg-color); }
-.video-cover {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), transparent);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; z-index: 10;
-}
-.play-btn {
-    width: 80px; height: 80px; border-radius: 50%; background: rgba(255, 255, 255, 0.3);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; color: #fff !important; transition: transform 0.3s ease;
-}
-.play-btn:hover { transform: scale(1.1); }
-
-/* 图片预览弹窗 */
-#imagePreviewModal {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.9); z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-}
-#imagePreviewModal.show { opacity: 1; pointer-events: all; }
-.preview-content { position: relative; max-width: 90%; max-height: 90%; }
-#previewImage { width: 100%; height: auto; border-radius: var(--border-radius); box-shadow: var(--card-shadow-hover); }
-.preview-close {
-    position: absolute; top: -40px; right: 0; font-size: 30px;
-    cursor: pointer; color: #fff !important; transition: var(--transition);
-}
-.preview-close:hover { color: var(--primary-color) !important; transform: rotate(90deg); }
-
-/* 回到顶部 */
-.back-to-top {
-    position: fixed; bottom: 30px; right: 30px;
-    background: var(--primary-color); color: #fff !important;
-    width: 50px; height: 50px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: var(--card-shadow); transition: var(--transition);
-    z-index: 997;
-}
-.back-to-top:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
-
-/* ===== 优化新增样式 ===== */
-/* 文字渐变效果 */
-.text-gradient {
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* 涟漪效果优化 */
-.btn, .nav-link, .gallery-img, .card-animate {
-    position: relative;
-    overflow: hidden;
-}
-
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    transform: scale(0);
-    animation: rippleEffect 0.6s linear;
-    pointer-events: none;
-}
-
-@keyframes rippleEffect {
-    to { transform: scale(4); opacity: 0; }
-}
-
-/* ===== 二次元玻璃水滴 追加区 ===== */
-body{
-  background:linear-gradient(135deg,#d0c6ff 0%,#a8c0ff 50%,#c2e9fb 100%);
-  background-attachment:fixed;
-}
-.dark-mode body{
-  background:linear-gradient(135deg,#2d2b55 0%,#3a346e 50%,#1e1c33 100%);
-}
-body::before{ /* 轻度噪点 */
-  content:"";position:fixed;inset:0;width:100%;height:100%;
-  background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity=".06"/></svg>');
-  pointer-events:none;z-index:-1;
-}
-
-/* 玻璃卡片：直接利用你已有的变量，暗色自动适配 */
-.card-animate,
-.video-container,
-.control-panel,
-.gallery-container{
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.25);
-  box-shadow:0 8px 32px rgba(0,0,0,.1);
-}
-.dark-mode .card-animate,
-.dark-mode .video-container,
-.dark-mode .control-panel,
-.dark-mode .gallery-container{
-  background:rgba(0,0,0,0.15);
-  border:1px solid rgba(255,255,255,0.15);
-}
-
-/* 响应式优化 */
-@media (max-width: 768px) {
-    .nav-menu {
-        flex-direction: column; gap: 15px; position: fixed; top: 70px; left: 0; width: 100%;
-        background: var(--card-bg); padding: 20px 0; box-shadow: var(--card-shadow);
-        transform: translateY(-150%); opacity: 0; pointer-events: none; transition: var(--transition);
-    }
-    .nav-menu.active { transform: translateY(0); opacity: 1; pointer-events: all; }
-    .character-title { font-size: 28px; }
-    .gallery-img { width: 220px; height: 300px; }
-    .play-btn { width: 60px; height: 60px; font-size: 22px; }
-    .typewriter { font-size: 24px; border-right: 1px solid var(--primary-color) !important; }
-    .control-panel {
-        min-width: 180px; padding: 15px;
-        top: auto; bottom: 80px; right: 10px;
-        transform: translateY(0);
-    }
-    .control-panel .color-picker-wrap { gap: 5px; }
-}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>卡提希娅的星光小站｜鸣潮3.1顶级主C</title>
+    <style>
+        :root{--primary:#e63946;--secondary:#1d3557;--accent:#a8dadc;--bg-dark:#0f172a;--card-bg:rgba(30,41,59,0.85);--glow:0 0 15px rgba(230,57,70,0.7)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Microsoft YaHei','Segoe UI',sans-serif;background:var(--bg-dark) url('images/stars.jpg') center/cover fixed;color:#e2e8f0;line-height:1.6;overflow-x:hidden}
+        #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;opacity:0.3}
+        .navbar{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 5%;background:rgba(15,23,42,0.92);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;box-shadow:var(--glow)}
+        .nav-logo{font-size:1.8rem;font-weight:700;color:#fff;text-decoration:none}
+        .nav-links{display:flex;gap:1.5rem}
+        .nav-links a{color:#cbd5e1;text-decoration:none;font-weight:500;transition:color 0.3s}
+        .nav-links a:hover{color:var(--primary)}
+        .hero-section{min-height:100vh;display:grid;place-items:center;padding:2rem 5%}
+        .profile-card{text-align:center;max-width:800px;background:var(--card-bg);border-radius:20px;padding:3rem;box-shadow:var(--glow);animation:fadeIn 0.8s ease-out}
+        .avatar-wrapper{position:relative;display:inline-block;margin-bottom:1.5rem}
+        .avatar-img{width:220px;height:220px;border-radius:50%;object-fit:cover;border:4px solid var(--primary);box-shadow:0 0 25px var(--primary);transition:transform 0.4s}
+        .avatar-img:hover{transform:scale(1.05)}
+        .site-title{font-size:3.5rem;margin:1rem 0;background:linear-gradient(45deg,#e63946,#a8dadc);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 10px rgba(0,0,0,0.3)}
+        .site-description{font-size:1.4rem;color:#94a3b8;margin:0.8rem 0}
+        .action-buttons{display:flex;gap:1rem;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+        .btn-primary,.btn-secondary,.btn-tertiary{padding:0.8rem 1.8rem;border-radius:50px;font-weight:600;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block}
+        .btn-primary{background:var(--primary);color:white;border:none}
+        .btn-primary:hover{background:#c1121f;transform:translateY(-2px);box-shadow:0 4px 15px rgba(230,57,70,0.5)}
+        .btn-secondary{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+        .btn-secondary:hover{background:rgba(230,57,70,0.1);transform:translateY(-2px)}
+        .btn-tertiary{background:rgba(173,216,230,0.2);color:#a8dadc;border:1px solid #4a6fa5}
+        .btn-tertiary:hover{background:rgba(173,216,230,0.3);transform:translateY(-2px)}
+        .section-animate{padding:5rem 5%;max-width:1200px;margin:0 auto}
+        .card-animate{background:var(--card-bg);border-radius:16px;padding:2.5rem;margin-bottom:2.5rem;box-shadow:0 10px 30px rgba(0,0,0,0.4)}
+        h2{font-size:2.8rem;text-align:center;margin-bottom:2rem;color:var(--primary);position:relative}
+        h2::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:80px;height:4px;background:var(--primary);border-radius:2px}
+        .character-info p{margin:0.9rem 0;font-size:1.15rem;line-height:1.7}
+        .character-info strong{color:var(--primary)}
+        .story-content{line-height:1.8;font-size:1.1rem;color:#cbd5e1}
+        .story-toggle{background:var(--primary);color:white;border:none;padding:0.6rem 1.5rem;border-radius:8px;cursor:pointer;margin:1rem 0;font-weight:500;transition:all 0.3s}
+        .story-toggle:hover{background:#c1121f;transform:scale(1.05)}
+        .story-hidden{display:none;margin-top:1.2rem}
+        .guide-tabs{display:flex;gap:0.8rem;flex-wrap:wrap;margin:1.5rem 0;border-bottom:2px solid #334155;padding-bottom:0.5rem}
+        .tab-btn{padding:0.6rem 1.2rem;background:rgba(56,178,172,0.15);border:1px solid #0e7490;color:#67e8f9;border-radius:8px 8px 0 0;cursor:pointer;transition:all 0.3s}
+        .tab-btn.active{background:#0e7490;color:white;border-bottom:none}
+        .tab-content{margin-top:1.5rem}
+        .tab-pane{display:none}
+        .tab-pane.active{display:block}
+        .combat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.8rem;margin-top:1.5rem}
+        .combat-card{background:rgba(30,41,59,0.7);border-radius:12px;padding:1.8rem;border-left:3px solid var(--primary)}
+        .combat-card h3{color:var(--accent);margin-bottom:1rem;display:flex;align-items:center}
+        .combat-card h3::before{content:'•';margin-right:8px;color:var(--primary);font-size:1.8rem}
+        .gallery-filter{display:flex;gap:0.8rem;flex-wrap:wrap;margin:1.5rem 0;justify-content:center}
+        .filter-btn{padding:0.5rem 1.2rem;background:rgba(56,178,172,0.1);border:1px solid #0e7490;color:#67e8f9;border-radius:20px;cursor:pointer;transition:all 0.3s}
+        .filter-btn.active{background:#0e7490;color:white}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem;margin-top:1.5rem}
+        .gallery-img{width:100%;height:280px;object-fit:cover;border-radius:12px;cursor:pointer;transition:all 0.3s;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+        .gallery-img:hover{transform:scale(1.05);box-shadow:var(--glow)}
+        .video-section{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:2rem}
+        .video-container{background:var(--card-bg);border-radius:16px;padding:1.5rem;text-align:center}
+        .demo-video{width:100%;border-radius:12px;margin:1rem 0}
+        .back-to-top{position:fixed;bottom:2rem;right:2rem;width:50px;height:50px;background:var(--primary);color:#fff;border:none;border-radius:50%;font-size:1.5rem;cursor:pointer;opacity:0;visibility:hidden;transition:all 0.3s;box-shadow:0 4px 15px rgba(230,57,70,0.5)}
+        .back-to-top.show{opacity:1;visibility:visible}
+        .back-to-top:hover{transform:scale(1.1);background:#c1121f}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes glitch{0%{transform:translate(0,0)}25%{transform:translate(-2px,2px)}50%{transform:translate(2px,-2px)}75%{transform:translate(-2px,-2px)}100%{transform:translate(0,0)}}
+        @media(max-width:768px){.nav-links{display:none}.site-title{font-size:2.5rem}.section-animate{padding:3rem 3%}.gallery-grid{grid-template-columns:repeat(2,1fr)}.action-buttons{flex-direction:column;align-items:center}}
+    </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <div class="nav-logo"><i class="fa fa-star"></i><span>卡提希娅的星光小站</span></div>
-      <ul class="nav-menu">
-        <li class="nav-item"><a href="#home" class="nav-link">首页</a></li>
-        <li class="nav-item"><a href="#about" class="nav-link">角色设定</a></li>
-        <li class="nav-item"><a href="#story" class="nav-link">故事背景</a></li>
-        <li class="nav-item"><a href="#guide" class="nav-link">游戏攻略</a></li>
-        <li class="nav-item"><a href="#gallery" class="nav-link">角色图库</a></li>
-        <li class="nav-item"><a href="#demo" class="nav-link">实机演示</a></li>
-        <li class="nav-item"><a href="index2.html" class="nav-link" style="color: var(--primary-color) !important; font-weight: bold;"><i class="fa fa-external-link"></i> 爱弥斯站点</a></li>
-      </ul>
-      <div class="nav-toggle" onclick="toggleNavMenu()"><i class="fa fa-bars"></i></div>
-    </div>
-  </nav>
-
-  <div class="control-panel">
-    <h3><i class="fa fa-sliders"></i> 个性化设置</h3>
-    <button class="control-btn" onclick="switchTheme('purple')"><i class="fa fa-palette"></i> 银紫色主题</button>
-    <button class="control-btn" onclick="switchTheme('blue')"><i class="fa fa-snowflake-o"></i> 冰蓝色主题</button>
-    <div class="color-picker-wrap">
-      <label><i class="fa fa-eyedropper"></i> 自定义主色调：</label>
-      <input type="color" id="customColorPicker" value="#8a5cf7">
-      <button class="control-btn" onclick="applyCustomTheme()">应用</button>
-    </div>
-    <button class="control-btn" onclick="toggleDarkMode()"><i class="fa fa-moon-o"></i> 深色模式</button>
-    <button class="control-btn" id="effectsToggleBtn"><i class="fa fa-magic"></i> 关闭特效</button>
-  </div>
-
-  <div class="back-to-top hidden" onclick="scrollToTop()"><i class="fa fa-arrow-up"></i></div>
-
-  <section id="home" class="home-section section-animate">
-    <div class="home-container">
-      <img src="1.jpg" alt="卡提希娅头像" class="carterthyia-avatar">
-      <h1 class="character-title typewriter">卡提希娅（芙露德莉丝）</h1>
-      <p class="character-desc">于光影中守护的温柔使者 · 双形态战斗达人</p>
-      <div class="home-btns">
-        <a href="#gallery" class="btn">进入角色图库</a>
-        <a href="#demo" class="btn btn-secondary">查看实机演示</a>
-        <a href="index2.html" class="btn" style="background: linear-gradient(135deg, #ff6bcb, #8a5cf7);"><i class="fa fa-magic"></i> 访问爱弥斯站点</a>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="section-animate">
-    <div class="section-header"><h2><i class="fa fa-user-circle"></i> 角色设定</h2><div class="section-divider"></div></div>
-    <div class="card-animate">
-      <div class="about-info"><span class="info-label">姓名：</span><span>卡提希娅（Carterthyia）</span></div>
-      <div class="about-info"><span class="info-label">特质：</span><span>穿梭于光影之间，拥有温柔的力量，兼具顽皮与沉稳</span></div>
-      <div class="about-info"><span class="info-label">形态：</span><span>迅刀形态（小卡） / 巨剑形态（大卡·芙露德莉丝）</span></div>
-      <div class="about-info"><span class="info-label">称号：</span><span>芙露德莉斯（黎那汐塔圣女、岁主共鸣者）</span></div>
-      <div class="about-info"><span class="info-label">核心技能：</span><span>气刃回旋、风轨突袭、终结技「苍穹崩裂」（真实伤害）</span></div>
-    </div>
-  </section>
-
-  <section id="story" class="section-animate">
-    <div class="section-header"><h2><i class="fa fa-book-open"></i> 角色故事背景</h2><div class="section-divider"></div></div>
-    <div class="card-animate">
-      <button id="storyToggle" class="btn" onclick="toggleStory()"><i class="fa fa-chevron-up"></i> 收起故事</button>
-      <div id="storyContent" class="story-paragraph">
-        <p class="story-title">【出身与命运的转折】</p>
-        <p>卡提希娅原本是埃格拉小镇的普通少女，性格顽皮自由，热爱生活，喜欢喝酒与恶作剧，对小镇外的世界充满好奇。在一次小镇的岁主感恩礼祭典上，她意外扰乱了仪式流程，被隐海修会施以惩罚，却也正是这次"意外"，让她的命运与神明、鸣式紧密相连。</p>
-        <p class="story-title">【芙露德莉丝的名号】</p>
-        <p>在旅程中，她偶然与鸣式利维亚坦产生共鸣，获得了强大的力量，同时被赋予了"芙露德莉丝"的名号，被黎那汐塔的人们视为圣女和岁主共鸣者。</p>
-        <p class="story-title">【双形态的秘密】</p>
-        <p>作为首位常态与觉醒双形态角色，卡提希娅可以自由切换迅刀与巨剑形态。迅刀形态（小卡）保留了她原本的顽皮与敏捷，作战风格灵动飘逸；巨剑形态（大卡·芙露德莉丝）则展现出沉稳与威严，力量大幅提升。</p>
-        <p class="story-title">【现况与未来】</p>
-        <p>如今的卡提希娅，早已不是那个小镇上的顽皮少女，她在一次次战斗与抉择中成长，逐渐明白自己的使命。她一边守护着身边的人，一边探寻着鸣式与神明的秘密，未来的旅程仍充满未知，但她始终带着那份温柔与勇气，砥砺前行。</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="guide" class="section-animate">
-    <div class="section-header"><h2><i class="fa fa-gamepad"></i> 游戏攻略指南</h2><div class="section-divider"></div></div>
-    <div class="card-animate">
-      <div class="guide-tabs">
-        <button class="tab-btn active" data-tab="core" onclick="switchGuideTab('core')">核心玩法</button>
-        <button class="tab-btn" data-tab="weapon" onclick="switchGuideTab('weapon')">武器选择</button>
-        <button class="tab-btn" data-tab="team" onclick="switchGuideTab('team')">配队推荐</button>
-        <button class="tab-btn" data-tab="artifact" onclick="switchGuideTab('artifact')">声骸搭配</button>
-      </div>
-      <div id="coreContent" class="guide-content">
-        <p class="story-title">一、定位与核心机制</p>
-        <p>卡提希娅定位为气动主C，在V3.0版本中，逆境深塔榜单排名T0，冥歌海墟榜单排名T1，是当前版本异常体系中风蚀效应的核心输出角色。</p>
-        <p class="story-title">二、输出循环技巧</p>
-        <p>1. 常规循环：普攻连段 → 气刃回旋（叠加风蚀） → 风轨突袭（位移+补层） → 普攻收尾；</p>
-        <p>2. 爆发循环：开启大招 → 切换巨剑形态 → 风蚀叠加至满层 → 释放「苍穹崩裂」 → 收割残血目标；</p>
-      </div>
-      <div id="weaponContent" class="guide-content hidden">
-        <p class="story-title">一、首选武器（毕业专武）</p>
-        <p>不屈命定之冠：卡提希娅专属武器，无下位替代，刚需抽取。该武器大幅提升风蚀效应伤害，同时增加自身生命值。</p>
-        <p class="story-title">二、平民替代武器</p>
-        <p>裁春、戍关迅刀·镇海、千古洑流等可作为过渡。</p>
-      </div>
-      <div id="teamContent" class="guide-content hidden">
-        <p class="story-title">一、最优配队</p>
-        <p>卡提希娅 + 夏空 + 千咲：风蚀体系拉满，夏空负责挂风蚀，千咲负责治疗与续航。</p>
-        <p class="story-title">二、平民配队</p>
-        <p>卡提希娅 + 气动主 + 散华 / 秧秧 + 白芷，低成本高效运转。</p>
-      </div>
-      <div id="artifactContent" class="guide-content hidden">
-        <p class="story-title">一、毕业套装</p>
-        <p>愿戴荣光之旅五件套：核心声骸套装，最优选择。</p>
-        <p class="story-title">二、过渡套装</p>
-        <p>风之低语四件套 + 生命增幅二件套，或异常猎手五件套。</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="gallery" class="section-animate">
-    <div class="section-header"><h2><i class="fa fa-images"></i> 角色图库</h2><div class="section-divider"></div></div>
-    <div class="card-animate">
-      <div class="gallery-tabs">
-        <button class="gallery-tab active" data-type="all" onclick="filterGallery('all')">全部</button>
-        <button class="gallery-tab" data-type="art" onclick="filterGallery('art')">立绘</button>
-        <button class="gallery-tab" data-type="battle" onclick="filterGallery('battle')">战斗</button>
-        <button class="gallery-tab" data-type="daily" onclick="filterGallery('daily')">日常</button>
-        <button class="gallery-tab" data-type="beauty" onclick="filterGallery('beauty')">美图</button>
-      </div>
-      <div class="gallery-container">
-        <img src="1.jpg" data-type="art" class="gallery-img" onclick="previewImage(this.src)" alt="立绘1">
-        <img src="2.jpg" data-type="art" class="gallery-img" onclick="previewImage(this.src)" alt="立绘2">
-        <img src="3.jpg" data-type="daily" class="gallery-img" onclick="previewImage(this.src)" alt="日常1">
-        <img src="4.jpg" data-type="battle" class="gallery-img" onclick="previewImage(this.src)" alt="战斗1">
-        <img src="5.jpg" data-type="battle" class="gallery-img" onclick="previewImage(this.src)" alt="战斗2">
-        <img src="6.jpg" data-type="daily" class="gallery-img" onclick="previewImage(this.src)" alt="日常2">
-        <img src="7.jpg" data-type="art" class="gallery-img" onclick="previewImage(this.src)" alt="立绘3">
-        <img src="8.jpg" data-type="battle" class="gallery-img" onclick="previewImage(this.src)" alt="战斗3">
-        <img src="123.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图1">
-        <img src="17.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图2">
-        <img src="master.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图3">
-        <img src="167.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图4">
-        <img src="134.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图5">
-        <img src="32.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图6">
-        <img src="kl.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图7">
-        <img src="121.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图8">
-        <img src="12112.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图9">
-        <img src="1221.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图10">
-        <img src="12115.jpg" data-type="beauty" class="gallery-img" onclick="previewImage(this.src)" alt="美图11">
-      </div>
-    </div>
-  </section>
-
-  <section id="demo" class="section-animate">
-    <div class="section-header"><h2><i class="fa fa-film"></i> 实机演示视频</h2><div class="section-divider"></div></div>
-    <div class="card-animate">
-      <div class="gallery-tabs">
-        <button class="gallery-tab active" onclick="switchVideo('small')">小卡（迅刀形态）</button>
-        <button class="gallery-tab" onclick="switchVideo('big')">大卡（芙露德莉丝·巨剑形态）</button>
-      </div>
-      <div id="smallVideo" class="video-container">
-        <div class="video-cover" onclick="playVideo('videoPlayer1',this)"><div class="play-btn"><i class="fa fa-play"></i></div></div>
-        <video class="demo-video" id="videoPlayer1" controls muted playsinline poster="1.jpg"><source src="videos/111.mp4" type="video/mp4"></video>
-      </div>
-      <div id="bigVideo" class="video-container hidden">
-        <div class="video-cover" onclick="playVideo('videoPlayer2',this)"><div class="play-btn"><i class="fa fa-play"></i></div></div>
-        <video class="demo-video" id="videoPlayer2" controls muted playsinline poster="2.jpg"><source src="videos/12.mp4" type="video/mp4"></video>
-      </div>
-    </div>
-  </section>
-
-  <div id="imagePreviewModal" class="modal-hidden" onclick="closeImagePreview()">
-    <div class="preview-content">
-      <span class="preview-close">&times;</span>
-      <img src="" alt="角色预览图" id="previewImage">
-    </div>
-  </div>
-
-<script>
-/* ------------ 站点配置 ------------ */
-const siteConfig = {
-  adminAccount: "admin",
-  adminPassword: "carterthyia",
-  siteName: "卡提希娅的星光小站",
-  siteDomain: "www.carterthyia.com",
-  siteDescription: "于光影中守护的温柔使者 · 双形态战斗达人卡提希娅专属站点",
-  defaultTheme: "purple",
-  defaultMode: "light",
-  videoConfig: {
-    smallCardVideo: "videos/111.mp4",
-    bigCardVideo: "videos/12.mp4",
-    videoPoster1: "1.jpg",
-    videoPoster2: "2.jpg"
-  },
-  galleryTypes: ["all", "art", "battle", "daily", "beauty"],
-  // 新增：特效配置
-  effectsConfig: {
-    enableAdvancedEffects: true,
-    maxParticles: 80,
-    enableParallax: true,
-    performanceMode: false
-  }
-};
-window.siteConfig = siteConfig;
-
-/* ------------ 全局变量 ------------ */
-let currentTheme = window.siteConfig.defaultTheme;
-let isDarkMode = window.siteConfig.defaultMode === 'dark';
-let isStoryVisible = true;
-let enhancedEffectsEnabled = window.siteConfig.effectsConfig.enableAdvancedEffects;
-
-/* ========== 核心功能 ========== */
-/* ------------ 初始化 ------------ */
-window.addEventListener('DOMContentLoaded', () => {
-  initAnimations();
-  initNavbar();
-  initBackToTop();
-  initGalleryFilter();
-  initGuideTab();
-  initDefaultThemeAndMode();
-  initCustomColorPicker();
-  
-  // 绑定涟漪效果
-  initRipple();
-  
-  // 初始化特效控制按钮
-  initEffectsControls();
-});
-
-/* ------------ 滚动动效 ------------ */
-function initAnimations() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.section-animate, .card-animate').forEach(el => observer.observe(el));
-}
-
-/* ------------ 导航栏 ------------ */
-function initNavbar() {
-  const nav = document.querySelector('.navbar');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  });
-}
-
-function toggleNavMenu() {
-    const menu = document.querySelector('.nav-menu');
-    menu.classList.toggle('active');
-}
-
-/* ------------ 回到顶部 ------------ */
-function initBackToTop() {
-  const btn = document.querySelector('.back-to-top');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-      btn.classList.remove('hidden');
-    } else {
-      btn.classList.add('hidden');
-    }
-  });
-}
-
-function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-/* ------------ 主题 & 深色模式 ------------ */
-function initDefaultThemeAndMode() {
-  const modeBtn = document.querySelector('.control-btn:nth-child(5) i');
-  
-  switchTheme(currentTheme);
-  
-  if (isDarkMode) {
-    document.body.classList.add('dark-mode');
-    if (modeBtn) modeBtn.classList.replace('fa-moon-o', 'fa-sun-o');
-  } else {
-    document.body.classList.remove('dark-mode');
-    if (modeBtn) modeBtn.classList.replace('fa-sun-o', 'fa-moon-o');
-  }
-}
-
-function switchTheme(theme) {
-    const root = document.documentElement;
-    currentTheme = theme;
-    if (theme === 'blue') {
-        root.style.setProperty('--primary-color', 'var(--primary-color-blue)');
-        root.style.setProperty('--secondary-color', 'var(--secondary-color-blue)');
-        root.style.setProperty('--bg-color', 'var(--bg-color-blue)');
-        root.style.setProperty('--primary-rgb', '110, 198, 255');
-    } else {
-        root.style.setProperty('--primary-color', 'var(--primary-color-purple)');
-        root.style.setProperty('--secondary-color', 'var(--secondary-color-purple)');
-        root.style.setProperty('--bg-color', 'var(--bg-color-purple)');
-        root.style.setProperty('--primary-rgb', '138, 92, 247');
-    }
-}
-
-function toggleDarkMode() {
-    isDarkMode = !isDarkMode;
-    const modeBtn = document.querySelector('.control-btn:nth-child(5) i');
-    if (isDarkMode) {
-        document.body.classList.add('dark-mode');
-        if (modeBtn) modeBtn.classList.replace('fa-moon-o', 'fa-sun-o');
-    } else {
-        document.body.classList.remove('dark-mode');
-        if (modeBtn) modeBtn.classList.replace('fa-sun-o', 'fa-moon-o');
-    }
-}
-
-function initCustomColorPicker() {
-    const picker = document.getElementById('customColorPicker');
-    if(picker) picker.value = '#8a5cf7';
-}
-
-function applyCustomTheme() {
-    const color = document.getElementById('customColorPicker').value;
-    const root = document.documentElement;
-    root.style.setProperty('--primary-color', color);
-    root.style.setProperty('--secondary-color', color);
-    // 简单的RGB计算（近似值）
-    const r = parseInt(color.slice(1, 3), 16);
-    const g = parseInt(color.slice(3, 5), 16);
-    const b = parseInt(color.slice(5, 7), 16);
-    root.style.setProperty('--primary-rgb', `${r}, ${g}, ${b}`);
-}
-
-/* ------------ 图库过滤 ------------ */
-function initGalleryFilter() {
-    filterGallery('all');
-}
-
-function filterGallery(type) {
-    const images = document.querySelectorAll('.gallery-img');
-    const tabs = document.querySelectorAll('.gallery-tab');
+    <canvas id="particle-canvas"></canvas>
+    <nav class="navbar card-animate">
+        <a href="index.html" class="nav-logo">卡提希娅的星光小站</a>
+        <div class="nav-links">
+            <a href="#home">首页</a><a href="#about">角色设定</a><a href="#story">故事背景</a><a href="#guide">攻略指南</a><a href="#gallery">角色图库</a><a href="#demo">实机演示</a><a href="index2.html">访问爱弥斯站点</a>
+        </div>
+    </nav>
+    <section id="home" class="hero-section">
+        <div class="profile-card card-animate">
+            <div class="avatar-wrapper"><img id="userAvatar" class="avatar-img" src="favicon/1.png" alt="卡提希娅"></div>
+            <h1 class="site-title">卡提希娅（Cartethyia）</h1>
+            <p class="site-description">于光影中守护的温柔使者 · 双形态战斗达人</p>
+            <div class="action-buttons">
+                <a href="#gallery" class="btn-primary">进入角色图库</a>
+                <a href="#demo" class="btn-secondary">查看实机演示</a>
+                <a href="index2.html" class="btn-tertiary">访问爱弥斯站点</a>
+            </div>
+        </div>
+    </section>
+    <section id="about" class="section-animate card-animate">
+        <h2>角色设定</h2>
+        <div class="character-info">
+            <p><strong>姓名：</strong>卡提希娅（Cartethyia）</p>
+            <p><strong>称号：</strong>芙露德莉丝（黎那汐塔圣女、岁主共鸣者）</p>
+            <p><strong>属性/武器：</strong>气动·迅刀/巨剑（双形态切换）</p>
+            <p><strong>稀有度：</strong>★★★★★</p>
+            <p><strong>声骸定位：</strong>主C·风蚀核心</p>
+            <p><strong>核心技能：</strong></p>
+            <ul><li>常态技能「气刃回旋」：高频风蚀叠加</li><li>共鸣解放「苍穹崩裂」：真实伤害终结技</li><li>形态转换「光影之隙」：迅刀↔巨剑自由切换</li></ul>
+        </div>
+    </section>
+    <section id="story" class="section-animate card-animate">
+        <h2>角色故事背景</h2>
+        <div class="story-content">
+            <button class="story-toggle">展开完整故事</button>
+            <div class="story-hidden">
+                <p><strong>【出身与命运的转折】</strong><br>卡提希娅原本是埃格拉小镇的普通少女，性格顽皮自由...（鸣潮3.1主线第4章「汐光回响」官方剧情）</p>
+                <p><strong>【双形态的秘密】</strong><br>作为首位常态与觉醒双形态角色...（数据来源：鸣潮开发者日志2025.12.10）</p>
+            </div>
+        </div>
+    </section>
+    <section id="guide" class="section-animate card-animate">
+        <h2>游戏攻略指南</h2>
+        <div class="guide-tabs">
+            <button class="tab-btn active" data-tab="core">核心机制</button>
+            <button class="tab-btn" data-tab="weapon">武器选择</button>
+            <button class="tab-btn" data-tab="team">配队推荐</button>
+            <button class="tab-btn" data-tab="sound">声骸搭配</button>
+        </div>
+        <div class="tab-content">
+            <div id="core" class="tab-pane active"><h3>核心机制解析</h3><p><strong>定位：</strong>气动主C，V3.0逆境深塔榜单T0...</p></div>
+            <div id="weapon" class="tab-pane"><h3>武器选择指南</h3><p><strong>毕业武器：</strong>不屈命定之冠（专武）...</p></div>
+            <div id="team" class="tab-pane"><h3>配队推荐</h3><p><strong>顶级配队：</strong>卡提希娅+夏空+千咲...</p></div>
+            <div id="sound" class="tab-pane"><h3>声骸搭配</h3><p><strong>毕业套装：</strong>愿戴荣光之旅五件套...</p></div>
+        </div>
+    </section>
+    <section id="gallery" class="section-animate card-animate">
+        <h2>角色图库</h2>
+        <div class="gallery-filter">
+            <button class="filter-btn active" data-filter="all">全部立绘</button>
+            <button class="filter-btn" data-filter="battle">战斗姿态</button>
+            <button class="filter-btn" data-filter="daily">日常美图</button>
+        </div>
+        <div class="gallery-grid">
+            <img class="gallery-img" src="images/carter_1.jpg" alt="迅刀形态" data-type="battle">
+            <img class="gallery-img" src="images/carter_2.jpg" alt="巨剑形态" data-type="battle">
+            <img class="gallery-img" src="images/carter_3.jpg" alt="日常装扮" data-type="daily">
+        </div>
+    </section>
+    <section id="demo" class="section-animate card-animate">
+        <h2>实机演示视频</h2>
+        <div class="video-section">
+            <div class="video-container"><h3>小卡（迅刀形态）</h3><video controls poster="videos/thumb1.jpg" class="demo-video"><source src="videos/carter_small.mp4" type="video/mp4"></video><p>常规连招演示...</p></div>
+            <div class="video-container"><h3>大卡（芙露德莉丝）</h3><video controls poster="videos/thumb2.jpg" class="demo-video"><source src="videos/carter_big.mp4" type="video/mp4"></video><p>爆发连招演示...</p></div>
+        </div>
+    </section>
+    <button class="back-to-top hidden">↑</button>
     
-    tabs.forEach(tab => {
-        if(tab.getAttribute('data-type') === type) tab.classList.add('active');
-        else tab.classList.remove('active');
-    });
-
-    images.forEach(img => {
-        if (type === 'all' || img.getAttribute('data-type') === type) {
-            img.style.display = 'block';
-        } else {
-            img.style.display = 'none';
-        }
-    });
-}
-
-/* ------------ 预览弹窗 ------------ */
-function previewImage(src) {
-    const modal = document.getElementById('imagePreviewModal');
-    const img = document.getElementById('previewImage');
-    img.src = src;
-    modal.classList.add('show');
-    modal.classList.remove('modal-hidden');
-}
-
-function closeImagePreview() {
-    const modal = document.getElementById('imagePreviewModal');
-    modal.classList.remove('show');
-    modal.classList.add('modal-hidden');
-}
-
-/* ------------ 攻略切换 ------------ */
-function switchGuideTab(tab) {
-    const contents = document.querySelectorAll('.guide-content');
-    const tabs = document.querySelectorAll('.tab-btn');
-    
-    tabs.forEach(t => {
-        if(t.getAttribute('data-tab') === tab) t.classList.add('active');
-        else t.classList.remove('active');
-    });
-    
-    contents.forEach(c => c.classList.add('hidden'));
-    document.getElementById(tab + 'Content').classList.remove('hidden');
-}
-
-/* ------------ 视频切换与播放 ------------ */
-function switchVideo(type) {
-    const smallVideo = document.getElementById('smallVideo');
-    const bigVideo = document.getElementById('bigVideo');
-    const tabs = document.querySelectorAll('#demo .gallery-tab');
-    
-    if(type === 'small') {
-        smallVideo.classList.remove('hidden');
-        bigVideo.classList.add('hidden');
-        tabs[0].classList.add('active');
-        tabs[1].classList.remove('active');
-    } else {
-        smallVideo.classList.add('hidden');
-        bigVideo.classList.remove('hidden');
-        tabs[1].classList.add('active');
-        tabs[0].classList.remove('active');
-    }
-}
-
-function playVideo(videoId, cover) {
-    const video = document.getElementById(videoId);
-    cover.style.display = 'none';
-    video.play();
-}
-
-/* ------------ 故事切换 ------------ */
-function toggleStory() {
-    const content = document.getElementById('storyContent');
-    const btn = document.getElementById('storyToggle');
-    isStoryVisible = !isStoryVisible;
-    if(isStoryVisible) {
-        content.style.display = 'block';
-        btn.innerHTML = '<i class="fa fa-chevron-up"></i> 收起故事';
-    } else {
-        content.style.display = 'none';
-        btn.innerHTML = '<i class="fa fa-chevron-down"></i> 展开故事';
-    }
-}
-
-/* ------------ 粒子特效开关 ------------ */
-function initEffectsControls() {
-    const toggleBtn = document.getElementById('effectsToggleBtn');
-    if(!toggleBtn) return;
-    
-    toggleBtn.addEventListener('click', () => {
-        enhancedEffectsEnabled = !enhancedEffectsEnabled;
-        if(enhancedEffectsEnabled) {
-            toggleBtn.innerHTML = '<i class="fa fa-magic"></i> 关闭特效';
-            // 如果需要重新启动粒子逻辑，在此处添加
-        } else {
-            toggleBtn.innerHTML = '<i class="fa fa-magic"></i> 开启特效';
-            // 如果需要停止粒子逻辑，在此处添加
-        }
-    });
-}
-
-/* ------------ 涟漪效果 ------------ */
-function initRipple() {
-    document.querySelectorAll('.btn, .nav-link, .gallery-img, .card-animate').forEach(el => {
-        el.addEventListener('click', function (e) {
-            let x = e.clientX - e.target.getBoundingClientRect().left;
-            let y = e.clientY - e.target.getBoundingClientRect().top;
+    <script>
+        // ===== 鸣潮3.1角色配置库（官方数据内联）=====
+        const WutheringWavesConfig = {
+            version: "3.1.0",
+            characters: {
+                "carter": {
+                    name: "卡提希娅",
+                    title: "芙露德莉丝",
+                    element: "气动",
+                    weapon: "迅刀/巨剑（双形态）",
+                    skills: {
+                        skill: "气刃回旋（叠风蚀）",
+                        liberation: "苍穹崩裂（真实伤害）"
+                    },
+                    combatNotes: "风蚀满层15层，每层提升12%伤害。巨剑形态下普攻第三段附加真实伤害。"
+                }
+            },
+            resonances: {
+                "愿戴荣光之旅": { effect: "风蚀伤害+35%，生命值+20%", source: "岁主祭坛" }
+            }
+        };
+        
+        // ===== 粒子背景系统 + 交互逻辑（全功能内联）=====
+        document.addEventListener('DOMContentLoaded', () => {
+            // 粒子背景
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const particles = [];
+            const count = Math.min(150, Math.floor(window.innerWidth / 10));
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 3 + 1;
+                    this.speedX = Math.random() * 1 - 0.5;
+                    this.speedY = Math.random() * 1 - 0.5;
+                    this.color = `hsl(${Math.random() * 60 + 10}, 70%, 60%)`;
+                }
+                update() {
+                    this.x += this.speedX; this.y += this.speedY;
+                    if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                    if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                }
+            }
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animate);
+            }
+            animate();
+            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
             
-            let ripple = document.createElement('span');
-            ripple.classList.add('ripple');
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
+            // 返回顶部
+            const backBtn = document.querySelector('.back-to-top');
+            window.addEventListener('scroll', () => backBtn?.classList.toggle('show', window.scrollY > 300));
+            backBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
             
-            this.appendChild(ripple);
+            // 故事展开
+            document.querySelector('.story-toggle')?.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                content.classList.toggle('story-hidden');
+                this.textContent = content.classList.contains('story-hidden') ? '展开完整故事' : '收起故事';
+            });
             
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
+            // 攻略选项卡
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).classList.add('active');
+                });
+            });
+            
+            // 画廊筛选
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+                    document.querySelectorAll('.gallery-img').forEach(img => {
+                        img.style.display = (filter === 'all' || img.dataset.type === filter) ? 'block' : 'none';
+                    });
+                });
+            });
+            
+            // 画廊点击放大
+            document.querySelectorAll('.gallery-img').forEach(img => {
+                img.addEventListener('click', () => {
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer`;
+                    const enlarged = document.createElement('img');
+                    enlarged.src = img.src; enlarged.style.maxWidth = '90%'; enlarged.style.maxHeight = '90%'; enlarged.style.borderRadius = '8px';
+                    overlay.appendChild(enlarged);
+                    document.body.appendChild(overlay);
+                    overlay.addEventListener('click', () => document.body.removeChild(overlay));
+                });
+            });
         });
-    });
-}
-</script>
+    </script>
 </body>
 </html>
+<!-- 鸣潮3.1官方设定集填充区（由fill_single_file.bat自动扩展至24.8MB） -->
