@@ -26,6 +26,8 @@
         <li class="nav-item"><a href="#guide" class="nav-link">游戏攻略</a></li>
         <li class="nav-item"><a href="#gallery" class="nav-link">角色图库</a></li>
         <li class="nav-item"><a href="#demo" class="nav-link">实机演示</a></li>
+        <!-- 新增：爱弥斯档案链接 -->
+        <li class="nav-item"><a href="aemeath.html" class="nav-link" style="color: #ff2a6d !important;"><i class="fa fa-database"></i> 爱弥斯档案</a></li>
       </ul>
       <div class="nav-toggle"><i class="fa fa-bars"></i></div>
     </div>
@@ -56,6 +58,8 @@
       <div class="home-btns">
         <a href="#gallery" class="btn">进入角色图库</a>
         <a href="#demo" class="btn btn-secondary">查看实机演示</a>
+        <!-- 新增：快捷入口 -->
+        <a href="aemeath.html" class="btn" style="background: linear-gradient(135deg, #ff2a6d, #05d9e8);"><i class="fa fa-database"></i> 爱弥斯数字档案</a>
       </div>
     </div>
   </section>
@@ -79,9 +83,9 @@
       <button id="storyToggle" class="btn" onclick="toggleStory()"><i class="fa fa-chevron-up"></i> 收起故事</button>
       <div id="storyContent" class="story-paragraph">
         <p class="story-title">【出身与命运的转折】</p>
-        <p>卡提希娅原本是埃格拉小镇的普通少女，性格顽皮自由，热爱生活，喜欢喝酒与恶作剧，对小镇外的世界充满好奇。在一次小镇的岁主感恩礼祭典上，她意外扰乱了仪式流程，被隐海修会施以惩罚，却也正是这次“意外”，让她的命运与神明、鸣式紧密相连。</p>
+        <p>卡提希娅原本是埃格拉小镇的普通少女，性格顽皮自由，热爱生活，喜欢喝酒与恶作剧，对小镇外的世界充满好奇。在一次小镇的岁主感恩礼祭典上，她意外扰乱了仪式流程，被隐海修会施以惩罚，却也正是这次"意外"，让她的命运与神明、鸣式紧密相连。</p>
         <p class="story-title">【芙露德莉丝的名号】</p>
-        <p>在旅程中，她偶然与鸣式利维亚坦产生共鸣，获得了强大的力量，同时被赋予了“芙露德莉丝”的名号，被黎那汐塔的人们视为圣女和岁主共鸣者。</p>
+        <p>在旅程中，她偶然与鸣式利维亚坦产生共鸣，获得了强大的力量,同时被赋予了"芙露德莉丝"的名号，被黎那汐塔的人们视为圣女和岁主共鸣者。</p>
         <p class="story-title">【双形态的秘密】</p>
         <p>作为首位常态与觉醒双形态角色，卡提希娅可以自由切换迅刀与巨剑形态。迅刀形态（小卡）保留了她原本的顽皮与敏捷，作战风格灵动飘逸；巨剑形态（大卡·芙露德莉丝）则展现出沉稳与威严，力量大幅提升。</p>
         <p class="story-title">【现况与未来】</p>
@@ -168,157 +172,69 @@
     <div class="section-header"><h2><i class="fa fa-film"></i> 实机演示视频</h2><div class="section-divider"></div></div>
     <div class="card-animate">
       <div class="gallery-tabs">
-        <button class="gallery-tab active" onclick="switchVideo('small')">小卡（迅刀形态）</button>
-        <button class="gallery-tab" onclick="switchVideo('big')">大卡（芙露德莉丝·巨剑形态）</button>
+        <button class="gallery-tab active" data-type="small" onclick="switchVideo('small')">小卡形态</button>
+        <button class="gallery-tab" data-type="big" onclick="switchVideo('big')">大卡形态</button>
       </div>
       <div id="smallVideo" class="video-container">
-        <div class="video-cover" onclick="playVideo('videoPlayer1',this)"><div class="play-btn"><i class="fa fa-play"></i></div></div>
-        <video class="demo-video" id="videoPlayer1" controls muted playsinline poster="1.jpg"><source src="videos/111.mp4" type="video/mp4"></video>
+        <video id="smallVideoPlayer" class="demo-video" poster="1.jpg" controls>
+          <source src="videos/111.mp4" type="video/mp4">
+          您的浏览器不支持视频播放
+        </video>
+        <div class="video-cover" onclick="playVideo('smallVideoPlayer', this)">
+          <div class="play-btn"><i class="fa fa-play"></i></div>
+        </div>
       </div>
       <div id="bigVideo" class="video-container hidden">
-        <div class="video-cover" onclick="playVideo('videoPlayer2',this)"><div class="play-btn"><i class="fa fa-play"></i></div></div>
-        <video class="demo-video" id="videoPlayer2" controls muted playsinline poster="2.jpg"><source src="videos/12.mp4" type="video/mp4"></video>
+        <video id="bigVideoPlayer" class="demo-video" poster="2.jpg" controls>
+          <source src="videos/12.mp4" type="video/mp4">
+          您的浏览器不支持视频播放
+        </video>
+        <div class="video-cover" onclick="playVideo('bigVideoPlayer', this)">
+          <div class="play-btn"><i class="fa fa-play"></i></div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- 图片预览弹窗 -->
-  <div id="imagePreviewModal" class="modal-hidden" onclick="closeImagePreview()">
+  <div id="imagePreviewModal" class="modal-hidden">
     <div class="preview-content">
-      <span class="preview-close">&times;</span>
-      <img src="" alt="角色预览图" id="previewImage">
+      <span class="preview-close" onclick="closeImagePreview()"><i class="fa fa-times"></i></span>
+      <img id="previewImage" src="" alt="预览图">
     </div>
   </div>
 
-<!-- ================= 整合同一文件版脚本（含 config） ================= -->
-<script>
-/* ------------ 站点配置 ------------ */
-const siteConfig = {
-  adminAccount: "admin",
-  adminPassword: "carterthyia",
-  siteName: "卡提希娅的星光小站",
-  siteDomain: "www.carterthyia.com",
-  siteDescription: "于光影中守护的温柔使者 · 双形态战斗达人卡提希娅专属站点",
-  defaultTheme: "purple",
-  defaultMode: "light",
-  videoConfig: {
-    smallCardVideo: "videos/111.mp4",
-    bigCardVideo: "videos/12.mp4",
-    videoPoster1: "1.jpg",
-    videoPoster2: "2.jpg"
-  },
-  galleryCount: 8,
-  galleryTypes: ["all", "art", "battle", "daily", "beauty"]
-};
-window.siteConfig = siteConfig;
-
-/* ------------ 全局变量 ------------ */
-let currentTheme = window.siteConfig.defaultTheme;
-let isDarkMode = window.siteConfig.defaultMode === 'dark';
-let isStoryVisible = true;
-
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script>
 /* ------------ 初始化 ------------ */
+let isStoryVisible = true;
 window.addEventListener('DOMContentLoaded', () => {
+  if (!window.siteConfig) console.warn("config.js 未加载成功，使用默认配置");
   initAnimations();
   initNavbar();
   initBackToTop();
   initGalleryFilter();
   initGuideTab();
-  initDefaultThemeAndMode();
-  initCustomColorPicker();
   initStarCanvas();
   initRipple();
+  initNavDrop();
 });
-
-/* ------------ 主题 & 深色模式 ------------ */
-function initDefaultThemeAndMode() {
-  const root = document.documentElement;
-  const modeBtn = document.querySelector('.control-btn:nth-child(4) i');
-  if (!root.style.getPropertyValue('--primary-color-purple')) {
-    root.style.setProperty('--primary-color-purple', '#8a5cf7');
-    root.style.setProperty('--secondary-color-purple', '#a78bfa');
-    root.style.setProperty('--bg-color-purple', '#f5f3ff');
-    root.style.setProperty('--primary-color-blue', '#3b82f6');
-    root.style.setProperty('--secondary-color-blue', '#60a5fa');
-    root.style.setProperty('--bg-color-blue', '#eff6ff');
-  }
-  switchTheme(currentTheme);
-  if (isDarkMode) {
-    document.body.classList.add('dark-mode');
-    modeBtn?.classList.replace('fa-moon', 'fa-sun');
-  } else {
-    document.body.classList.remove('dark-mode');
-    modeBtn?.classList.replace('fa-sun', 'fa-moon');
-  }
-  document.title = window.siteConfig?.siteName || "卡提希娅的星光小站";
-}
-
-function initCustomColorPicker() {
-  const picker = document.getElementById('customColorPicker');
-  if (!picker) return;
-  const root = document.documentElement;
-  const currentPrimary = root.style.getPropertyValue('--primary-color').replace('var(', '').replace(')', '').split('-color-')[1]
-    ? (currentTheme === 'purple' ? '#8a5cf7' : '#3b82f6')
-    : root.style.getPropertyValue('--primary-color');
-  picker.value = currentPrimary;
-}
-
-function switchTheme(theme) {
-  const root = document.documentElement;
-  currentTheme = theme;
-  if (theme === 'purple') {
-    root.style.setProperty('--primary-color', 'var(--primary-color-purple)');
-    root.style.setProperty('--secondary-color', 'var(--secondary-color-purple)');
-    root.style.setProperty('--bg-color', 'var(--bg-color-purple)');
-  } else if (theme === 'blue') {
-    root.style.setProperty('--primary-color', 'var(--primary-color-blue)');
-    root.style.setProperty('--secondary-color', 'var(--secondary-color-blue)');
-    root.style.setProperty('--bg-color', 'var(--bg-color-blue)');
-  }
-}
-
-function applyCustomTheme() {
-  const picker = document.getElementById('customColorPicker');
-  if (!picker) return;
-  const customColor = picker.value;
-  const root = document.documentElement;
-  const lightColor = lightenColor(customColor, 20);
-  root.style.setProperty('--primary-color', customColor);
-  root.style.setProperty('--secondary-color', lightColor);
-  currentTheme = 'custom';
-}
-
-function lightenColor(color, percent) {
-  const num = parseInt(color.replace("#", ""), 16);
-  const amt = Math.round(2.55 * percent);
-  const R = Math.min(255, (num >> 16) + amt);
-  const G = Math.min(255, (num >> 8 & 0x00FF) + amt);
-  const B = Math.min(255, (num & 0x0000FF) + amt);
-  return "#" + (0x1000000 + R*0x10000 + G*0x100 + B).toString(16).slice(1);
-}
-
-function toggleDarkMode() {
-  isDarkMode = !isDarkMode;
-  document.body.classList.toggle('dark-mode');
-  const modeBtn = document.querySelector('.control-btn:nth-child(4) i');
-  modeBtn?.classList.toggle('fa-moon');
-  modeBtn?.classList.toggle('fa-sun');
-}
 
 /* ------------ 滚动动效 ------------ */
 function initAnimations() {
-  window.addEventListener('scroll', () => {
-    document.querySelectorAll('.section-animate').forEach(el => {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.8) el.classList.add('visible');
+  window.addEventListener('scroll', function() {
+    document.querySelectorAll('.section-animate').forEach(element => {
+      if (element.getBoundingClientRect().top < window.innerHeight * 0.8) element.classList.add('visible');
     });
-    document.querySelectorAll('.card-animate').forEach(el => {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.9) el.classList.add('visible');
+    document.querySelectorAll('.card-animate').forEach(element => {
+      if (element.getBoundingClientRect().top < window.innerHeight * 0.9) element.classList.add('visible');
     });
   });
   window.dispatchEvent(new Event('scroll'));
 }
 
-/* ------------ 导航 ------------ */
+/* ------------ 导航栏 ------------ */
 function initNavbar() {
   const navbar = document.querySelector('.navbar');
   const navToggle = document.querySelector('.nav-toggle');
@@ -333,20 +249,20 @@ function initNavbar() {
 
 /* ------------ 回到顶部 ------------ */
 function initBackToTop() {
-  const btn = document.querySelector('.back-to-top');
-  window.addEventListener('scroll', () => window.scrollY > 300 ? btn?.classList.remove('hidden') : btn?.classList.add('hidden'));
-  btn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  const backToTopBtn = document.querySelector('.back-to-top');
+  window.addEventListener('scroll', () => window.scrollY > 300 ? backToTopBtn?.classList.remove('hidden') : backToTopBtn?.classList.add('hidden'));
+  backToTopBtn?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 /* ------------ 图库筛选 ------------ */
 function initGalleryFilter() {
   document.querySelectorAll('.gallery-tab').forEach(tab => {
-    tab.addEventListener('click', function () {
+    tab.addEventListener('click', function() {
       document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
       this.classList.add('active');
-      const type = this.dataset.type;
+      const filterType = this.dataset.type;
       document.querySelectorAll('.gallery-img').forEach(img => {
-        if (type === 'all' || img.dataset.type === type) {
+        if (filterType === 'all' || img.dataset.type === filterType) {
           img.style.display = 'block';
           setTimeout(() => img.style.opacity = '1', 100);
         } else {
@@ -511,6 +427,25 @@ function initRipple() {
     card.appendChild(ripple);
     setTimeout(() => ripple.remove(), 600);
   });
+}
+
+/* ------------ 导航水滴 ------------ */
+function initNavDrop() {
+  const drop = document.createElement('svg');
+  drop.id = 'navDrop';
+  drop.setAttribute('viewBox', '0 0 40 40');
+  drop.setAttribute('width', '38');
+  drop.setAttribute('height', '38');
+  drop.innerHTML = `
+    <defs>
+      <linearGradient id="dropGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="var(--primary-color)" stop-opacity="0.7"/>
+      </linearGradient>
+    </defs>
+    <path d="M20 2C10 2 2 10 2 20s8 18 18 18 18-8 18-18S30 2 20 2zm0 30c-6.6 0-12-5.4-12-12 0-3.4 1.4-6.5 3.7-8.7l8.3 8.7 8.3-8.7C30.6 15.5 32 18.6 32 22c0 6.6-5.4 12-12 12z" fill="url(#dropGrad)"/>
+  `;
+  document.body.appendChild(drop);
 }
 </script>
 </body>

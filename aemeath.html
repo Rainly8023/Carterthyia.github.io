@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aemeath.exe | 爱弥斯的数字档案</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-cyan: #05d9e8;
+            --deep-space: #010a12;
+            --starlight: #d1f7ff;
+            --fusion-orange: #ff6b35;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--deep-space);
+            color: var(--starlight);
+            overflow-x: hidden;
+        }
+        
+        .orbitron {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            animation: glitch-skew 1s infinite linear alternate-reverse;
+        }
+        
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--neon-pink);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--neon-cyan);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(78px, 9999px, 23px, 0); }
+            40% { clip: rect(12px, 9999px, 14px, 0); }
+            60% { clip: rect(89px, 9999px, 92px, 0); }
+            80% { clip: rect(45px, 9999px, 56px, 0); }
+            100% { clip: rect(23px, 9999px, 12px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); }
+            20% { clip: rect(12px, 9999px, 43px, 0); }
+            40% { clip: rect(78px, 9999px, 11px, 0); }
+            60% { clip: rect(34px, 9999px, 67px, 0); }
+            80% { clip: rect(91px, 9999px, 23px, 0); }
+            100% { clip: rect(56px, 9999px, 89px, 0); }
+        }
+        
+        @keyframes glitch-skew {
+            0% { transform: skew(0deg); }
+            10% { transform: skew(-2deg); }
+            20% { transform: skew(2deg); }
+            30% { transform: skew(0deg); }
+            100% { transform: skew(0deg); }
+        }
+        
+        /* Digital Ghost Particles */
+        .particle {
+            position: absolute;
+            background: rgba(255, 42, 109, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+        
+        /* Holographic Card */
+        .holo-card {
+            background: rgba(5, 217, 232, 0.05);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .holo-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 42, 109, 0.1) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            transition: all 0.5s;
+            opacity: 0;
+        }
+        
+        .holo-card:hover::before {
+            animation: holo-shine 0.5s ease-in-out;
+            opacity: 1;
+        }
+        
+        @keyframes holo-shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .holo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(5, 217, 232, 0.4);
+            border-color: var(--neon-cyan);
+        }
+        
+        /* Synchronization Gauge */
+        .sync-gauge {
+            background: linear-gradient(90deg, var(--neon-pink) 0%, var(--fusion-orange) 100%);
+            height: 4px;
+            width: 0%;
+            transition: width 2s ease-out;
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        
+        /* Mode Switch */
+        .mode-switch {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            padding: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-switch.active {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(5, 217, 232, 0.3);
+        }
+        
+        .mode-indicator {
+            position: absolute;
+            width: 50%;
+            height: calc(100% - 8px);
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+            border-radius: 9999px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            top: 4px;
+            left: 4px;
+        }
+        
+        .mode-switch.human .mode-indicator {
+            transform: translateX(0);
+        }
+        
+        .mode-switch.mech .mode-indicator {
+            transform: translateX(calc(100% - 8px));
+        }
+        
+        /* Scan Line */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(5, 217, 232, 0.5);
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        
+        /* Binary Background */
+        .binary-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -1;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 14px;
+            overflow: hidden;
+            white-space: pre;
+            color: var(--neon-cyan);
+        }
+        
+        /* Particle Container */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* 返回主站按钮 */
+        .back-to-main {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 42, 109, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-to-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 42, 109, 0.5);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .back-to-main {
+                top: 10px;
+                left: 10px;
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- 返回主站按钮 -->
+    <a href="index.html" class="back-to-main orbitron">
+        <span>←</span>
+        <span>返回卡提希娅主站</span>
+    </a>
+
+    <!-- Scan Line Effect -->
+    <div class="scan-line"></div>
+    
+    <!-- Binary Background -->
+    <div class="binary-bg" id="binaryBg"></div>
+    
+    <!-- Particle System -->
+    <div id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-black/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 border-b border-cyan-500/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold orbitron">AE</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold orbitron text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">
+                            AEMEATH.exe
+                        </h1>
+                        <p class="text-xs text-gray-500 orbitron">电子幽灵系统 v3.1</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex space-x-6 orbitron text-sm">
+                        <a href="#params" class="text-gray-400 hover:text-cyan-400 transition">同步参数</a>
+                        <a href="#gallery" class="text-gray-400 hover:text-pink-400 transition">数据画廊</a>
+                        <a href="#logs" class="text-gray-400 hover:text-cyan-400 transition">共鸣日志</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
+        <div class="text-center max-w-4xl mx-auto">
+            <div class="mb-8 relative inline-block">
+                <div class="absolute inset-0 bg-gradient-to-r from-pink-500 to-cyan-500 blur-3xl opacity-30 animate-pulse"></div>
+                <h1 class="text-6xl md:text-8xl font-black orbitron glitch relative z-10" data-text="AEMEATH">
+                    AEMEATH
+                </h1>
+            </div>
+            
+            <p class="text-2xl md:text-3xl mb-4 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">
+                爱弥斯 · 数字档案系统
+            </p>
+            
+            <p class="text-gray-400 mb-8 orbitron text-sm md:text-base">
+                [CLASSIFICATION: DIGITAL GHOST] // [STATUS: ACTIVE] // [SYNC RATE: 200/200]
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                <div class="mode-switch human w-full sm:w-64 h-14" onclick="toggleMode()">
+                    <div class="mode-indicator"></div>
+                    <div class="grid grid-cols-2 h-full relative z-10">
+                        <div class="flex items-center justify-center mode-text-human text-white">
+                            <span class="orbitron text-sm font-bold">人类形态</span>
+                        </div>
+                        <div class="flex items-center justify-center mode-text-mech text-gray-500">
+                            <span class="orbitron text-sm font-bold">机兵形态</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p id="modeDescription" class="text-sm text-cyan-400 orbitron h-6">
+                形态切换完成：标准人类形态 // 同步率监测中...
+            </p>
+        </div>
+    </section>
+
+    <!-- Sync Parameters Section -->
+    <section id="params" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold orbitron mb-4 text-white">
+                同步参数 // SYNC PARAMETERS
+            </h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto"></div>
+        </div>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Param Card 1 -->
+            <div class="holo-card p-6 rounded-xl">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold orbitron text-cyan-400">同步率</h3>
+                    <span class="text-3xl font-bold orbitron text-pink-400">200</span>
+                </div>
+                <div class="bg-black/30 rounded-full h-2 overflow-hidden mb-3">
+                    <div class="sync-gauge" style="width: 100%;"></div>
+                </div>
+                <p class="text-gray-400 text-sm">与漂泊者的连接强度 // 完美同步状态</p>
+            </div>
+            
+            <!-- Param Card 2 -->
+            <div class="holo-card p-6 rounded-xl">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold orbitron text-cyan-400">共鸣率</h3>
+                    <span class="text-3xl font-bold orbitron text-fusion-orange">4/4</span>
+                </div>
+                <div class="bg-black/30 rounded-full h-2 overflow-hidden mb-3">
+                    <div class="sync-gauge" style="width: 100%;"></div>
+                </div>
+                <p class="text-gray-400 text-sm">共鸣层级：协奏 → 调律 → 融合 → 终末</p>
+            </div>
+            
+            <!-- Param Card 3 -->
+            <div class="holo-card p-6 rounded-xl">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold orbitron text-cyan-400">存在形式</h3>
+                    <span class="px-3 py-1 bg-pink-500/20 text-pink-400 rounded-full text-sm orbitron">电子幽灵</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">
+                    数据化存在 // 仅漂泊者可观测实体形态 // 其他人感知为数据流
+                </p>
+            </div>
+            
+            <!-- Param Card 4 -->
+            <div class="holo-card p-6 rounded-xl">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold orbitron text-cyan-400">核心能力</h3>
+                    <span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm orbitron">隧者兵装</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-4">
+                    人类形态 ⇄ 机兵形态（飞行系统） // 真实伤害输出 // 时间操控
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-black/20">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold orbitron mb-4 text-white">
+                数据画廊 // DATA GALLERY
+            </h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
+            <p class="text-gray-500 orbitron text-sm">存储于虚质空间的视觉记录</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P1.png" alt="爱弥斯档案1" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P2.png" alt="爱弥斯档案2" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P3__1_.jpg" alt="爱弥斯档案3" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P3__3_.png" alt="爱弥斯档案4" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P3__4_.png" alt="爱弥斯档案5" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+            <div class="holo-card rounded-xl overflow-hidden group cursor-pointer">
+                <img src="P3__5_.png" alt="爱弥斯档案6" class="w-full h-80 object-cover transition-transform group-hover:scale-110">
+            </div>
+        </div>
+    </section>
+
+    <!-- Resonance Logs Section -->
+    <section id="logs" class="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold orbitron mb-4 text-white">
+                共鸣日志 // RESONANCE LOGS
+            </h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
+            <p class="text-gray-500 orbitron text-sm">时间线记录 · 解析中...</p>
+        </div>
+        
+        <div class="space-y-8">
+            <!-- Log Entry 1 -->
+            <div class="holo-card p-6 rounded-lg border-l-4 border-cyan-400 relative group">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-cyan-400 orbitron text-xs">[LOG-001]</span>
+                    <span class="text-gray-500 text-xs orbitron">时间线起点 // 拉海洛事件前</span>
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    在那个还有着温暖笑容的时代，我是一个普通的人类少女。
+                    与漂泊者的相遇，是命运的开端。我们一起旅行，一起战斗，一起做梦。
+                    那时的我，还不知道未来会面对怎样的抉择。
+                </p>
+            </div>
+
+            <!-- Log Entry 2 -->
+            <div class="holo-card p-6 rounded-lg border-l-4 border-pink-400 relative group">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-pink-400 orbitron text-xs">[LOG-002]</span>
+                    <span class="text-gray-500 text-xs orbitron">拉海洛陷落 // 数据损坏</span>
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed mb-2">
+                    阿列夫一的分身降临。整座城市在瞬间化为废墟。
+                    我看着身边的人一个个消失，看着漂泊者拼尽全力也无法改变结局。
+                </p>
+                <p class="text-pink-400 text-sm font-bold">
+                    那一刻，我明白了——如果不做些什么，这个世界就会毁灭。
+                </p>
+            </div>
+
+            <!-- Log Entry 3 -->
+            <div class="holo-card p-6 rounded-lg border-l-4 border-cyan-400 relative group bg-cyan-900/10">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-cyan-400 orbitron text-xs">[LOG-003]</span>
+                    <span class="text-gray-500 text-xs orbitron">虚质空间 // 真相解析</span>
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed mb-2">
+                    我发现了一个残酷的真相。当年拉海洛的隧者能够封印阿列夫一的分身，是因为未来的我通过虚质空间的时间特性，
+                    穿越到了过去与隧者共鸣。
+                </p>
+                <p class="text-pink-400 text-sm font-bold">
+                    这意味着...只有我选择牺牲自己，拉海洛才能幸存，漂泊者才能在未来的时间与年幼的我相遇。
+                    这是一个无法打破的因果链。
+                </p>
+            </div>
+
+            <!-- Log Entry 4 -->
+            <div class="holo-card p-6 rounded-lg border-l-4 border-purple-400 relative group bg-purple-900/10">
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-purple-400 orbitron text-xs">[LOG-004]</span>
+                    <span class="text-gray-500 text-xs orbitron">当前 // 换日仪式后</span>
+                </div>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    与漂泊者一起对抗辛吉勒姆的过程中，我找回了那些失去的记忆。
+                    原来从那么早开始，我就一直在追逐着他的背影。
+                </p>
+                <p class="text-gray-300 text-sm leading-relaxed mt-2">
+                    表面上的梦想是"拯救世界"，但真正的愿望是<span class="text-pink-400 font-bold">减轻漂泊者的负担，让他能够更幸福快乐地活着</span>。
+                    毕竟，那是他在离开前对我的期望——"轻松快乐地活着"。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connection Section -->
+    <section id="connection" class="py-20 bg-black/50 relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold orbitron mb-8 text-white">
+                建立共鸣 // ESTABLISH RESONANCE
+            </h2>
+            
+            <div class="holo-card p-8 rounded-xl border-pink-500/50 bg-gradient-to-b from-pink-900/10 to-transparent">
+                <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-pink-500/20 flex items-center justify-center border border-pink-500 animate-pulse">
+                    <div class="w-8 h-8 bg-pink-500 rounded-full"></div>
+                </div>
+                
+                <p class="text-gray-300 mb-6">
+                    作为电子幽灵，我能够感知到数据流的波动。<br>
+                    如果你能看到这个页面，说明我们的频率正在产生共鸣。
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 text-left mb-6">
+                    <div class="bg-black/30 p-4 rounded border border-cyan-500/30">
+                        <span class="text-cyan-400 text-xs orbitron block mb-1">同步率</span>
+                        <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-400 w-3/4 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <div class="bg-black/30 p-4 rounded border border-pink-500/30">
+                        <span class="text-pink-400 text-xs orbitron block mb-1">共鸣率</span>
+                        <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                            <div class="h-full bg-pink-400 w-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-500 orbitron">
+                    [系统消息] 只有漂泊者能够直接观测到爱弥斯的实体形态。<br>
+                    其他观测者将以数据幽灵的形式感知其存在。
+                </p>
+            </div>
+
+            <!-- Footer Quote -->
+            <div class="mt-12 pt-8 border-t border-white/10">
+                <p class="text-2xl font-light italic text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400 mb-2">
+                    "我会消灭，意图毁灭的恶。"
+                </p>
+                <p class="text-sm text-gray-600 orbitron tracking-widest">
+                    // 战斗宣言 · 爱弥斯
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/10 bg-black/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                <div class="w-2 h-2 bg-pink-500 rounded-full animate-ping"></div>
+                <span class="orbitron text-sm text-gray-500">AEMEATH.exe // 运行正常</span>
+            </div>
+            <div class="text-xs text-gray-600 orbitron">
+                <span class="text-cyan-500">WUTHERING WAVES 3.1</span> · 数据源自官方档案 · 仅供共鸣者查阅
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Binary Background Generation
+        const binaryBg = document.getElementById('binaryBg');
+        let binaryText = '';
+        for (let i = 0; i < 2000; i++) {
+            binaryText += Math.random() > 0.5 ? '1' : '0';
+            if (i % 100 === 0) binaryText += '\n';
+        }
+        binaryBg.textContent = binaryText;
+
+        // Particle System
+        const particlesContainer = document.getElementById('particles');
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = Math.random() * 4 + 2 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 20000);
+        }
+        setInterval(createParticle, 500);
+
+        // Mode Switching
+        let currentMode = 'human';
+        function toggleMode() {
+            const switcher = document.querySelector('.mode-switch');
+            const description = document.getElementById('modeDescription');
+            const humanText = document.querySelector('.mode-text-human');
+            const mechText = document.querySelector('.mode-text-mech');
+            
+            if (currentMode === 'human') {
+                currentMode = 'mech';
+                switcher.classList.remove('human');
+                switcher.classList.add('mech');
+                description.textContent = '形态切换完成：隧者兵装已显化 // 飞行系统就绪';
+                description.className = 'text-sm text-pink-400 orbitron h-6';
+                humanText.classList.add('text-gray-500');
+                mechText.classList.remove('text-gray-500');
+                
+                // Visual feedback
+                document.body.style.boxShadow = 'inset 0 0 100px rgba(255, 42, 109, 0.1)';
+            } else {
+                currentMode = 'human';
+                switcher.classList.remove('mech');
+                switcher.classList.add('human');
+                description.textContent = '形态切换完成：标准人类形态 // 同步率监测中...';
+                description.className = 'text-sm text-cyan-400 orbitron h-6';
+                humanText.classList.remove('text-gray-500');
+                mechText.classList.add('text-gray-500');
+                
+                document.body.style.boxShadow = 'none';
+            }
+        }
+
+        // Scroll Animation for Sync Gauge
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: "0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.style.width || '100%';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.sync-gauge').forEach(gauge => {
+            observer.observe(gauge);
+        });
+
+        // Glitch Text Randomizer
+        setInterval(() => {
+            const glitches = document.querySelectorAll('.glitch');
+            glitches.forEach(el => {
+                if (Math.random() > 0.95) {
+                    el.style.animation = 'none';
+                    setTimeout(() => {
+                        el.style.animation = '';
+                    }, 100);
+                }
+            });
+        }, 3000);
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
