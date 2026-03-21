@@ -1,4 +1,4 @@
-# 鸣潮角色卡提 | 角色图鉴与攻略站 🌊
+# 鸣 潮角色卡提 | 角色图鉴与攻略站 🌊
 ![GitHub stars](https://img.shields.io/github/stars/Rainly8023/鸣潮角色卡提?style=flat-square&color=ff6b6b)
 ![GitHub forks](https://img.shields.io/github/forks/Rainly8023/鸣潮角色卡提?style=flat-square&color=4ecdc4)
 ![GitHub license](https://img.shields.io/github/license/Rainly8023/鸣潮角色卡提?style=flat-square&color=ffe66d)
