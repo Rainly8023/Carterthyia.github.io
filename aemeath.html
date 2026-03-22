@@ -3,477 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aemeath.exe | 爱弥斯的数字档案 - 鸣潮3.1</title>
-<link rel="icon" href="favicion2/aem.1.png" type="image/png">
-<link rel="shortcut icon" href="favicion2/qw.ico" type="image/x-icon">
+<title>Aemeath.exe | 爱弥斯的数字档案</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+
 <style>
-:root{--neon-pink:#ff2a6d;--neon-cyan:#05d9e8;--deep-space:#010a12;--starlight:#d1f7ff;--fusion-orange:#ff6b35;--matrix-green:#00ff41}
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Noto Sans SC',sans-serif;background-color:var(--deep-space);color:var(--starlight);overflow-x:hidden;position:relative}.orbitron{font-family:'Orbitron',monospace}
-#matrix-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;opacity:0.15;pointer-events:none}
-.flip-card{perspective:1000px;height:100%}.flip-card-inner{position:relative;width:100%;height:100%;transition:transform 0.8s;transform-style:preserve-3d}
-.flip-card:hover .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:12px}
-.flip-card-back{transform:rotateY(180deg);background:linear-gradient(135deg,rgba(255,42,109,0.1),rgba(5,217,232,0.1));backdrop-filter:blur(10px);border:1px solid rgba(5,217,232,0.3);padding:20px;display:flex;align-items:center;justify-content:center}
-@keyframes neon-pulse{0%,100%{text-shadow:0 0 10px var(--neon-cyan),0 0 20px var(--neon-cyan),0 0 30px var(--neon-cyan)}50%{text-shadow:0 0 20px var(--neon-pink),0 0 30px var(--neon-pink),0 0 40px var(--neon-pink)}}
-.neon-text{animation:neon-pulse 3s ease-in-out infinite}.particle-burst{position:absolute;width:4px;height:4px;background:var(--neon-pink);border-radius:50%;pointer-events:none;animation:burst 1s ease-out forwards}
-@keyframes burst{to{transform:translate(var(--tx),var(--ty))scale(0);opacity:0}}.cursor-glow{position:fixed;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(5,217,232,0.3),transparent 70%);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out}
-.glitch{position:relative;animation:glitch-skew 1s infinite linear alternate-reverse}.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%}
-.glitch::before{left:2px;text-shadow:-2px 0 var(--neon-pink);clip:rect(44px,450px,56px,0);animation:glitch-anim 5s infinite linear alternate-reverse}
-.glitch::after{left:-2px;text-shadow:-2px 0 var(--neon-cyan);animation:glitch-anim2 5s infinite linear alternate-reverse}
-@keyframes glitch-anim{0%{clip:rect(31px,9999px,94px,0)}20%{clip:rect(78px,9999px,23px,0)}40%{clip:rect(12px,9999px,14px,0)}60%{clip:rect(89px,9999px,92px,0)}80%{clip:rect(45px,9999px,56px,0)}100%{clip:rect(23px,9999px,12px,0)}}
-@keyframes glitch-anim2{0%{clip:rect(65px,9999px,99px,0)}20%{clip:rect(12px,9999px,43px,0)}40%{clip:rect(78px,9999px,11px,0)}60%{clip:rect(34px,9999px,67px,0)}80%{clip:rect(91px,9999px,23px,0)}100%{clip:rect(56px,9999px,89px,0)}}
-@keyframes glitch-skew{0%{transform:skew(0deg)}10%{transform:skew(-2deg)}20%{transform:skew(2deg)}30%{transform:skew(0deg)}100%{transform:skew(0deg)}}
-.meteor{position:absolute;width:2px;height:60px;background:linear-gradient(to bottom,transparent,var(--neon-cyan));animation:meteor-fall 3s linear infinite}
-@keyframes meteor-fall{0%{transform:translate(0,0)rotate(45deg);opacity:1}100%{transform:translate(-200px,200px)rotate(45deg);opacity:0}}
-.particle{position:absolute;background:rgba(255,42,109,0.6);border-radius:50%;pointer-events:none;animation:float 10s infinite linear}
-@keyframes float{0%{transform:translateY(0)translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100vh)translateX(50px);opacity:0}}
-.holo-card{background:rgba(5,217,232,0.05);border:1px solid rgba(5,217,232,0.3);backdrop-filter:blur(10px);transition:all 0.3s ease;position:relative;overflow:hidden}
-.holo-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,42,109,0.1)50%,transparent 70%);transform:rotate(45deg);transition:all 0.5s;opacity:0}
-.holo-card:hover::before{animation:holo-shine 0.5s ease-in-out;opacity:1}@keyframes holo-shine{0%{transform:translateX(-100%)translateY(-100%)rotate(45deg)}100%{transform:translateX(100%)translateY(100%)rotate(45deg)}}
-.holo-card:hover{transform:translateY(-5px)scale(1.02);box-shadow:0 0 30px rgba(5,217,232,0.4);border-color:var(--neon-cyan)}
-.sync-gauge{background:linear-gradient(90deg,var(--neon-pink)0%,var(--fusion-orange)100%);height:4px;width:0%;transition:width 2s ease-out;box-shadow:0 0 10px var(--neon-pink)}
-.mode-switch{position:relative;background:rgba(255,255,255,0.05);border:2px solid rgba(255,255,255,0.1);border-radius:9999px;padding:4px;cursor:pointer;transition:all 0.3s}
-.mode-switch.active{border-color:var(--neon-cyan);box-shadow:0 0 20px rgba(5,217,232,0.3)}
-.mode-indicator{position:absolute;width:50%;height:calc(100% - 8px);background:linear-gradient(90deg,var(--neon-cyan),var(--neon-pink));border-radius:9999px;transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);top:4px;left:4px}
-.mode-switch.human .mode-indicator{transform:translateX(0)}.mode-switch.mech .mode-indicator{transform:translateX(calc(100% - 8px))}
-.scan-line{position:fixed;top:0;left:0;width:100%;height:2px;background:rgba(5,217,232,0.5);box-shadow:0 0 10px var(--neon-cyan);animation:scan 8s linear infinite;pointer-events:none;z-index:9999}
-@keyframes scan{0%{top:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
-.binary-bg{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.03;pointer-events:none;z-index:-1;font-family:monospace;font-size:14px;line-height:14px;overflow:hidden;white-space:pre;color:var(--neon-cyan)}
-#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
-.back-to-main{position:fixed;top:20px;left:20px;z-index:1000;background:linear-gradient(135deg,var(--neon-cyan),var(--neon-pink));color:white;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:bold;transition:all 0.3s ease;box-shadow:0 4px 15px rgba(255,42,109,0.3);display:flex;align-items:center;gap:8px}
-.back-to-main:hover{transform:translateY(-3px)scale(1.05);box-shadow:0 8px 25px rgba(255,42,109,0.5)}
-.typewriter{overflow:hidden;border-right:3px solid var(--neon-cyan);white-space:nowrap;animation:typing 3.5s steps(40,end),blink 0.75s step-end infinite;display:inline-block}
-@keyframes typing{from{width:0}to{width:100%}}@keyframes blink{from,to{border-color:transparent}50%{border-color:var(--neon-cyan)}}
-@media(max-width:768px){.back-to-main{top:10px;left:10px;padding:10px 18px;font-size:14px}.flip-card:hover .flip-card-inner{transform:none}}
-.content-layer{position:relative;z-index:2}
+:root{
+--neon-pink:#ff2a6d;
+--neon-cyan:#05d9e8;
+--deep-space:#010a12;
+--starlight:#d1f7ff;
+}
+
+/* ✅ 关键隔离 */
+.aemeath-page {
+  background:#010a12;
+  color:#d1f7ff;
+  font-family:'Noto Sans SC',sans-serif;
+}
+
+/* 强制覆盖主站污染 */
+.aemeath-page * {
+  color:inherit !important;
+}
+
+.orbitron{font-family:'Orbitron',monospace}
+
+/* ===== 核心赛博风 ===== */
+.neon-text{
+  text-shadow:0 0 10px var(--neon-cyan),0 0 20px var(--neon-cyan);
+}
+
+.glitch{
+  position:relative;
+}
+
+/* 按钮 */
+.back-to-main{
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:1000;
+  background:linear-gradient(135deg,var(--neon-cyan),var(--neon-pink));
+  color:#fff;
+  padding:12px 20px;
+  border-radius:30px;
+  text-decoration:none;
+}
+
+/* 背景粒子 */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle,rgba(5,217,232,0.1),transparent);
+  z-index:0;
+}
 </style>
 </head>
-<body>
-<canvas id="matrix-canvas"></canvas>
-<div class="cursor-glow" id="cursorGlow"></div>
-<a href="index.html" class="back-to-main orbitron"><span>←</span><span>返回卡提希娅主站</span></a>
-<div class="scan-line"></div>
-<div class="binary-bg" id="binaryBg"></div>
-<div id="particles"></div>
-<div class="content-layer">
-<nav class="bg-black/80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 border-b border-cyan-500/30">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-<div class="flex items-center justify-between">
-<div class="flex items-center space-x-3">
-<div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-cyan-500 rounded-lg flex items-center justify-center">
-<span class="text-white font-bold orbitron">AE</span>
-</div>
-<div>
-<h1 class="text-xl font-bold orbitron text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">AEMEATH.exe</h1>
-<p class="text-xs text-gray-500 orbitron">鸣潮3.1 · 电子幽灵系统</p>
-</div>
-</div>
-<div class="hidden md:flex space-x-6 orbitron text-sm">
-<a href="#character" class="text-gray-400 hover:text-pink-400 transition">角色档案</a>
-<a href="#story" class="text-gray-400 hover:text-cyan-400 transition">角色故事</a>
-<a href="#guide" class="text-gray-400 hover:text-pink-400 transition">深渊攻略</a>
-<a href="#gallery" class="text-gray-400 hover:text-cyan-400 transition">数据画廊</a>
-</div>
-</div>
-</div>
-</nav>
 
-<section class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
-<div class="text-center max-w-4xl mx-auto">
-<div class="mb-8 relative inline-block">
-<div class="absolute inset-0 bg-gradient-to-r from-pink-500 to-cyan-500 blur-3xl opacity-30 animate-pulse"></div>
-<h1 class="text-6xl md:text-8xl font-black orbitron glitch neon-text relative z-10" data-text="AEMEATH">AEMEATH</h1>
-</div>
-<div class="typewriter-container mb-4">
-<p class="text-2xl md:text-3xl typewriter text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-cyan-400">爱弥斯 · 数字档案系统</p>
-</div>
-<p class="text-gray-400 mb-8 orbitron text-sm md:text-base">[CLASSIFICATION: DIGITAL GHOST] // [WUTHERING WAVES V3.1] // [SYNC RATE: 200/200]</p>
-<div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-<div class="mode-switch human w-full sm:w-64 h-14" onclick="toggleMode()">
-<div class="mode-indicator"></div>
-<div class="grid grid-cols-2 h-full relative z-10">
-<div class="flex items-center justify-center mode-text-human text-white"><span class="orbitron text-sm font-bold">人类形态</span></div>
-<div class="flex items-center justify-center mode-text-mech text-gray-500"><span class="orbitron text-sm font-bold">机兵形态</span></div>
-</div>
-</div>
-</div>
-<p id="modeDescription" class="text-sm text-cyan-400 orbitron h-6">形态切换完成：标准人类形态 // 同步率监测中...</p>
-</div>
-</section>
+<body class="aemeath-page">
 
-<section id="story" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-<div class="text-center mb-16">
-<h2 class="text-4xl font-bold orbitron mb-4 text-white neon-text">角色故事 // CHARACTER STORY</h2>
-<div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
-<p class="text-gray-400 orbitron text-sm">鸣潮3.1 · 她的过去与信念</p>
-</div>
-<div class="grid md:grid-cols-2 gap-8">
-<div class="flip-card">
-<div class="flip-card-inner">
-<div class="flip-card-front holo-card p-6 rounded-xl">
-<div class="text-cyan-400 text-4xl mb-4">🎓</div>
-<h3 class="text-xl font-bold orbitron mb-3 text-cyan-400">星炬学院的适格者</h3>
-<p class="text-gray-300 text-sm leading-relaxed">
-性格活泼开朗，举止俏皮，善于与周围的人互动，生活中充满好奇心与热情。曾是星炬学院的隧者适格者...
-</p>
-<div class="mt-4 text-pink-400 text-xs orbitron">悬停查看详情 →</div>
-</div>
-<div class="flip-card-back">
-<div class="text-white text-sm leading-relaxed">
-<p class="font-bold text-cyan-400 mb-3">🌟 学院时光</p>
-<p class="mb-2">在星炬学院，她是公认的隧者适格者，活泼的性格让她深受同学喜爱。体型属于成女，气质与夏空有些相似，总是充满活力地穿梭于校园与训练场之间。</p>
-<p class="mb-2">她的热熔属性共鸣能力在同期中表现优异，使用迅刀作为武器，被定位为主力输出型角色。</p>
-<p class="text-cyan-400 text-xs mt-3">「但愿我会让你感到骄傲，但愿我没有让你失望」</p>
-</div>
-</div>
-</div>
-</div>
-<div class="flip-card">
-<div class="flip-card-inner">
-<div class="flip-card-front holo-card p-6 rounded-xl">
-<div class="text-pink-400 text-4xl mb-4">👻</div>
-<h3 class="text-xl font-bold orbitron mb-3 text-pink-400">无人可见的电子幽灵</h3>
-<p class="text-gray-300 text-sm leading-relaxed">
-现已成为无人可见的"电子幽灵"，但仍以活泼姿态活跃于校园与战斗之间，化作星辉穿梭于夜空之中...
-</p>
-<div class="mt-4 text-cyan-400 text-xs orbitron">悬停查看详情 →</div>
-</div>
-<div class="flip-card-back">
-<div class="text-white text-sm leading-relaxed">
-<p class="font-bold text-pink-400 mb-3">⚡ 隧者兵装觉醒</p>
-<p class="mb-2">在启动共鸣能力时，她能显化出"隧者兵装"并与之融合，变身为高机动性的机兵形态，化作星辉穿梭于夜空之中。</p>
-<p class="mb-2">即便成为了电子幽灵，她依然保持着活泼的性格，用自己的方式守护着重要的人和事。她的战斗信念坚定而纯粹。</p>
-<p class="text-pink-400 text-xs mt-3">「我会消灭，意图毁灭的恶」</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
+<a href="index.html" class="back-to-main">← 返回主站</a>
 
-<section id="character" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-black/20">
-<div class="text-center mb-16">
-<h2 class="text-4xl font-bold orbitron mb-4 text-white neon-text">角色档案 // CHARACTER PROFILE</h2>
-<div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
-<p class="text-gray-400 orbitron text-sm">解析电子幽灵的本质</p>
-</div>
-<div class="grid md:grid-cols-2 gap-8">
-<div class="holo-card p-6 rounded-xl">
-<h3 class="text-xl font-bold orbitron mb-4 text-cyan-400">基础信息</h3>
-<div class="space-y-3 text-sm">
-<div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">真名</span><span class="text-white font-bold">爱弥斯（Aemeath）</span></div>
-<div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">属性</span><span class="text-pink-400 font-bold">热熔 · Fusion</span></div>
-<div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">武器</span><span class="text-white">迅刀 → 飞行装置</span></div>
-<div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">定位</span><span class="text-cyan-400 font-bold">主C / 真伤输出</span></div>
-<div class="flex justify-between border-b border-gray-700 pb-2"><span class="text-gray-400">稀有度</span><span class="text-fusion-orange font-bold">★★★★★</span></div>
-<div class="flex justify-between"><span class="text-gray-400">强度评级</span><span class="text-pink-400 font-bold orbitron">T0 (深渊) / T0.5 (通用)</span></div>
-</div>
-</div>
-<div class="holo-card p-6 rounded-xl">
-<h3 class="text-xl font-bold orbitron mb-4 text-pink-400">同步参数</h3>
-<div class="space-y-4">
-<div><div class="flex justify-between mb-2"><span class="text-sm text-gray-400">同步率</span><span class="text-sm text-pink-400 orbitron font-bold">200/200</span></div>
-<div class="bg-black/30 rounded-full h-2 overflow-hidden"><div class="sync-gauge" style="width:100%"></div></div></div>
-<div><div class="flex justify-between mb-2"><span class="text-sm text-gray-400">共鸣率</span><span class="text-sm text-cyan-400 orbitron font-bold">4/4</span></div>
-<div class="bg-black/30 rounded-full h-2 overflow-hidden"><div class="sync-gauge" style="width:100%"></div></div></div>
-<div><div class="flex justify-between mb-2"><span class="text-sm text-gray-400">时间掌控</span><span class="text-sm orbitron font-bold" style="color:var(--fusion-orange)">99%</span></div>
-<div class="bg-black/30 rounded-full h-2 overflow-hidden"><div class="sync-gauge" style="width:99%;background:linear-gradient(90deg,var(--fusion-orange),var(--neon-pink))"></div></div></div>
-<p class="text-xs text-gray-500 orbitron mt-4">[系统消息] 与漂泊者的羁绊达到最高层级 // 解锁隐藏能力</p>
-</div>
-</div>
-</div>
-<div class="mt-8 holo-card p-8 rounded-xl">
-<h3 class="text-2xl font-bold orbitron mb-6 text-cyan-400 text-center">核心技能 // SKILL SET</h3>
-<div class="grid md:grid-cols-4 gap-6">
-<div class="text-center">
-<div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-pink-500 to-cyan-500 rounded-lg flex items-center justify-center"><span class="text-2xl">⚡</span></div>
-<h4 class="font-bold text-white mb-2">时间回溯</h4>
-<p class="text-xs text-gray-400">回退敌人状态3秒，制造破绽。</p>
-</div>
-<div class="text-center">
-<div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-cyan-500 to-pink-500 rounded-lg flex items-center justify-center"><span class="text-2xl">💠</span></div>
-<h4 class="font-bold text-white mb-2">虚质斩击</h4>
-<p class="text-xs text-gray-400">造成300%攻击力真实伤害。</p>
-</div>
-<div class="text-center">
-<div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-pink-500 to-orange-500 rounded-lg flex items-center justify-center"><span class="text-2xl">✈️</span></div>
-<h4 class="font-bold text-white mb-2">隧者飞行</h4>
-<p class="text-xs text-gray-400">机兵形态解锁飞行能力。</p>
-</div>
-<div class="text-center">
-<div class="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg flex items-center justify-center"><span class="text-2xl">🔥</span></div>
-<h4 class="font-bold text-white mb-2">终末回响</h4>
-<p class="text-xs text-gray-400">终结技：全屏真实伤害AOE。</p>
-</div>
-</div>
-</div>
-</section>
+<div style="text-align:center;margin-top:120px">
+  <h1 class="orbitron neon-text glitch" style="font-size:60px">
+    AEMEATH
+  </h1>
 
-<section id="guide" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-<div class="text-center mb-16">
-<h2 class="text-4xl font-bold orbitron mb-4 text-white neon-text">深渊攻略 // ABYSS GUIDE</h2>
-<div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
-<p class="text-gray-400 orbitron text-sm">换日仪式 · 满星通关指南</p>
-</div>
-<div class="grid md:grid-cols-2 gap-8">
-<div class="holo-card p-6 rounded-xl">
-<h3 class="text-xl font-bold orbitron mb-4 text-pink-400">⚔️ 推荐配队</h3>
-<div class="space-y-4">
-<div class="bg-black/30 p-4 rounded-lg border border-pink-500/30">
-<h4 class="text-white font-bold mb-2 flex items-center gap-2"><span class="text-pink-400">●</span> 极致输出队</h4>
-<p class="text-sm text-gray-300 mb-2">爱弥斯 + 莫宁 + 琳奈</p>
-<p class="text-xs text-gray-400">爱弥斯主C，莫宁提供协奏增伤，琳奈辅助爆发。适合熟练玩家速通。</p>
-</div>
-<div class="bg-black/30 p-4 rounded-lg border border-cyan-500/30">
-<h4 class="text-white font-bold mb-2 flex items-center gap-2"><span class="text-cyan-400">●</span> 均衡战斗队</h4>
-<p class="text-sm text-gray-300 mb-2">爱弥斯 + 露帕 + 长离</p>
-<p class="text-xs text-gray-400">露帕提供护盾和协奏，长离增伤辅助。攻守兼备，适合持久战。</p>
-</div>
-<div class="bg-black/30 p-4 rounded-lg border border-orange-500/30">
-<h4 class="text-white font-bold mb-2 flex items-center gap-2"><span style="color:var(--fusion-orange)">●</span> 平民友好队</h4>
-<p class="text-sm text-gray-300 mb-2">爱弥斯 + 散华 + 维里奈</p>
-<p class="text-xs text-gray-400">散华协奏增伤，维里奈辅助提升。低成本高效，新手推荐。</p>
-</div>
-</div>
-</div>
-<div class="holo-card p-6 rounded-xl">
-<h3 class="text-xl font-bold orbitron mb-4 text-cyan-400">💎 声骸搭配 Echoes</h3>
-<div class="space-y-4">
-<div class="bg-black/30 p-4 rounded-lg border border-cyan-500/30">
-<h4 class="text-white font-bold mb-2 flex items-center gap-2">
-<span class="text-cyan-400">◆</span> 毕业首选（T0）
-</h4>
-<p class="text-sm text-pink-400 mb-2 font-bold">【长路启航之星】×5 - 首位装配：辛吉勒姆</p>
-<div class="text-xs text-gray-300 space-y-1 ml-4">
-<p>• <span class="text-cyan-400">COST 4</span> - 暴击伤害/暴击率（如用专武选暴伤）</p>
-<p>• <span class="text-pink-400">COST 3</span> - 热熔伤害加成+攻击 / 热熔伤害加成</p>
-<p>• <span class="text-fusion-orange">COST 1</span> - 攻击+攻击</p>
-</div>
-</div>
-<div class="bg-black/30 p-4 rounded-lg border border-pink-500/30">
-<h4 class="text-white font-bold mb-2 flex items-center gap-2">
-<span class="text-pink-400">◆</span> 声骸次选（仅过渡）
-</h4>
-<p class="text-sm text-cyan-400 mb-2 font-bold">【奔狼燃原之焰】×5 - 首位：荣耀狮像</p>
-<p class="text-xs text-gray-400">前期过渡选择，提供基础热熔伤害加成。爱弥斯暂无第三可选声骸套装。</p>
-</div>
-<div class="bg-black/30 p-4 rounded-lg border border-orange-500/30">
-<h4 class="text-white font-bold mb-2">辅音属性/副词条优先级</h4>
-<p class="text-xs text-gray-300 leading-relaxed">
-暴击率 = 暴击伤害 > 攻击百分比 > 共鸣解放伤害加成 > 共鸣效率
-</p>
-</div>
-<div class="bg-black/30 p-4 rounded-lg border border-cyan-500/30">
-<h4 class="text-white font-bold mb-2">毕业参考（专武）</h4>
-<p class="text-xs text-gray-300">
-<span class="text-cyan-400">暴击率 70-80%</span> · 
-<span class="text-pink-400">暴击伤害 255-285%+</span> · 
-<span class="text-fusion-orange">共鸣效率 120-125%+</span>
-</p>
-</div>
-</div>
-</div>
-</div>
-<div class="mt-8 holo-card p-8 rounded-xl">
-<h3 class="text-2xl font-bold orbitron mb-6 text-center" style="color:var(--fusion-orange)">🎮 游戏机制 // GAME MECHANICS</h3>
-<div class="grid md:grid-cols-2 gap-8">
-<div>
-<h4 class="text-white font-bold mb-3 flex items-center gap-2 text-lg">
-<span class="text-cyan-400">▸</span> 隧者兵装系统
-</h4>
-<p class="text-gray-300 text-sm leading-relaxed mb-3">
-爱弥斯拥有独特的"隧者兵装"双形态机制，可在战斗中自由切换人类形态与机兵形态。
-</p>
-<ul class="text-gray-400 text-sm space-y-2">
-<li>• <span class="text-cyan-400">人类形态</span>：高机动性，擅长连击与能量积累</li>
-<li>• <span class="text-pink-400">机兵形态</span>：解锁飞行能力，真实伤害大幅提升</li>
-<li>• <span class="text-fusion-orange">形态切换</span>：无CD限制，根据战况灵活变换</li>
-</ul>
-</div>
-<div>
-<h4 class="text-white font-bold mb-3 flex items-center gap-2 text-lg">
-<span class="text-pink-400">▸</span> 电子幽灵能力
-</h4>
-<p class="text-gray-300 text-sm leading-relaxed mb-3">
-作为"电子幽灵"，爱弥斯拥有特殊的数字化能力，可在战场上发挥独特的战术优势。
-</p>
-<ul class="text-gray-400 text-sm space-y-2">
-<li>• <span class="text-cyan-400">虚质化移动</span>：快速穿梭于战场，无视地形限制</li>
-<li>• <span class="text-pink-400">数据干扰</span>：降低敌人防御和抗性，增强全队输出</li>
-<li>• <span class="text-fusion-orange">能量共享</span>：与队友建立电子链接，提供协奏增益</li>
-</ul>
-</div>
-<div>
-<h4 class="text-white font-bold mb-3 flex items-center gap-2 text-lg">
-<span style="color:var(--fusion-orange)">▸</span> 真实伤害机制
-</h4>
-<p class="text-gray-300 text-sm leading-relaxed mb-3">
-爱弥斯的核心输出方式，可无视敌人防御与抗性，直接造成固定百分比伤害。
-</p>
-<ul class="text-gray-400 text-sm space-y-2">
-<li>• <span class="text-cyan-400">虚质斩击</span>：造成300%攻击力真实伤害</li>
-<li>• <span class="text-pink-400">终末回响</span>：全屏AOE真实伤害，无视护盾</li>
-<li>• <span class="text-fusion-orange">适用场景</span>：高防御boss、深渊高层怪物</li>
-</ul>
-</div>
-<div>
-<h4 class="text-white font-bold mb-3 flex items-center gap-2 text-lg">
-<span class="text-matrix-green">▸</span> 共鸣链路系统
-</h4>
-<p class="text-gray-300 text-sm leading-relaxed mb-3">
-与队友建立电子意识链接，共享战斗数据，提升全队作战效率。
-</p>
-<ul class="text-gray-400 text-sm space-y-2">
-<li>• <span class="text-cyan-400">数据同步</span>：全队暴击率+15%</li>
-<li>• <span class="text-pink-400">能量传导</span>：释放终结技后队友恢复30能量</li>
-<li>• <span class="text-fusion-orange">协奏加成</span>：触发协奏后全队热熔伤害+30%</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-
-<section id="gallery" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-black/20">
-<div class="text-center mb-16">
-<h2 class="text-4xl font-bold orbitron mb-4 text-white neon-text">数据画廊 // DATA GALLERY</h2>
-<div class="w-24 h-1 bg-gradient-to-r from-pink-500 to-cyan-500 mx-auto mb-4"></div>
-<p class="text-gray-500 orbitron text-sm">存储于虚质空间的视觉记录</p>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P1.png" alt="爱弥斯档案1" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P2.png" alt="爱弥斯档案2" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P3.png" alt="爱弥斯档案3" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P4.png" alt="爱弥斯档案4" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P5.png" alt="爱弥斯档案5" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-<div class="holo-card rounded-xl overflow-hidden group cursor-pointer"><img src="P6.png" alt="爱弥斯档案6" class="w-full h-80 object-cover transition-transform group-hover:scale-110" onerror="this.style.display='none'"></div>
-</div>
-</section>
-
-<footer class="py-8 border-t border-white/10 bg-black/80">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-<div class="flex items-center space-x-2 mb-4 md:mb-0">
-<div class="w-2 h-2 bg-pink-500 rounded-full animate-ping"></div>
-<span class="orbitron text-sm text-gray-500">AEMEATH.exe // 运行正常</span>
-</div>
-<div class="text-xs text-gray-600 orbitron">
-<span class="text-cyan-500">WUTHERING WAVES 3.1</span> · 数据源自官方档案 · 仅供共鸣者查阅
-</div>
-</div>
-</footer>
+  <p style="margin-top:20px;font-size:20px;color:#05d9e8">
+    爱弥斯 · 数字档案系统
+  </p>
 </div>
 
-<script>
-const mc=document.getElementById('matrix-canvas'),mctx=mc.getContext('2d');
-mc.width=innerWidth;mc.height=innerHeight;
-const chars='01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン',fs=14,cols=mc.width/fs,drops=[];
-for(let i=0;i<cols;i++)drops[i]=1;
-function drawMatrix(){
-mctx.fillStyle='rgba(1,10,18,0.05)';mctx.fillRect(0,0,mc.width,mc.height);
-mctx.fillStyle='#00ff41';mctx.font=fs+'px monospace';
-for(let i=0;i<drops.length;i++){
-const txt=chars[Math.floor(Math.random()*chars.length)];
-mctx.fillText(txt,i*fs,drops[i]*fs);
-if(drops[i]*fs>mc.height&&Math.random()>0.975)drops[i]=0;
-drops[i]++;
-}
-}
-setInterval(drawMatrix,50);
-window.addEventListener('resize',()=>{mc.width=innerWidth;mc.height=innerHeight;});
-
-const cg=document.getElementById('cursorGlow');
-document.addEventListener('mousemove',e=>{cg.style.transform=`translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;});
-
-document.addEventListener('click',e=>{
-for(let i=0;i<12;i++){
-const p=document.createElement('div');
-p.className='particle-burst';
-p.style.left=e.clientX+'px';p.style.top=e.clientY+'px';
-p.style.setProperty('--tx',`${(Math.random()-0.5)*200}px`);
-p.style.setProperty('--ty',`${(Math.random()-0.5)*200}px`);
-document.body.appendChild(p);
-setTimeout(()=>p.remove(),1000);
-}
-});
-
-function createMeteor(){
-const m=document.createElement('div');
-m.className='meteor';
-m.style.left=Math.random()*innerWidth+'px';
-m.style.top=Math.random()*innerHeight/2+'px';
-m.style.animationDelay=Math.random()*3+'s';
-document.getElementById('particles').appendChild(m);
-setTimeout(()=>m.remove(),3000);
-}
-setInterval(createMeteor,2000);
-
-const bb=document.getElementById('binaryBg');
-let bt='';
-for(let i=0;i<2000;i++){
-bt+=Math.random()>0.5?'1':'0';
-if(i%100===0)bt+='\n';
-}
-bb.textContent=bt;
-
-const pc=document.getElementById('particles');
-function createParticle(){
-const p=document.createElement('div');
-p.className='particle';
-p.style.left=Math.random()*100+'%';
-p.style.width=Math.random()*4+2+'px';
-p.style.height=p.style.width;
-p.style.animationDuration=Math.random()*10+10+'s';
-p.style.animationDelay=Math.random()*5+'s';
-pc.appendChild(p);
-setTimeout(()=>p.remove(),20000);
-}
-setInterval(createParticle,500);
-
-let cm='human';
-function toggleMode(){
-const sw=document.querySelector('.mode-switch'),
-ds=document.getElementById('modeDescription'),
-ht=document.querySelector('.mode-text-human'),
-mt=document.querySelector('.mode-text-mech');
-if(cm==='human'){
-cm='mech';
-sw.classList.remove('human');sw.classList.add('mech');
-ds.textContent='形态切换完成：隧者兵装已显化 // 飞行系统就绪';
-ds.className='text-sm text-pink-400 orbitron h-6';
-ht.classList.add('text-gray-500');mt.classList.remove('text-gray-500');
-document.body.style.boxShadow='inset 0 0 100px rgba(255,42,109,0.1)';
-}else{
-cm='human';
-sw.classList.remove('mech');sw.classList.add('human');
-ds.textContent='形态切换完成：标准人类形态 // 同步率监测中...';
-ds.className='text-sm text-cyan-400 orbitron h-6';
-ht.classList.remove('text-gray-500');mt.classList.add('text-gray-500');
-document.body.style.boxShadow='none';
-}
-}
-
-const oo={threshold:0.5,rootMargin:"0px"},
-ob=new IntersectionObserver(es=>{
-es.forEach(e=>{if(e.isIntersecting)e.target.style.width=e.target.style.width||'100%';});
-},oo);
-document.querySelectorAll('.sync-gauge').forEach(g=>ob.observe(g));
-
-setInterval(()=>{
-document.querySelectorAll('.glitch').forEach(el=>{
-if(Math.random()>0.95){
-el.style.animation='none';
-setTimeout(()=>{el.style.animation='';},100);
-}
-});
-},3000);
-
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-a.addEventListener('click',function(e){
-e.preventDefault();
-const t=document.querySelector(this.getAttribute('href'));
-if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
-});
-});
-</script>
 </body>
 </html>
