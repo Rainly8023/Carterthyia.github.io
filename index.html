@@ -4,1081 +4,479 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>卡提希娅的星光小站</title>
-
   <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
-  <link rel="shortcut icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon/16.png?v=20240626">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon/1.png?v=20240626">
-
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600&family=Noto+Sans+SC:wght@300;400;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;700&family=Noto+Serif+SC:wght@300;400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-
   <style>
-  /* ============ RESET ============ */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
 
-  /* ============ VARIABLES ============ */
-  :root {
-    --primary:   #8a5cf7;
-    --secondary: #c084fc;
-    --accent:    #f472b6;
-    --bg:        #faf5ff;
-    --bg2:       #f3e8ff;
-    --text:      #3b1a6b;
-    --text-soft: #7c5cbf;
-    --white:     #ffffff;
-    --card-bg:   rgba(255,255,255,0.7);
-    --shadow:    rgba(138,92,247,0.15);
-    --transition: 0.35s cubic-bezier(.4,0,.2,1);
+  :root{
+    --p:#00c9a7;--p2:#00e5cb;--acc:#7dd3fc;
+    --gold:#e2c97e;
+    --bg:#f0fdfb;--bg2:#e0faf5;--bg3:#f7fffe;
+    --text:#0a2e28;--soft:#2e7d6e;--muted:#5fa898;
+    --card:rgba(255,255,255,.82);
+    --sh:0 8px 32px rgba(0,180,150,.14);
+    --sh-lg:0 20px 60px rgba(0,180,150,.18);
+    --bdr:rgba(0,201,167,.18);
+    --ease:cubic-bezier(.4,0,.2,1);
+    --ease-spring:cubic-bezier(.34,1.56,.64,1)
   }
-
-  /* Dark mode */
-  body.dark-mode {
-    --primary:   #a78bfa;
-    --secondary: #c084fc;
-    --accent:    #f9a8d4;
-    --bg:        #0f0720;
-    --bg2:       #1a0d35;
-    --text:      #e9d5ff;
-    --text-soft: #c4b5fd;
-    --card-bg:   rgba(26,13,53,0.8);
-    --shadow:    rgba(167,139,250,0.2);
+  body.dark{
+    --p:#00e5cb;--p2:#33f0d5;--acc:#7dd3fc;
+    --bg:#03110e;--bg2:#061a15;--bg3:#020d0b;
+    --text:#d4f7f0;--soft:#4fc4ac;--muted:#2d7a68;
+    --card:rgba(6,28,22,.85);
+    --sh:0 8px 32px rgba(0,200,160,.1);
+    --sh-lg:0 20px 60px rgba(0,200,160,.14);
+    --bdr:rgba(0,229,203,.16)
   }
 
-  /* ============ BASE ============ */
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 15px;
-    line-height: 1.8;
-    transition: background var(--transition), color var(--transition);
-    overflow-x: hidden;
-  }
+  body{background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;line-height:1.8;overflow-x:hidden;transition:background .5s,color .4s}
+  a{text-decoration:none;color:inherit}
+  ul{list-style:none}
+  img{display:block;max-width:100%}
+  button{cursor:pointer;font-family:inherit}
 
-  /* ============ STAR CANVAS ============ */
-  #starBg {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.5;
-  }
+  #starCanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5}
 
-  /* ============ NAVBAR ============ */
-  .navbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 999;
-    background: rgba(250,245,255,0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(138,92,247,0.12);
-    transition: background var(--transition), box-shadow var(--transition);
-  }
-  body.dark-mode .navbar {
-    background: rgba(15,7,32,0.88);
-    border-bottom-color: rgba(167,139,250,0.15);
-  }
-  .navbar.scrolled { box-shadow: 0 4px 24px var(--shadow); }
+  /* NAVBAR */
+  .navbar{position:fixed;inset:0 0 auto 0;z-index:900;background:rgba(240,253,251,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);transition:background .3s,box-shadow .3s}
+  body.dark .navbar{background:rgba(3,17,14,.88)}
+  .navbar.scrolled{box-shadow:0 2px 24px rgba(0,180,150,.12)}
+  .nav-inner{max-width:1120px;margin:0 auto;padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-family:'Cinzel',serif;font-size:15px;letter-spacing:2px;color:var(--p);font-weight:700}
+  .nav-logo i{color:var(--gold);font-size:13px}
+  .nav-links{display:flex;gap:2px}
+  .nav-links a{padding:6px 14px;border-radius:6px;font-size:12px;letter-spacing:.5px;color:var(--soft);transition:background .2s,color .2s}
+  .nav-links a:hover{background:rgba(0,201,167,.1);color:var(--p)}
+  .nav-links a.hot{color:var(--gold);font-weight:700}
+  .nav-links a.hot:hover{background:rgba(226,201,126,.1)}
+  .nav-burger{display:none;font-size:20px;color:var(--p);background:none;border:none}
 
-  .nav-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 24px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+  /* CTRL */
+  .ctrl{position:fixed;right:20px;top:78px;z-index:800;background:var(--card);backdrop-filter:blur(16px);border:1px solid var(--bdr);border-radius:14px;padding:16px 14px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--sh);min-width:134px}
+  .ctrl-title{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+  .ctrl-btn{padding:7px 12px;border:1px solid var(--bdr);border-radius:8px;background:transparent;color:var(--text);font-size:12px;transition:all .2s;text-align:left}
+  .ctrl-btn:hover{background:var(--p);color:#fff;border-color:var(--p);transform:translateX(2px)}
+  #colorPick{width:100%;height:28px;border-radius:6px;border:1px solid var(--bdr);background:transparent;padding:2px;cursor:pointer}
 
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: 18px;
-    color: var(--primary);
-    text-decoration: none;
-  }
-  .nav-logo i { font-size: 16px; color: var(--accent); }
+  /* SECTION */
+  section{position:relative;z-index:1;padding:100px 24px 88px}
+  .sw{max-width:960px;margin:0 auto}
+  .sec-label{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--p);margin-bottom:12px;opacity:.8}
+  .sec-title{font-family:'Cinzel',serif;font-size:clamp(24px,4.5vw,40px);color:var(--text);margin-bottom:12px;line-height:1.15;font-weight:700;letter-spacing:1px}
+  .sec-bar{width:48px;height:2px;background:linear-gradient(90deg,var(--p),var(--acc));border-radius:2px;margin-bottom:44px}
+  .reveal{opacity:0;transform:translateY(32px);transition:opacity .75s var(--ease),transform .75s var(--ease)}
+  .reveal.on{opacity:1;transform:none}
 
-  .nav-menu {
-    display: flex;
-    gap: 4px;
-    list-style: none;
-  }
+  /* HOME */
+  #home{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:64px;background:radial-gradient(ellipse 70% 50% at 50% 100%,rgba(0,201,167,.08) 0%,transparent 70%),linear-gradient(160deg,var(--bg) 50%,var(--bg2))}
+  .home-body{max-width:560px;position:relative}
+  .avatar-wrap{position:relative;width:180px;height:180px;margin:0 auto 32px;display:flex;align-items:center;justify-content:center}
+  .avatar-ring{position:absolute;inset:-10px;border-radius:50%;border:1.5px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(120deg,var(--p),var(--acc),var(--p)) border-box;animation:spin-ring 8s linear infinite}
+  .avatar-ring2{position:absolute;inset:-20px;border-radius:50%;border:1px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(240deg,var(--p),transparent,var(--acc)) border-box;animation:spin-ring 14s linear infinite reverse;opacity:.4}
+  @keyframes spin-ring{to{transform:rotate(360deg)}}
+  .avatar{width:172px;height:172px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,.9);box-shadow:0 0 0 6px rgba(0,201,167,.1),var(--sh-lg);animation:float 5s ease-in-out infinite;position:relative;z-index:1}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .char-name{font-family:'Cinzel',serif;font-size:clamp(44px,9vw,78px);color:var(--text);line-height:1;margin-bottom:8px;font-weight:900;letter-spacing:4px}
+  .char-name span{color:var(--p)}
+  .char-name::after{content:'|';color:var(--p);animation:blink 1s step-end infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .char-sub{font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:5px;color:var(--muted);margin-bottom:36px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 36px;background:linear-gradient(135deg,var(--p),var(--acc));color:#fff;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:2px;box-shadow:0 8px 28px rgba(0,201,167,.3);transition:transform .25s var(--ease-spring),box-shadow .25s}
+  .btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 36px rgba(0,201,167,.45)}
+  .scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
 
-  .nav-link {
-    display: block;
-    padding: 6px 14px;
-    border-radius: 20px;
-    color: var(--text-soft);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 400;
-    transition: all var(--transition);
-  }
-  .nav-link:hover, .nav-link.active {
-    background: rgba(138,92,247,0.1);
-    color: var(--primary);
-  }
-  .nav-link.special { color: var(--accent) !important; }
-  .nav-link.special:hover { background: rgba(244,114,182,0.1); }
+  /* ABOUT */
+  #about{background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%)}
+  .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px}
+  .card{background:var(--card);border:1px solid var(--bdr);border-radius:16px;padding:28px;backdrop-filter:blur(10px);transition:transform .3s var(--ease-spring),box-shadow .3s;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--p),transparent);opacity:0;transition:opacity .3s}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg)}
+  .card:hover::before{opacity:1}
+  .card-head{display:flex;align-items:center;gap:10px;font-family:'Cinzel',serif;font-size:16px;color:var(--p);margin-bottom:20px;font-weight:700}
+  .card-head i{color:var(--gold);font-size:14px}
+  .row{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px;gap:12px}
+  .row:last-child{border:none}
+  .row-k{color:var(--muted);white-space:nowrap;flex-shrink:0}
+  .row-v{color:var(--text);font-weight:700;text-align:right;font-size:12px;line-height:1.7}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .tag{padding:3px 12px;border-radius:6px;border:1px solid var(--bdr);background:rgba(0,201,167,.06);color:var(--p);font-size:11px;letter-spacing:.5px}
+  .bar-item{margin-bottom:14px}
+  .bar-top{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;letter-spacing:.5px}
+  .bar-track{height:5px;background:rgba(0,201,167,.1);border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--p),var(--acc));border-radius:3px;width:0;transition:width 1.4s var(--ease)}
+  .reveal.on .bar-fill{width:var(--w)}
 
-  .nav-toggle {
-    display: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: var(--primary);
-  }
+  /* STORY */
+  #story{background:var(--bg)}
+  .timeline{position:relative;padding-left:30px}
+  .timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,var(--p),var(--acc),transparent)}
+  .tnode{position:relative;background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:24px 24px 24px 26px;margin-bottom:24px;backdrop-filter:blur(8px);transition:transform .3s,box-shadow .3s}
+  .tnode:hover{transform:translateX(4px);box-shadow:var(--sh)}
+  .tnode::before{content:'';position:absolute;left:-27px;top:28px;width:9px;height:9px;border-radius:50%;background:var(--p);box-shadow:0 0 0 3px var(--bg),0 0 0 5px rgba(0,201,167,.3)}
+  .tnode-tag{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 9px;background:rgba(0,201,167,.1);color:var(--p);border:1px solid rgba(0,201,167,.2);border-radius:4px;margin-bottom:8px;letter-spacing:2px}
+  .tnode h3{font-family:'Cinzel',serif;font-size:17px;color:var(--text);margin-bottom:8px;font-weight:700}
+  .tnode p{font-size:13px;color:var(--soft);line-height:2}
 
-  /* ============ CONTROL PANEL ============ */
-  .control-panel {
-    position: fixed;
-    right: 20px;
-    top: 80px;
-    z-index: 900;
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(138,92,247,0.2);
-    border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 8px 32px var(--shadow);
-    min-width: 140px;
-  }
-  .control-panel h3 {
-    font-size: 12px;
-    color: var(--text-soft);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-  .control-btn {
-    padding: 7px 14px;
-    border: 1px solid rgba(138,92,247,0.25);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all var(--transition);
-    font-family: inherit;
-  }
-  .control-btn:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-  }
-  #customColorPicker {
-    width: 100%;
-    height: 32px;
-    border-radius: 8px;
-    border: 1px solid rgba(138,92,247,0.25);
-    cursor: pointer;
-    background: transparent;
-    padding: 2px;
-  }
+  /* GUIDE */
+  #guide{background:var(--bg2)}
+  .tabs{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap}
+  .tab-btn{padding:7px 18px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--soft);font-size:12px;letter-spacing:.5px;transition:all .2s}
+  .tab-btn:hover,.tab-btn.on{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 4px 14px rgba(0,201,167,.3)}
+  .tab-pane{display:none}
+  .tab-pane.on{display:block}
+  .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+  .g-card{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px;backdrop-filter:blur(8px);transition:transform .3s var(--ease-spring),box-shadow .3s}
+  .g-card:hover{transform:translateY(-5px);box-shadow:var(--sh)}
+  .g-icon{font-size:26px;margin-bottom:10px}
+  .g-card h4{font-size:14px;color:var(--p);font-weight:700;margin-bottom:8px}
+  .g-card p{font-size:12px;color:var(--soft);line-height:1.9}
 
-  /* ============ SECTIONS COMMON ============ */
-  section {
-    position: relative;
-    z-index: 1;
-    padding: 100px 24px 80px;
-  }
+  /* GALLERY */
+  #gallery{background:var(--bg)}
+  .gal-filter{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+  .gal-btn{padding:5px 16px;border-radius:8px;border:1px solid var(--bdr);background:transparent;color:var(--soft);font-size:12px;transition:all .2s}
+  .gal-btn:hover,.gal-btn.on{background:var(--p);color:#fff;border-color:var(--p)}
+  .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+  .gal-item{border-radius:12px;overflow:hidden;aspect-ratio:3/4;background:var(--bg2);cursor:pointer;position:relative;border:1px solid var(--bdr);transition:transform .3s var(--ease-spring),box-shadow .3s}
+  .gal-item:hover{transform:translateY(-5px) scale(1.02);box-shadow:var(--sh-lg)}
+  .gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+  .gal-item:hover img{transform:scale(1.08)}
+  .gal-over{position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(0,30,24,.7));opacity:0;display:flex;align-items:flex-end;padding:14px;color:#fff;font-size:11px;letter-spacing:1px;transition:opacity .3s;font-family:'Share Tech Mono',monospace}
+  .gal-item:hover .gal-over{opacity:1}
+  .lightbox{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+  .lightbox.on{opacity:1;pointer-events:all}
+  .lightbox img{max-width:90vw;max-height:88vh;border-radius:10px;box-shadow:0 0 80px rgba(0,201,167,.2)}
+  .lb-close{position:absolute;top:20px;right:20px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(255,255,255,.15);transition:all .2s}
+  .lb-close:hover{background:var(--p);border-color:var(--p)}
 
-  .section-inner {
-    max-width: 960px;
-    margin: 0 auto;
-  }
+  /* DEMO */
+  #demo{background:var(--bg2)}
+  .vid-tabs{display:flex;gap:6px;margin-bottom:22px}
+  .vid-wrap{border-radius:16px;overflow:hidden;background:#000;max-width:720px;aspect-ratio:16/9;box-shadow:0 20px 60px rgba(0,0,0,.3),0 0 0 1px var(--bdr)}
+  .vid-wrap video{width:100%;height:100%;object-fit:cover}
 
-  .section-tag {
-    display: inline-block;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 12px;
-    font-family: 'Noto Serif SC', serif;
-  }
+  /* TOP BTN */
+  #toTop{position:fixed;bottom:28px;right:22px;z-index:800;width:42px;height:42px;border-radius:10px;background:var(--p);color:#fff;border:none;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,201,167,.35);opacity:0;pointer-events:none;transition:opacity .3s,transform .25s var(--ease-spring)}
+  #toTop.on{opacity:1;pointer-events:all}
+  #toTop:hover{transform:translateY(-4px) scale(1.08)}
 
-  .section-title {
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: clamp(28px, 5vw, 42px);
-    color: var(--primary);
-    margin-bottom: 16px;
-    line-height: 1.2;
-  }
-
-  .section-divider {
-    width: 48px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 2px;
-    margin-bottom: 40px;
-  }
-
-  /* Section animate */
-  .section-animate {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .section-animate.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ============ HOME ============ */
-  #home {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding-top: 80px;
-    background: linear-gradient(160deg, var(--bg) 60%, var(--bg2));
-  }
-
-  .home-container { max-width: 600px; }
-
-  .carterthyia-avatar {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid var(--white);
-    box-shadow: 0 0 0 8px rgba(138,92,247,0.15), 0 16px 48px var(--shadow);
-    margin-bottom: 28px;
-    animation: float 4s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%      { transform: translateY(-10px); }
-  }
-
-  .character-title {
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: clamp(40px, 8vw, 72px);
-    color: var(--primary);
-    line-height: 1;
-    margin-bottom: 12px;
-  }
-  /* Typewriter cursor */
-  .typewriter::after {
-    content: '|';
-    animation: blink 1s step-end infinite;
-    color: var(--accent);
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-  .character-desc {
-    font-size: 15px;
-    color: var(--text-soft);
-    letter-spacing: 3px;
-    margin-bottom: 36px;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 14px 36px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: #fff;
-    border-radius: 30px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    box-shadow: 0 8px 24px rgba(138,92,247,0.35);
-    transition: transform var(--transition), box-shadow var(--transition);
-  }
-  .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(138,92,247,0.5);
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text-soft);
-    font-size: 12px;
-    letter-spacing: 2px;
-    animation: bounce 2s infinite;
-  }
-  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
-
-  /* ============ ABOUT ============ */
-  #about { background: var(--bg2); }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-    align-items: start;
-  }
-
-  .about-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(138,92,247,0.15);
-    border-radius: 20px;
-    padding: 28px;
-    backdrop-filter: blur(8px);
-    transition: transform var(--transition), box-shadow var(--transition);
-  }
-  .about-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 36px var(--shadow);
-  }
-  .about-card h3 {
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: 20px;
-    color: var(--primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .about-card h3 i { color: var(--accent); font-size: 16px; }
-
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(138,92,247,0.08);
-    font-size: 13px;
-  }
-  .stat-row:last-child { border-bottom: none; }
-  .stat-label { color: var(--text-soft); }
-  .stat-value { color: var(--primary); font-weight: 700; }
-
-  .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .tag {
-    padding: 4px 14px;
-    border-radius: 20px;
-    background: rgba(138,92,247,0.1);
-    color: var(--primary);
-    font-size: 12px;
-    border: 1px solid rgba(138,92,247,0.2);
-  }
-
-  .stat-bar-row { margin-bottom: 12px; }
-  .stat-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-soft);
-    margin-bottom: 4px;
-  }
-  .stat-bar-track {
-    height: 6px;
-    background: rgba(138,92,247,0.1);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .stat-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-    border-radius: 3px;
-    transition: width 1.2s cubic-bezier(.4,0,.2,1);
-    width: 0;
-  }
-  .visible .stat-bar-fill { width: var(--w); }
-
-  /* ============ STORY ============ */
-  #story { background: var(--bg); }
-
-  .story-timeline {
-    position: relative;
-    padding-left: 32px;
-  }
-  .story-timeline::before {
-    content: '';
-    position: absolute;
-    left: 8px; top: 0; bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--primary), var(--accent), transparent);
-    border-radius: 1px;
-  }
-
-  .story-node {
-    position: relative;
-    margin-bottom: 40px;
-    background: var(--card-bg);
-    border: 1px solid rgba(138,92,247,0.15);
-    border-radius: 16px;
-    padding: 24px 24px 24px 28px;
-    backdrop-filter: blur(8px);
-  }
-  .story-node::before {
-    content: '';
-    position: absolute;
-    left: -28px; top: 28px;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--primary);
-    border: 3px solid var(--bg);
-    box-shadow: 0 0 0 3px var(--primary);
-  }
-  .story-node h3 {
-    font-family: 'ZCOOL QingKe HuangYou', cursive;
-    font-size: 18px;
-    color: var(--primary);
-    margin-bottom: 8px;
-  }
-  .story-node p { color: var(--text-soft); font-size: 14px; line-height: 1.9; }
-  .story-node .chapter-tag {
-    display: inline-block;
-    font-size: 11px;
-    padding: 2px 10px;
-    background: rgba(244,114,182,0.1);
-    color: var(--accent);
-    border-radius: 10px;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-  }
-
-  /* ============ GUIDE ============ */
-  #guide { background: var(--bg2); }
-
-  .tab-bar {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .tab-btn {
-    padding: 8px 20px;
-    border-radius: 20px;
-    border: 1px solid rgba(138,92,247,0.25);
-    background: transparent;
-    color: var(--text-soft);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all var(--transition);
-    font-family: inherit;
-  }
-  .tab-btn.active, .tab-btn:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-  }
-
-  .guide-content { display: none; }
-  .guide-content.active { display: block; }
-
-  .guide-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  .guide-card {
-    background: var(--card-bg);
-    border: 1px solid rgba(138,92,247,0.15);
-    border-radius: 16px;
-    padding: 22px;
-    backdrop-filter: blur(8px);
-    transition: transform var(--transition), box-shadow var(--transition);
-  }
-  .guide-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow); }
-  .guide-card .guide-icon { font-size: 28px; margin-bottom: 10px; }
-  .guide-card h4 {
-    font-size: 15px;
-    color: var(--primary);
-    margin-bottom: 8px;
-    font-weight: 700;
-  }
-  .guide-card p { font-size: 13px; color: var(--text-soft); line-height: 1.8; }
-
-  /* ============ GALLERY ============ */
-  #gallery { background: var(--bg); }
-
-  .gallery-filter {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-  .gallery-tab {
-    padding: 6px 18px;
-    border-radius: 20px;
-    border: 1px solid rgba(138,92,247,0.25);
-    background: transparent;
-    color: var(--text-soft);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all var(--transition);
-    font-family: inherit;
-  }
-  .gallery-tab.active, .gallery-tab:hover {
-    background: var(--primary);
-    color: #fff;
-    border-color: var(--primary);
-  }
-
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
-  .gallery-img {
-    border-radius: 16px;
-    overflow: hidden;
-    aspect-ratio: 3/4;
-    background: var(--bg2);
-    cursor: pointer;
-    position: relative;
-    border: 1px solid rgba(138,92,247,0.1);
-    transition: transform var(--transition), box-shadow var(--transition);
-  }
-  .gallery-img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-  .gallery-img:hover { transform: translateY(-4px); box-shadow: 0 12px 32px var(--shadow); }
-  .gallery-img:hover img { transform: scale(1.05); }
-  .gallery-img .img-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(transparent 50%, rgba(138,92,247,0.7));
-    opacity: 0;
-    transition: opacity var(--transition);
-    display: flex;
-    align-items: flex-end;
-    padding: 16px;
-    color: #fff;
-    font-size: 13px;
-  }
-  .gallery-img:hover .img-overlay { opacity: 1; }
-
-  /* Image Modal */
-  .img-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 2000;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity var(--transition);
-  }
-  .img-modal.open { opacity: 1; pointer-events: all; }
-  .img-modal img {
-    max-width: 90vw;
-    max-height: 90vh;
-    border-radius: 12px;
-    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-  }
-  .img-modal-close {
-    position: absolute;
-    top: 24px; right: 24px;
-    color: #fff;
-    font-size: 28px;
-    cursor: pointer;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    display: flex; align-items: center; justify-content: center;
-    transition: background var(--transition);
-  }
-  .img-modal-close:hover { background: rgba(255,255,255,0.25); }
-
-  /* ============ DEMO ============ */
-  #demo { background: var(--bg2); }
-
-  .video-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-  }
-
-  .video-wrap {
-    border-radius: 20px;
-    overflow: hidden;
-    background: #000;
-    position: relative;
-    max-width: 720px;
-    aspect-ratio: 16/9;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.3);
-  }
-  .video-wrap video {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .video-cover {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.4);
-    cursor: pointer;
-    transition: background var(--transition);
-  }
-  .video-cover:hover { background: rgba(0,0,0,0.2); }
-  .play-btn {
-    width: 64px; height: 64px;
-    border-radius: 50%;
-    background: rgba(138,92,247,0.9);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff;
-    font-size: 22px;
-    box-shadow: 0 0 32px rgba(138,92,247,0.5);
-    transition: transform var(--transition);
-  }
-  .video-cover:hover .play-btn { transform: scale(1.1); }
-
-  /* ============ BACK TO TOP ============ */
-  .back-to-top {
-    position: fixed;
-    bottom: 32px; right: 24px;
-    z-index: 800;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 16px var(--shadow);
-    opacity: 0;
-    pointer-events: none;
-    transition: all var(--transition);
-  }
-  .back-to-top.visible { opacity: 1; pointer-events: all; }
-  .back-to-top:hover { transform: translateY(-3px); }
-
-  /* ============ MOBILE ============ */
-  @media (max-width: 768px) {
-    .nav-menu { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--bg); padding: 16px; border-bottom: 1px solid rgba(138,92,247,0.12); }
-    .nav-menu.active { display: flex; }
-    .nav-toggle { display: block; }
-    .about-grid { grid-template-columns: 1fr; }
-    .control-panel { right: 8px; top: 72px; min-width: 120px; }
+  @media(max-width:768px){
+    .nav-links{display:none;flex-direction:column;position:absolute;top:64px;left:0;right:0;background:var(--bg);padding:12px 16px;border-bottom:1px solid var(--bdr);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+    .nav-links.open{display:flex}
+    .nav-burger{display:block}
+    .ctrl{right:8px;top:70px}
+    .about-grid{grid-template-columns:1fr}
+    .char-name{letter-spacing:2px}
   }
   </style>
 </head>
+<body>
+<canvas id="starCanvas"></canvas>
 
-<body class="main-site">
-
-<canvas id="starBg"></canvas>
-
-<!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-  <div class="nav-container">
-    <a class="nav-logo" href="#home"><i class="fa fa-star"></i><span>卡提希娅的星光小站</span></a>
-    <ul class="nav-menu" id="navMenu">
-      <li><a href="#home"    class="nav-link">首页</a></li>
-      <li><a href="#about"   class="nav-link">角色设定</a></li>
-      <li><a href="#story"   class="nav-link">故事背景</a></li>
-      <li><a href="#guide"   class="nav-link">游戏攻略</a></li>
-      <li><a href="#gallery" class="nav-link">角色图库</a></li>
-      <li><a href="#demo"    class="nav-link">实机演示</a></li>
-      <li><a href="aemeath.html" class="nav-link special"><i class="fa fa-database"></i> 爱弥斯档案</a></li>
+<nav class="navbar" id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo"><i class="fa fa-star"></i>卡提希娅的星光小站</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">首页</a></li>
+      <li><a href="#about">角色设定</a></li>
+      <li><a href="#story">故事背景</a></li>
+      <li><a href="#guide">游戏攻略</a></li>
+      <li><a href="#gallery">角色图库</a></li>
+      <li><a href="#demo">实机演示</a></li>
+      <li><a href="aemeath.html" class="hot"><i class="fa fa-database"></i> 爱弥斯档案</a></li>
     </ul>
-    <div class="nav-toggle" id="navToggle"><i class="fa fa-bars"></i></div>
+    <button class="nav-burger" id="burger"><i class="fa fa-bars"></i></button>
   </div>
 </nav>
 
-<!-- CONTROL PANEL -->
-<div class="control-panel">
-  <h3><i class="fa fa-sliders"></i> 个性化</h3>
-  <button class="control-btn" onclick="switchTheme('purple')">✦ 星光紫</button>
-  <button class="control-btn" onclick="switchTheme('blue')">❄ 冰晶蓝</button>
-  <input type="color" id="customColorPicker" title="自定义颜色">
-  <button class="control-btn" onclick="applyCustomTheme()">应用颜色</button>
-  <button class="control-btn" id="darkBtn" onclick="toggleDarkMode()"><i class="fa fa-moon"></i> 深色</button>
+<div class="ctrl">
+  <div class="ctrl-title"><i class="fa fa-sliders"></i> 个性化</div>
+  <button class="ctrl-btn" onclick="setTheme('teal')">🌊 气动青</button>
+  <button class="ctrl-btn" onclick="setTheme('sky')">❄ 晴空蓝</button>
+  <input type="color" id="colorPick" value="#00c9a7">
+  <button class="ctrl-btn" onclick="applyColor()">应用颜色</button>
+  <button class="ctrl-btn" id="darkBtn" onclick="toggleDark()"><i class="fa fa-moon"></i> 深色</button>
 </div>
 
-<!-- ===== HOME ===== -->
-<section id="home" class="section-animate">
-  <div class="home-container">
-    <img src="1.jpg" class="carterthyia-avatar" alt="卡提希娅" onerror="this.style.background='linear-gradient(135deg,#8a5cf7,#f472b6)';this.removeAttribute('src')">
-    <h1 class="character-title typewriter">卡提希娅</h1>
-    <p class="character-desc">温柔使者 · 双形态战斗达人</p>
-    <a href="aemeath.html" class="btn">✦ 进入爱弥斯档案</a>
+<section id="home" class="reveal">
+  <div class="home-body">
+    <div class="avatar-wrap">
+      <div class="avatar-ring"></div>
+      <div class="avatar-ring2"></div>
+      <img src="1.jpg" class="avatar" alt="卡提希娅" onerror="this.style.cssText='width:172px;height:172px;border-radius:50%;background:linear-gradient(135deg,#00c9a7,#7dd3fc);border:3px solid rgba(255,255,255,.9);position:relative;z-index:1;animation:float 5s ease-in-out infinite'">
+    </div>
+    <h1 class="char-name"><span>卡</span>提希娅</h1>
+    <p class="char-sub">圣女大人 · Carterthyia</p>
+    <a href="aemeath.html" class="btn"><i class="fa fa-database"></i> 进入爱弥斯档案</a>
   </div>
-  <div class="scroll-hint"><i class="fa fa-angle-double-down"></i> 向下探索</div>
+  <div class="scroll-hint"><i class="fa fa-angle-double-down"></i> &nbsp;向下探索</div>
 </section>
 
-<!-- ===== ABOUT ===== -->
-<section id="about" class="section-animate">
-  <div class="section-inner">
-    <span class="section-tag">// Character Profile</span>
-    <h2 class="section-title">角色设定</h2>
-    <div class="section-divider"></div>
-
+<section id="about">
+  <div class="sw reveal">
+    <span class="sec-label">// Character Profile</span>
+    <h2 class="sec-title">角色设定</h2>
+    <div class="sec-bar"></div>
     <div class="about-grid">
-      <!-- 基本信息 -->
-      <div class="about-card">
-        <h3><i class="fa fa-user-circle"></i> 基本档案</h3>
-        <div class="stat-row"><span class="stat-label">名称</span><span class="stat-value">卡提希娅</span></div>
-        <div class="stat-row"><span class="stat-label">英文名</span><span class="stat-value">Carterthyia</span></div>
-        <div class="stat-row"><span class="stat-label">定位</span><span class="stat-value">温柔使者</span></div>
-        <div class="stat-row"><span class="stat-label">形态</span><span class="stat-value">双形态战斗</span></div>
-        <div class="stat-row"><span class="stat-label">阵营</span><span class="stat-value">星光守护者</span></div>
-        <div class="tag-cloud" style="margin-top:16px">
-          <span class="tag">治愈系</span>
-          <span class="tag">高爆发</span>
-          <span class="tag">变形</span>
-          <span class="tag">光属性</span>
-          <span class="tag">SSR</span>
-        </div>
+      <div class="card">
+        <div class="card-head"><i class="fa fa-user-circle"></i>基本档案</div>
+        <div class="row"><span class="row-k">名称</span><span class="row-v">卡提希娅</span></div>
+        <div class="row"><span class="row-k">英文名</span><span class="row-v">Carterthyia</span></div>
+        <div class="row"><span class="row-k">定位</span><span class="row-v">主C</span></div>
+        <div class="row"><span class="row-k">形态</span><span class="row-v">双形态</span></div>
+        <div class="row"><span class="row-k">稀有度</span><span class="row-v">5星</span></div>
+        <div class="tags"><span class="tag">单人成军</span><span class="tag">高爆发</span><span class="tag">变形</span><span class="tag">气动属性</span></div>
       </div>
-
-      <!-- 属性面板 -->
-      <div class="about-card">
-        <h3><i class="fa fa-bar-chart"></i> 战斗属性</h3>
-        <div class="stat-bar-row" style="--w:92%">
-          <div class="stat-bar-label"><span>攻击</span><span>92</span></div>
-          <div class="stat-bar-track"><div class="stat-bar-fill"></div></div>
-        </div>
-        <div class="stat-bar-row" style="--w:78%">
-          <div class="stat-bar-label"><span>防御</span><span>78</span></div>
-          <div class="stat-bar-track"><div class="stat-bar-fill"></div></div>
-        </div>
-        <div class="stat-bar-row" style="--w:96%">
-          <div class="stat-bar-label"><span>治愈</span><span>96</span></div>
-          <div class="stat-bar-track"><div class="stat-bar-fill"></div></div>
-        </div>
-        <div class="stat-bar-row" style="--w:85%">
-          <div class="stat-bar-label"><span>速度</span><span>85</span></div>
-          <div class="stat-bar-track"><div class="stat-bar-fill"></div></div>
-        </div>
-        <div class="stat-bar-row" style="--w:99%">
-          <div class="stat-bar-label"><span>魅力</span><span>MAX</span></div>
-          <div class="stat-bar-track"><div class="stat-bar-fill"></div></div>
-        </div>
+      <div class="card">
+        <div class="card-head"><i class="fa fa-bar-chart"></i>战斗属性</div>
+        <div class="bar-item" style="--w:92%"><div class="bar-top"><span>攻击</span><span>92</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+        <div class="bar-item" style="--w:78%"><div class="bar-top"><span>暴击率</span><span>78</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+        <div class="bar-item" style="--w:96%"><div class="bar-top"><span>暴击伤害</span><span>96</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+        <div class="bar-item" style="--w:85%"><div class="bar-top"><span>共鸣解放</span><span>85</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
+        <div class="bar-item" style="--w:99%"><div class="bar-top"><span>魅力</span><span>MAX</span></div><div class="bar-track"><div class="bar-fill"></div></div></div>
       </div>
-
-      <!-- 技能 -->
-      <div class="about-card">
-        <h3><i class="fa fa-magic"></i> 核心技能</h3>
-        <div class="stat-row"><span class="stat-label">⚡ 星光冲击</span><span class="stat-value">高爆发</span></div>
-        <div class="stat-row"><span class="stat-label">✨ 温柔庇护</span><span class="stat-value">范围治愈</span></div>
-        <div class="stat-row"><span class="stat-label">🌙 形态切换</span><span class="stat-value">战斗变形</span></div>
-        <div class="stat-row"><span class="stat-label">💫 星光护盾</span><span class="stat-value">减伤30%</span></div>
-        <div class="stat-row"><span class="stat-label">🔮 终极：星河裂变</span><span class="stat-value">大招</span></div>
+      <div class="card">
+        <div class="card-head"><i class="fa fa-magic"></i>共鸣链核心</div>
+        <div class="row"><span class="row-k">因命运戴上冠冕</span><span class="row-v">卡提希娅】、【芙露德莉斯】自身技能直接造成的伤害击败被附加【风蚀效应】状态的目标后，获得【集意】状态，持续10秒。
+【集意】状态下保留击败目标被附加【风蚀效应】的最高层数，自身下一次技能直接造成的伤害立即为命中目标附加该层数，最高可叠加至当前目标的【风蚀效应】层数上限，同时清除【集意】状态，清除【集意】状态后进入冷却时间1秒。
+【芙露德莉斯】每积攒【决意】达到30、60、90、120时，【芙露德莉斯】的暴击伤害提升25%，持续15秒，最多可叠加4层，每次叠加时不刷新持续时间，施放共鸣解放·看潮怒风哮之刃后会清除该暴击伤害提升效果。</span></div>
+        <div class="row"><span class="row-k">听风潮斩断利刃</span><span class="row-v">施放共鸣解放·听骑士从心祈愿后，使自身一定范围内的目标【风蚀效应】层数上限提升3层，自身技能下一次直接造成伤害后，对自身一定范围内的目标附加3层【风蚀效应】，并立刻结算1次目标身上的【风蚀效应】效果，此次结算不消耗【风蚀效应】层数。
+【卡提希娅】普攻、重击、闪避反击、变奏技能倍率提升50%，空中攻击倍率提升200%。
+施放空中攻击·卡提希娅后，每回收1种【剑之影】使共鸣技能·卡提希娅的冷却时间减少1秒。</span></div>
+        <div class="row"><span class="row-k">以自身束悬高塔</span><span class="row-v">芙露德莉斯】的普攻·芙露德莉斯第5段，空中攻击·芙露德莉斯第2段，强化重击·芙露德莉斯，共鸣技能·凭风斩浪破敌会为命中目标附加2层【风蚀效应】。
+共鸣解放·看潮怒风哮之刃的伤害倍率提升100%。</span></div>
+        <div class="row"><span class="row-k">为拯救舍弃其身</span><span class="row-v">队伍中的角色为目标附加【虚湮效应】、【聚爆效应】、【光噪效应】、【电磁效应】、【霜渐效应】、【风蚀效应】时，使队伍中所有角色全属性伤害加成提升20%，持续20秒。</span></div>
+        <div class="row"><span class="row-k">将烈风重塑希望</span><span class="row-v">施放共鸣解放·听骑士从心祈愿消耗的自身生命值降至生命上限的25%</span></div>
+        <div class="row"><span class="row-k">尽一线挣扎自由</span><span class="row-v">施放共鸣解放·看潮怒风哮之刃对命中的目标附加【风蚀效应】至层数上限，且施放共鸣解放·看潮怒风哮之刃命中目标后，不再清空目标拥有的【风蚀效应】。
+施放变奏技能·此剑，为潮水的过去、变奏技能·此剑，为自由的未来、共鸣解放·听骑士从心祈愿、共鸣解放·看潮怒风哮之刃后，30秒内，队伍中的角色对【风蚀效应】层数到达上限的目标再次附加【风蚀效应】时，立即结算一次【风蚀效应】。
+目标受到【芙露德莉斯】的伤害提升40%。</span></div>
       </div>
-
-      <!-- 特性 -->
-      <div class="about-card">
-        <h3><i class="fa fa-heart"></i> 角色特性</h3>
-        <p style="color:var(--text-soft);font-size:13px;line-height:1.9">
-          卡提希娅拥有独特的双形态能力——平时以温柔的治愈者形象示人，战斗时可切换为锐利的战士模式。
-          她的星光属性赋予了她在黑暗中发光的能力，也让她成为队伍中最不可或缺的核心角色。
-        </p>
-        <div class="tag-cloud" style="margin-top:16px">
-          <span class="tag">被动：星光再生</span>
-          <span class="tag">联动：爱弥斯</span>
-        </div>
+      <div class="card">
+        <div class="card-head"><i class="fa fa-heart"></i>角色特性</div>
+        <p style="font-size:13px;color:var(--soft);line-height:2">卡提希娅拥有独特的双形态能力——平时以温柔的治愈者形象示人，战斗时可切换为锐利的战士模式。她的星光属性赋予了她在黑暗中发光的能力，也让她成为队伍中最不可或缺的核心角色。</p>
+        <div class="tags" style="margin-top:16px"><span class="tag">被动：星光再生</span><span class="tag">联动：爱弥斯</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== STORY ===== -->
-<section id="story" class="section-animate">
-  <div class="section-inner">
-    <span class="section-tag">// Lore & Background</span>
-    <h2 class="section-title">故事背景</h2>
-    <div class="section-divider"></div>
+<section id="story">
+  <div class="sw reveal">
+    <span class="sec-label">// Lore</span>
+    <h2 class="sec-title">故事背景</h2>
+    <div class="sec-bar"></div>
+    <div class="timeline">
+      <div class="tnode"><span class="tnode-tag">出身</span><h3>拂风水畔的农家少女</h3><p>卡提希娅出身于黎那汐塔拂风水畔的普通农家，原本是再平凡不过的少女。在一次「岁主感恩礼」上，她误饮供奉圣酒，酒醉后跃上祭典高台，撩起裙摆踉跄起舞，还夺过圣事号角吹响民间小调——使节们追捕不及，严肃的祭礼就此变成了狂欢闹剧。隐海修会事后将她关押了三天禁闭，她却把禁闭室的墙涂满了涂鸦。</p></div>
+      <div class="tnode"><span class="tnode-tag">二十年前</span><h3>被设计的圣女</h3><p>卡提希娅与被鸣式「利维亚坦」侵蚀异化的岁主英白拉多发生共鸣，不知情的隐海修会认定她为「圣女」，赐名「芙露德莉斯」为她加冕。然而这顶冠冕是鸣式操控她的枷锁，她的诞生与受封，不过是一场被精心设计的阴谋。第二次黑潮随之在神学院「阿维纽林」降临，据说正是她与鸣式共鸣所引发。</p></div>
+      <div class="tnode"><span class="tnode-tag">分裂</span><h3>一分为二的意志</h3><p>为了摆脱利维亚坦的控制，芙露德莉斯将自我意识一分为二：将渴望延续生命、保留本名的那部分分离为「卡提希娅」，而继承大部分力量、以毁灭一切（包括自身）来对抗鸣式的部分，则保留了「芙露德莉斯」之名。此后卡提希娅以分身形态游荡，只有漂泊者能看见她的外表与频率波动。</p></div>
+      <div class="tnode"><span class="tnode-tag">狂欢节</span><h3>再度现世</h3><p>每年狂欢节最后一日，卡提希娅会短暂降临人间。她驻足水面，模仿漂泊者在谢幕时表演的舞步。漂泊者循岁主的指引找到她，两人手掌相触的瞬间，她额心的声痕不断闪烁——暗示着两者之间存在着某种无法言说的特殊渊源。</p></div>
+      <div class="tnode"><span class="tnode-tag">终章</span><h3>斩断枷锁</h3><p>在漂泊者与坎特蕾拉的介入下，卡提希娅借助夏空的共鸣力在梦境中传递线索，引导漂泊者一步步接近真相。坎特蕾拉以神权剑「提尔芬」将力量反哺英白拉多，岁主短暂夺回控制权，让芙露德莉斯得以亲手斩下被鸣式异化的身躯。现在，她是黎那汐塔的流浪骑士，故事仍未落幕。</p></div>
+    </div>
+  </div>
+</section>
 
-    <div class="story-timeline">
-      <div class="story-node">
-        <span class="chapter-tag">序章</span>
-        <h3>星光降临</h3>
-        <p>在一个被黑暗侵蚀的世界，一颗异星的光芒穿越虚空坠落。那一夜，所有守望者都看见了那道划破天际的星轨——卡提希娅，就此诞生于光与影的交界。</p>
+<section id="guide">
+  <div class="sw reveal">
+    <span class="sec-label">// Guide</span>
+    <h2 class="sec-title">游戏攻略</h2>
+    <div class="sec-bar"></div>
+    <div class="tabs">
+      <button class="tab-btn on" data-tab="basic">基础玩法</button>
+      <button class="tab-btn" data-tab="combo">连招技巧</button>
+      <button class="tab-btn" data-tab="build">推荐配装</button>
+      <button class="tab-btn" data-tab="team">队伍搭配</button>
+    </div>
+    <div id="basic" class="tab-pane on">
+      <div class="guide-grid">
+        <div class="g-card"><div class="g-icon">⚔️</div><h4>双形态机制</h4><p>卡提希娅分「小卡」与「大卡（芙露德莉斯）」两种形态。小卡阶段通过普攻、技能分别召唤异权剑/神权剑/人权剑点亮三格回路图标，满后开共鸣解放切换大卡。大卡积攒【决意】至满触发二段大招「看潮怒风哮之刃」，是核心爆发窗口。</p></div>
+        <div class="g-card"><div class="g-icon">🌪️</div><h4>风蚀效应理解</h4><p>风蚀是计时型DOT，到时间整体结算，不逐层跳伤。卡提绝大多数增益直接挂钩风蚀层数，层数越高直伤与结算伤害越高。0链自挂上限5层；2链风蚀上限提升3层；3链大幅提高自挂效率；配夏空后台可稳定维持6层以上。</p></div>
+        <div class="g-card"><div class="g-icon">❤️</div><h4>生命值倍率角色</h4><p>鸣潮首位生命值倍率主C，技能伤害以生命值为底数计算，切勿按传统主C无脑堆攻击。毕业面板参考：生命值49000+，暴击率75%+，暴击伤害260%+，共鸣效率110%+。</p></div>
+        <div class="g-card"><div class="g-icon">🛡️</div><h4>大招消耗注意</h4><p>施放共鸣解放「听骑士从心祈愿」（小卡大招）会消耗50%自身生命值上限（5链后降至25%）。高难度副本务必配备回血手段，或在血量充足时再行释放，5链前打深塔存在被打死风险。</p></div>
       </div>
-      <div class="story-node">
-        <span class="chapter-tag">第一章</span>
-        <h3>双生契约</h3>
-        <p>卡提希娅在流浪途中邂逅了神秘的数字存在爱弥斯（Aemeath）。两者之间形成了跨越物质与数字界限的羁绊，这份契约赋予了她双形态切换的能力。</p>
+    </div>
+    <div id="combo" class="tab-pane">
+      <div class="guide-grid">
+        <div class="g-card"><div class="g-icon">▶️</div><h4>小卡输出循环</h4><p>变奏入场召唤异权剑 → 从二段普攻起手×3召唤神权剑 → 放共鸣技能召唤人权剑 → 接普攻+下落攻击激活BUFF并回收三剑 → 开共鸣解放切换大卡。变奏后从二段普攻起手可节省一次攻击时间。</p></div>
+        <div class="g-card"><div class="g-icon">💥</div><h4>大卡输出循环</h4><p>大卡入场后标准循环：5A×2 + EE + 3A + R（二段大招）。决意满后不必急着放大，优先打完当前高伤连段再释放。大招「看潮怒风哮之刃」伤害根据目标风蚀层数追加增伤，释放前务必确保风蚀充足。</p></div>
+        <div class="g-card"><div class="g-icon">📊</div><h4>技能升级权重</h4><p>共鸣回路（1.0）> 常态攻击（0.65）≈ 共鸣解放（0.65）> 共鸣技能（0.12）> 变奏技能（0.05）。优先拉满共鸣回路与共鸣解放，其次常态攻击，技能和变奏小升即可。</p></div>
+        <div class="g-card"><div class="g-icon">🔄</div><h4>低链/无夏空简化打法</h4><p>风蚀覆盖不稳定时改用短循环：5A + EE + 3A + R，确保放大时仍有足量风蚀层数。无夏空时卡提直伤约为满配的66%；换散华约为80%。共鸣效率建议堆至110%~120%保证循环。</p></div>
       </div>
-      <div class="story-node">
-        <span class="chapter-tag">第二章</span>
-        <h3>温柔的代价</h3>
-        <p>每一次切换形态都会消耗卡提希娅的星光能量。为了守护挚友，她在与强敌的战斗中几度陷入能量枯竭的边缘。然而正是这份温柔，成为了她最强大的武器。</p>
+    </div>
+    <div id="build" class="tab-pane">
+      <div class="guide-grid">
+        <div class="g-card"><div class="g-icon">🗡️</div><h4>武器选择</h4><p>首选专武「不屈命定之冠」：满级412攻击白值+72.2%生命值，变奏/普攻后15秒无视防御，风蚀效应≥1层时伤害加深，相比次选提升约23%输出，无完全平替。次选：裁春、赫奕流明、千古洑流、不灭航路。四星武器词条全为攻击力，不适配生命C机制，均不推荐。</p></div>
+        <div class="g-card"><div class="g-icon">👻</div><h4>声骸套装</h4><p>首选「愿戴荣光之旅」5件套，配置44111（非传统43311）。卡提是生命C，3费固定词条是攻击力相当于亏一格，故改用两个4费补暴击/爆伤。首位声骸「共鸣回响·芙露德莉斯」，为自身和气动主提供额外气动加成；第二个4费选「梦魇·凯尔匹」。</p></div>
+        <div class="g-card"><div class="g-icon">📈</div><h4>词条优先级</h4><p>副词条：双暴（暴击率/暴击伤害）> 大生命% > 普攻加成 > 共鸣解放提升 > 小生命。主词条：4费选暴击率+爆伤（注意配平，暴击率不低于70%），1费全选生命加成。无专武情况下生命词条收益约提升1.4倍。</p></div>
+        <div class="g-card"><div class="g-icon">🏆</div><h4>毕业面板</h4><p>生命值 49000+，暴击率 75%+，暴击伤害 260%+，共鸣效率 110%~120%。技能升满优先：共鸣回路 = 共鸣解放 > 常态攻击 > 共鸣技能 ≈ 变奏技能。</p></div>
       </div>
-      <div class="story-node">
-        <span class="chapter-tag">现在</span>
-        <h3>守光者</h3>
-        <p>如今，卡提希娅与爱弥斯共同守护着这片星光。她的故事还在继续书写，每一个造访这里的人，都将成为她故事中的一部分。</p>
+    </div>
+    <div id="team" class="tab-pane">
+      <div class="guide-grid">
+        <div class="g-card"><div class="g-icon">👑</div><h4>答案队：卡提+夏空+气动主</h4><p>当前版本最强阵容，造价仅三金，性价比极高。气动主提高风蚀效应上限，夏空后台持续挂风蚀+24%气动伤害+10%减抗，让大招吃满增伤。出场顺序：气动主延奏夏空 → 夏空延奏卡提 → 卡提变奏入场。</p></div>
+        <div class="g-card"><div class="g-icon">🛡️</div><h4>稳定奶盾：卡提+夏空+千咲</h4><p>高难度副本推荐。千咲提供稳定奶量，卡提毕业生命约5万，配千咲后生存无忧。卡提声骸用愿戴荣光+芙露德莉斯；夏空用流云逝尽之空+梦魇·凯尔匹；千咲用命理3件+幽夜2件套。</p></div>
+        <div class="g-card"><div class="g-icon">💧</div><h4>无夏空过渡：卡提+散华+气动主</h4><p>散华延奏使下一位普攻伤害加深，卡提技能与解放均视为普攻伤害，有一定增益。但风蚀覆盖不稳，整体输出约为带夏空版本的80%，建议尽快补入00夏空。</p></div>
+        <div class="g-card"><div class="g-icon">🔗</div><h4>链数与配队</h4><p>0~2链：强绑夏空，自身挂层能力弱。3链：可脱离夏空，自由搭配其他辅助（卡提+气动主+千咲）。6链：最佳搭档仍是夏空，配合满层风蚀秒跳结算伤害极为恐怖，夏空可累计约70万风蚀结算伤害。</p></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ===== GUIDE ===== -->
-<section id="guide" class="section-animate">
-  <div class="section-inner">
-    <span class="section-tag">// Game Guide</span>
-    <h2 class="section-title">游戏攻略</h2>
-    <div class="section-divider"></div>
-
-    <div class="tab-bar">
-      <button class="tab-btn active" data-tab="basic" onclick="switchGuideTab('basic')">基础玩法</button>
-      <button class="tab-btn" data-tab="combo" onclick="switchGuideTab('combo')">连招技巧</button>
-      <button class="tab-btn" data-tab="build" onclick="switchGuideTab('build')">推荐配装</button>
-      <button class="tab-btn" data-tab="team" onclick="switchGuideTab('team')">队伍搭配</button>
+<section id="gallery">
+  <div class="sw reveal">
+    <span class="sec-label">// Gallery</span>
+    <h2 class="sec-title">角色图库</h2>
+    <div class="sec-bar"></div>
+    <div class="gal-filter">
+      <button class="gal-btn on" onclick="galFilter('all',this)">全部</button>
+      <button class="gal-btn" onclick="galFilter('art',this)">立绘</button>
+      <button class="gal-btn" onclick="galFilter('battle',this)">战斗</button>
+      <button class="gal-btn" onclick="galFilter('daily',this)">日常</button>
     </div>
-
-    <div id="basicContent" class="guide-content active">
-      <div class="guide-grid">
-        <div class="guide-card"><div class="guide-icon">⚡</div><h4>形态切换时机</h4><p>建议在敌方蓄力时切换战斗形态，打断节奏并触发反击连锁。切换 CD 约 8 秒，合理规划节奏。</p></div>
-        <div class="guide-card"><div class="guide-icon">✨</div><h4>星光能量管理</h4><p>保持能量槽在 40% 以上方可安全切换。低于此值时优先使用治愈技能回充，避免形态锁定。</p></div>
-        <div class="guide-card"><div class="guide-icon">🛡</div><h4>护盾优先级</h4><p>星光护盾可叠加两层，建议在 Boss 战前提前叠满。护盾存续 12 秒，优先保护脆皮输出位。</p></div>
-        <div class="guide-card"><div class="guide-icon">🎯</div><h4>仇恨控制</h4><p>卡提希娅治愈量大，容易吸引仇恨。配合沉默技能或位移技能，可有效规避集火风险。</p></div>
-      </div>
-    </div>
-
-    <div id="comboContent" class="guide-content">
-      <div class="guide-grid">
-        <div class="guide-card"><div class="guide-icon">🔥</div><h4>速攻连招</h4><p>星光冲击 → 形态切换 → 终极技 → 普攻 ×3。此连招在 3 秒内可打出约 280% 攻击力的爆发伤害。</p></div>
-        <div class="guide-card"><div class="guide-icon">💫</div><h4>持续输出流</h4><p>维持治愈形态，利用被动星光再生持续回血，配合队友控制技能稳步推进，适合长战。</p></div>
-        <div class="guide-card"><div class="guide-icon">🌙</div><h4>双形态循环</h4><p>战斗形态 2 技能 → 切换治愈 → 大治愈 → 切换战斗 → 终极。约 20 秒一次完整循环。</p></div>
-      </div>
-    </div>
-
-    <div id="buildContent" class="guide-content">
-      <div class="guide-grid">
-        <div class="guide-card"><div class="guide-icon">💍</div><h4>主流输出配装</h4><p>星辉之核（主武器）+ 光辉圣冠 + 星河碎片 ×2。侧重攻击词条，暴击率维持在 75% 以上。</p></div>
-        <div class="guide-card"><div class="guide-icon">🌿</div><h4>辅助治愈配装</h4><p>温柔之心（主武器）+ 生命织网 + 星光护符 ×2。生命值词条优先，治愈加成可达 +45%。</p></div>
-        <div class="guide-card"><div class="guide-icon">⚖️</div><h4>均衡配装</h4><p>晨星之刃 + 双属性混搭套装。适合新手前期过渡，兼顾输出与续航，上手门槛低。</p></div>
-      </div>
-    </div>
-
-    <div id="teamContent" class="guide-content">
-      <div class="guide-grid">
-        <div class="guide-card"><div class="guide-icon">👥</div><h4>标准阵容</h4><p>卡提希娅（治愈核心）+ 高爆发 DPS ×2 + 控制辅助。卡提希娅专注回血与护盾，DPS 负责爆发。</p></div>
-        <div class="guide-card"><div class="guide-icon">💥</div><h4>双核爆发阵</h4><p>卡提希娅（战斗形态主C）+ 爱弥斯联动 + 辅助×2。触发双生契约被动，爆发伤害提升 35%。</p></div>
-        <div class="guide-card"><div class="guide-icon">🏰</div><h4>龟速稳进阵</h4><p>卡提希娅 + 重甲坦克 + 群控 + 远程 DPS。适合高难度副本，牺牲速度换取极高容错率。</p></div>
-      </div>
+    <div class="gal-grid">
+      <div class="gal-item" data-t="art"    onclick="openLb('1.jpg')"><img src="1.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#00c9a7,#7dd3fc)'"><div class="gal-over">立绘·光明形态</div></div>
+      <div class="gal-item" data-t="art"    onclick="openLb('2.jpg')"><img src="2.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#7dd3fc,#00c9a7)'"><div class="gal-over">立绘·战斗形态</div></div>
+      <div class="gal-item" data-t="battle" onclick="openLb('3.jpg')"><img src="3.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#00e5cb,#38bdf8)'"><div class="gal-over">战斗·星光冲击</div></div>
+      <div class="gal-item" data-t="battle" onclick="openLb('4.jpg')"><img src="4.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#0891b2,#00c9a7)'"><div class="gal-over">战斗·终极技</div></div>
+      <div class="gal-item" data-t="daily"  onclick="openLb('5.jpg')"><img src="5.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#67e8f9,#a7f3d0)'"><div class="gal-over">日常·休闲时光</div></div>
+      <div class="gal-item" data-t="daily"  onclick="openLb('6.jpg')"><img src="6.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#a7f3d0,#bae6fd)'"><div class="gal-over">日常·与爱弥斯</div></div>
+      <div class="gal-item" data-t="art"    onclick="openLb('7.jpg')"><img src="7.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#00c9a7,#0ea5e9)'"><div class="gal-over">特别立绘</div></div>
+      <div class="gal-item" data-t="battle" onclick="openLb('8.jpg')"><img src="8.jpg" alt="" onerror="this.parentElement.style.background='linear-gradient(135deg,#0891b2,#06b6d4)'"><div class="gal-over">战斗·形态切换</div></div>
     </div>
   </div>
 </section>
-
-<!-- ===== GALLERY ===== -->
-<section id="gallery" class="section-animate">
-  <div class="section-inner">
-    <span class="section-tag">// Gallery</span>
-    <h2 class="section-title">角色图库</h2>
-    <div class="section-divider"></div>
-
-    <div class="gallery-filter">
-      <button class="gallery-tab active" data-type="all" onclick="filterGallery('all',this)">全部</button>
-      <button class="gallery-tab" data-type="art" onclick="filterGallery('art',this)">立绘</button>
-      <button class="gallery-tab" data-type="battle" onclick="filterGallery('battle',this)">战斗</button>
-      <button class="gallery-tab" data-type="daily" onclick="filterGallery('daily',this)">日常</button>
-    </div>
-
-    <div class="gallery-grid" id="galleryGrid">
-      <div class="gallery-img" data-type="art" onclick="openModal('1.jpg','立绘 · 光明形态')">
-        <img src="1.jpg" alt="立绘1" onerror="this.parentElement.style.background='linear-gradient(135deg,#8a5cf7,#f472b6)'">
-        <div class="img-overlay">立绘 · 光明形态</div>
-      </div>
-      <div class="gallery-img" data-type="art" onclick="openModal('2.jpg','立绘 · 战斗形态')">
-        <img src="2.jpg" alt="立绘2" onerror="this.parentElement.style.background='linear-gradient(135deg,#f472b6,#8a5cf7)'">
-        <div class="img-overlay">立绘 · 战斗形态</div>
-      </div>
-      <div class="gallery-img" data-type="battle" onclick="openModal('3.jpg','战斗 · 星光冲击')">
-        <img src="3.jpg" alt="战斗1" onerror="this.parentElement.style.background='linear-gradient(135deg,#a855f7,#ec4899)'">
-        <div class="img-overlay">战斗 · 星光冲击</div>
-      </div>
-      <div class="gallery-img" data-type="battle" onclick="openModal('4.jpg','战斗 · 终极技')">
-        <img src="4.jpg" alt="战斗2" onerror="this.parentElement.style.background='linear-gradient(135deg,#7c3aed,#db2777)'">
-        <div class="img-overlay">战斗 · 终极技</div>
-      </div>
-      <div class="gallery-img" data-type="daily" onclick="openModal('5.jpg','日常 · 休闲时光')">
-        <img src="5.jpg" alt="日常1" onerror="this.parentElement.style.background='linear-gradient(135deg,#c084fc,#f9a8d4)'">
-        <div class="img-overlay">日常 · 休闲时光</div>
-      </div>
-      <div class="gallery-img" data-type="daily" onclick="openModal('6.jpg','日常 · 与爱弥斯')">
-        <img src="6.jpg" alt="日常2" onerror="this.parentElement.style.background='linear-gradient(135deg,#a78bfa,#fbcfe8)'">
-        <div class="img-overlay">日常 · 与爱弥斯</div>
-      </div>
-      <div class="gallery-img" data-type="art" onclick="openModal('7.jpg','特别立绘')">
-        <img src="7.jpg" alt="特别" onerror="this.parentElement.style.background='linear-gradient(135deg,#8b5cf6,#f472b6)'">
-        <div class="img-overlay">特别立绘</div>
-      </div>
-      <div class="gallery-img" data-type="battle" onclick="openModal('8.jpg','战斗 · 形态切换')">
-        <img src="8.jpg" alt="战斗3" onerror="this.parentElement.style.background='linear-gradient(135deg,#6d28d9,#be185d)'">
-        <div class="img-overlay">战斗 · 形态切换</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Image Modal -->
-<div class="img-modal" id="imgModal" onclick="closeModal()">
-  <div class="img-modal-close"><i class="fa fa-times"></i></div>
-  <img id="modalImg" src="" alt="">
+<div class="lightbox" id="lb" onclick="closeLb()">
+  <button class="lb-close"><i class="fa fa-times"></i></button>
+  <img id="lbImg" src="" alt="">
 </div>
 
-<!-- ===== DEMO ===== -->
-<section id="demo" class="section-animate">
-  <div class="section-inner">
-    <span class="section-tag">// Gameplay Demo</span>
-    <h2 class="section-title">实机演示</h2>
-    <div class="section-divider"></div>
-
-    <div class="video-tabs">
-      <button class="tab-btn active" onclick="switchVideo('small',this)">小卡演示</button>
-      <button class="tab-btn" onclick="switchVideo('big',this)">大卡演示</button>
+<section id="demo">
+  <div class="sw reveal">
+    <span class="sec-label">// Demo</span>
+    <h2 class="sec-title">实机演示</h2>
+    <div class="sec-bar"></div>
+    <div class="vid-tabs">
+      <button class="tab-btn on" onclick="switchVid('small',this)">小卡演示</button>
+      <button class="tab-btn" onclick="switchVid('big',this)">大卡演示</button>
     </div>
-
-    <div class="video-wrap" id="smallVideo">
-      <video id="videoSmall" controls poster="1.jpg">
-        <source src="videos/111.mp4" type="video/mp4">
-        您的浏览器不支持视频播放。
-      </video>
-    </div>
-
-    <div class="video-wrap" id="bigVideo" style="display:none">
-      <video id="videoBig" controls poster="2.jpg">
-        <source src="videos/12.mp4" type="video/mp4">
-        您的浏览器不支持视频播放。
-      </video>
-    </div>
+    <div class="vid-wrap" id="vidSmall"><video controls poster="1.jpg"><source src="videos/111.mp4" type="video/mp4">浏览器不支持视频。</video></div>
+    <div class="vid-wrap" id="vidBig" style="display:none"><video controls poster="2.jpg"><source src="videos/12.mp4" type="video/mp4">浏览器不支持视频。</video></div>
   </div>
 </section>
 
-<!-- Back to top -->
-<div class="back-to-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <i class="fa fa-chevron-up"></i>
-</div>
+<button id="toTop" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="fa fa-chevron-up"></i></button>
 
-<script src="config.js"></script>
 <script>
-// ===== STARS =====
+/* ── 星粒 canvas ── */
 (function(){
-  const c = document.getElementById('starBg');
-  const ctx = c.getContext('2d');
-  let W, H;
-  function resize(){ W = c.width = innerWidth; H = c.height = innerHeight; }
-  window.addEventListener('resize', resize); resize();
-
-  const stars = Array.from({length:120}, () => ({
-    x: Math.random()*1e4, y: Math.random()*1e4,
-    r: Math.random()*1.5+0.3,
-    a: Math.random(),
-    speed: Math.random()*0.005+0.002
+  const cv=document.getElementById('starCanvas'),ctx=cv.getContext('2d');
+  let W,H;
+  function rsz(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+  window.addEventListener('resize',rsz);rsz();
+  const COLS=['0,229,203','125,211,252','255,255,255','0,201,167','167,243,208'];
+  const stars=Array.from({length:150},()=>({
+    x:Math.random()*1e4,y:Math.random()*1e4,
+    r:Math.random()*1.6+.3,
+    a:Math.random()*Math.PI*2,
+    s:Math.random()*.005+.0018,
+    c:COLS[Math.floor(Math.random()*COLS.length)]
   }));
-
-  function draw(){
+  (function draw(){
     ctx.clearRect(0,0,W,H);
-    stars.forEach(s => {
-      s.a += s.speed;
-      const alpha = (Math.sin(s.a)+1)/2 * 0.7 + 0.1;
+    stars.forEach(s=>{
+      s.a+=s.s;
+      const al=((Math.sin(s.a)+1)/2*.5+.12).toFixed(2);
       ctx.beginPath();
-      ctx.arc(s.x % W, s.y % H, s.r, 0, Math.PI*2);
-      ctx.fillStyle = `rgba(192,132,252,${alpha})`;
-      ctx.fill();
+      ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${s.c},${al})`;
+      ctx.fill()
     });
-    requestAnimationFrame(draw);
-  }
-  draw();
+    requestAnimationFrame(draw)
+  })();
 })();
 
-// ===== SCROLL ANIMATE =====
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if(e.isIntersecting) e.target.classList.add('visible');
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.section-animate').forEach(el => observer.observe(el));
+/* ── reveal on scroll ── */
+const io=new IntersectionObserver(
+  es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')}),
+  {threshold:.07}
+);
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-// ===== NAVBAR =====
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', scrollY > 50);
-  document.getElementById('backTop').classList.toggle('visible', scrollY > 300);
+/* ── navbar ── */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',scrollY>50);
+  document.getElementById('toTop').classList.toggle('on',scrollY>300)
 });
-document.getElementById('navToggle').addEventListener('click', () => {
-  document.getElementById('navMenu').classList.toggle('active');
-});
+document.getElementById('burger').addEventListener('click',()=>
+  document.getElementById('navLinks').classList.toggle('open')
+);
 
-// ===== THEME =====
-const cfg = window.siteConfig || {};
-let currentTheme = cfg.defaultTheme || 'purple';
-let isDark = cfg.defaultMode === 'dark';
+/* ── themes ── */
+const THEMES={
+  teal:{p:'#00c9a7',p2:'#00e5cb',acc:'#7dd3fc',gold:'#e2c97e',bg:'#f0fdfb',bg2:'#e0faf5',bg3:'#f7fffe',text:'#0a2e28',soft:'#2e7d6e',muted:'#5fa898'},
+  sky:{p:'#0ea5e9',p2:'#38bdf8',acc:'#67e8f9',gold:'#e2c97e',bg:'#f0f9ff',bg2:'#e0f2fe',bg3:'#f7fbff',text:'#0c2d48',soft:'#2563a0',muted:'#4b8fc4'}
+};
+function setTheme(n){
+  const t=THEMES[n]||THEMES.teal,r=document.documentElement;
+  Object.entries(t).forEach(([k,v])=>r.style.setProperty(`--${k}`,v));
+  document.getElementById('colorPick').value=t.p
+}
+function applyColor(){
+  const c=document.getElementById('colorPick').value,r=document.documentElement;
+  r.style.setProperty('--p',c);
+  const hue=(((parseInt(c.slice(1,3),16)/255*360)+30)%360).toFixed(0);
+  r.style.setProperty('--acc',`hsl(${hue},80%,72%)`)
+}
+let dark=false;
+function toggleDark(){
+  dark=!dark;
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('darkBtn').innerHTML=dark
+    ?'<i class="fa fa-sun-o"></i> 亮色'
+    :'<i class="fa fa-moon"></i> 深色'
+}
+setTheme('teal');
 
-function switchTheme(t) {
-  currentTheme = t;
-  const r = document.documentElement;
-  const themes = {
-    purple: { primary:'#8a5cf7', secondary:'#c084fc', accent:'#f472b6', bg:'#faf5ff', bg2:'#f3e8ff', text:'#3b1a6b', soft:'#7c5cbf' },
-    blue:   { primary:'#3b82f6', secondary:'#60a5fa', accent:'#38bdf8', bg:'#eff6ff', bg2:'#dbeafe', text:'#1e3a5f', soft:'#4b7ab5' }
-  };
-  const th = themes[t] || themes.purple;
-  Object.entries(th).forEach(([k,v]) => r.style.setProperty(`--${k.replace('bg2','bg2')}`, v));
-  r.style.setProperty('--bg2', th.bg2);
-}
-function applyCustomTheme() {
-  const c = document.getElementById('customColorPicker').value;
-  const r = document.documentElement;
-  r.style.setProperty('--primary', c);
-  r.style.setProperty('--secondary', c + 'bb');
-  r.style.setProperty('--accent', shiftHue(c, 30));
-}
-function shiftHue(hex, deg) {
-  // simple hue shift approximation
-  const n = parseInt(hex.slice(1),16);
-  const r = (n>>16)&255, g=(n>>8)&255, b=n&255;
-  return `rgb(${Math.min(255,r+deg)},${g},${Math.max(0,b-deg)})`;
-}
-function toggleDarkMode() {
-  isDark = !isDark;
-  document.body.classList.toggle('dark-mode', isDark);
-  const btn = document.getElementById('darkBtn');
-  btn.innerHTML = isDark ? '<i class="fa fa-sun-o"></i> 亮色' : '<i class="fa fa-moon"></i> 深色';
-}
-switchTheme(currentTheme);
-if(isDark) toggleDarkMode();
+/* ── guide tabs ── */
+document.querySelectorAll('.tabs .tab-btn').forEach(btn=>
+  btn.addEventListener('click',()=>{
+    const t=btn.dataset.tab;
+    document.querySelectorAll('.tabs .tab-btn').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
+    btn.classList.add('on');
+    document.getElementById(t).classList.add('on')
+  })
+);
 
-// ===== GUIDE TABS =====
-function switchGuideTab(tab) {
-  document.querySelectorAll('.guide-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn[data-tab]').forEach(el => el.classList.remove('active'));
-  document.getElementById(tab+'Content').classList.add('active');
-  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+/* ── gallery ── */
+function galFilter(t,btn){
+  document.querySelectorAll('.gal-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.gal-item').forEach(el=>{
+    el.style.display=(t==='all'||el.dataset.t===t)?'block':'none'
+  })
 }
-
-// ===== GALLERY =====
-function filterGallery(type, btn) {
-  document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.gallery-img').forEach(img => {
-    const show = type === 'all' || img.dataset.type === type;
-    img.style.display = show ? 'block' : 'none';
-  });
+function openLb(src){
+  document.getElementById('lbImg').src=src;
+  document.getElementById('lb').classList.add('on');
+  document.body.style.overflow='hidden'
 }
-function openModal(src, alt) {
-  const m = document.getElementById('imgModal');
-  document.getElementById('modalImg').src = src;
-  m.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal() {
-  document.getElementById('imgModal').classList.remove('open');
-  document.body.style.overflow = '';
+function closeLb(){
+  document.getElementById('lb').classList.remove('on');
+  document.body.style.overflow=''
 }
 
-// ===== VIDEO =====
-function switchVideo(type, btn) {
-  document.querySelectorAll('.video-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('smallVideo').style.display = type === 'small' ? 'block' : 'none';
-  document.getElementById('bigVideo').style.display = type === 'big' ? 'block' : 'none';
+/* ── video tabs ── */
+function switchVid(t,btn){
+  document.querySelectorAll('.vid-tabs .tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('vidSmall').style.display=t==='small'?'block':'none';
+  document.getElementById('vidBig').style.display=t==='big'?'block':'none'
 }
 </script>
 </body>
