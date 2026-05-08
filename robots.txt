@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://rainly8023.github.io/Carterthyia.github.io/sitemap.xml
