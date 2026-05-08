@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
+  <meta name="description" content="旅行日记 —— 记录吉隆坡、新加坡 Jewel Changi、香港等地的旅途影像与文字。步履不停，走过的每一寸土地。">
   <title>旅行日记 | 星光小站</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Serif+SC:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
@@ -244,7 +246,7 @@
       max-width: 1300px;
       margin: 80px auto 0;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 24px;
       padding: 0 40px 120px;
     }
@@ -494,11 +496,7 @@
 
       <!-- Malaysia -->
       <div class="photo-card">
-        <div class="img-placeholder">
-          <div class="img-placeholder-bg" style="background:linear-gradient(155deg,#0d1f14 0%,#152b1a 50%,#0a1810 100%)">
-            <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 40% at 40% 55%,rgba(60,180,80,.1) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 70% 35%,rgba(200,160,40,.07) 0%,transparent 60%)"></div>
-          </div>
-        </div>
+        <img src="https://images.unsplash.com/photo-1764866557865-1f4e4060211f?w=800&q=85&auto=format&fit=crop" alt="吉隆坡双子塔夜景" width="800" height="534" loading="lazy">
         <div class="glass-overlay" style="height:260px"></div>
         <div class="card-rain" id="rain1"></div>
         <div class="photo-info">
@@ -514,7 +512,7 @@
 
       <!-- Singapore -->
       <div class="photo-card">
-        <img src="https://images.unsplash.com/photo-1555912881-1ecd82307e0e?w=800&q=85&auto=format&fit=crop" alt="Jewel Changi Airport Rain Vortex" loading="lazy">
+        <img src="https://images.unsplash.com/photo-1555912881-1ecd82307e0e?w=800&q=85&auto=format&fit=crop" alt="Jewel Changi Airport Rain Vortex" width="800" height="534" loading="lazy">
         <div class="glass-overlay" style="height:260px"></div>
         <div class="card-rain" id="rain2"></div>
         <div class="photo-info">
@@ -529,7 +527,7 @@
       </div>
 
       <!-- Hong Kong -->
-      <div class="photo-card" onclick="location.href='Hong_Kong.html'" style="cursor:pointer">
+      <a class="photo-card" href="Hong_Kong.html">
         <div class="img-placeholder">
           <div class="img-placeholder-bg" style="background:linear-gradient(155deg,#0d1a2a 0%,#1a2d3f 45%,#0a1520 100%)">
             <div style="position:absolute;inset:0;background:radial-gradient(ellipse 50% 35% at 35% 65%,rgba(255,155,50,.1) 0%,transparent 60%),radial-gradient(ellipse 60% 30% at 72% 58%,rgba(80,140,210,.1) 0%,transparent 60%)"></div>
@@ -546,7 +544,7 @@
           </div>
           <span class="desc">维港的灯火、庙街的嘈杂、山顶的风——这座城市必须用脚丈量。→ 查看旅行日记</span>
         </div>
-      </div>
+      </a>
 
     </div>
 
@@ -570,7 +568,8 @@
 
     function initDrops() {
       drops = [];
-      const count = Math.floor(canvas.width / 3.2);
+      const divisor = window.innerWidth < 768 ? 8 : 3.2;
+      const count = Math.floor(canvas.width / divisor);
       for (let i = 0; i < count; i++) {
         drops.push({
           x: Math.random() * canvas.width,

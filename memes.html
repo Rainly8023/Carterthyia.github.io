@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
+  <meta name="description" content="爱播整活图集 —— 鬼畜表情包与整活影像合集，社区投稿，勿令上升。">
   <title>爱播整活办 | 鬼畜图集</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
@@ -468,7 +470,7 @@ createApp({
         if (!error && data?.length) {
           items.value = reindex([...BUILTIN.map(b=>({...b})), ...data]);
         }
-      } catch(e) { console.warn('load:', e); }
+      } catch(e) { console.warn('load:', e); toast('无法连接到数据库，仅显示内置图集', 'error'); }
     }
 
     function sub() {

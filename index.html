@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="卡提希娅（Carterthyia）私人小站 —— 鸣潮5星气动角色，双形态主C，图库、故事线与实机演示。">
   <title>卡提希娅 · 私人小站</title>
   <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,9 +64,33 @@
     .nav-links a:hover { color: var(--text); }
     .nav-links a.special { color: var(--gold); }
     .nav-links a.special:hover { color: #e0c090; }
+    /* 汉堡按钮 */
+    .nav-burger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .nav-burger span {
+      display: block; width: 22px; height: 1px;
+      background: var(--muted); transition: .3s;
+    }
+    .nav-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
-      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+      .nav-links {
+        display: none; position: fixed; top: 60px; left: 0; right: 0;
+        background: rgba(245,244,241,.98); border-bottom: 1px solid var(--line);
+        flex-direction: column; gap: 0; padding: 8px 0;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links li { width: 100%; }
+      .nav-links a {
+        display: block; padding: 12px 24px;
+        font-size: 13px; letter-spacing: 2px;
+        border-bottom: 1px solid var(--line);
+      }
     }
 
     /* ── HERO ── */
@@ -365,21 +390,24 @@
 <!-- 导航 -->
 <nav id="nav">
   <div class="nav-logo">Carterthyia</div>
-  <ul class="nav-links">
-    <li><a href="#about">关于她</a></li>
-    <li><a href="#story">故事</a></li>
-    <li><a href="#gallery">图库</a></li>
-    <li><a href="#demo">演示</a></li>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about" onclick="closeMenu()">关于她</a></li>
+    <li><a href="#story" onclick="closeMenu()">故事</a></li>
+    <li><a href="#gallery" onclick="closeMenu()">图库</a></li>
+    <li><a href="#demo" onclick="closeMenu()">演示</a></li>
     <li><a href="aemeath.html" class="special">爱弥斯档案</a></li>
     <li><a href="memes.html">鬼畜图集</a></li>
     <li><a href="travel.html">旅行</a></li>
   </ul>
+  <button class="nav-burger" id="nav-burger" onclick="toggleMenu()" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
   <div class="hero-img-wrap">
-    <img src="images/master.jpg" alt="卡提希娅"
+    <img src="images/master.jpg" alt="卡提希娅" width="160" height="160"
       onerror="this.parentElement.style.background='linear-gradient(160deg,#0d2420,#1a3830)'">
   </div>
   <p class="hero-en">CARTERTHYIA · 鸣潮</p>
@@ -537,35 +565,35 @@
   </div>
   <div class="gallery-grid">
     <div class="gal-item" onclick="openLb('images/1.jpg')">
-      <img src="images/1.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0d1a16'">
+      <img src="images/1.jpg" alt="卡提希娅立绘 · 光明形态" loading="lazy" onerror="this.parentElement.style.background='#0d1a16'">
       <div class="gal-caption">立绘 · 光明形态</div>
     </div>
     <div class="gal-item" onclick="openLb('images/2.jpg')">
-      <img src="images/2.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0d1a1a'">
+      <img src="images/2.jpg" alt="卡提希娅立绘 · 战斗形态" loading="lazy" onerror="this.parentElement.style.background='#0d1a1a'">
       <div class="gal-caption">立绘 · 战斗形态</div>
     </div>
     <div class="gal-item" onclick="openLb('images/3.jpg')">
-      <img src="images/3.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0a1518'">
+      <img src="images/3.jpg" alt="卡提希娅战斗 · 星光冲击" loading="lazy" onerror="this.parentElement.style.background='#0a1518'">
       <div class="gal-caption">战斗 · 星光冲击</div>
     </div>
     <div class="gal-item" onclick="openLb('images/4.jpg')">
-      <img src="images/4.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0c1520'">
+      <img src="images/4.jpg" alt="卡提希娅战斗 · 终极技" loading="lazy" onerror="this.parentElement.style.background='#0c1520'">
       <div class="gal-caption">战斗 · 终极技</div>
     </div>
     <div class="gal-item" onclick="openLb('images/5.jpg')">
-      <img src="images/5.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0d1e18'">
+      <img src="images/5.jpg" alt="卡提希娅日常 · 休闲时光" loading="lazy" onerror="this.parentElement.style.background='#0d1e18'">
       <div class="gal-caption">日常 · 休闲时光</div>
     </div>
     <div class="gal-item" onclick="openLb('images/6.jpg')">
-      <img src="images/6.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0d1a1e'">
+      <img src="images/6.jpg" alt="卡提希娅日常 · 与爱弥斯" loading="lazy" onerror="this.parentElement.style.background='#0d1a1e'">
       <div class="gal-caption">日常 · 与爱弥斯</div>
     </div>
     <div class="gal-item" onclick="openLb('images/7.jpg')">
-      <img src="images/7.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0a1a16'">
+      <img src="images/7.jpg" alt="卡提希娅特别立绘" loading="lazy" onerror="this.parentElement.style.background='#0a1a16'">
       <div class="gal-caption">特别立绘</div>
     </div>
     <div class="gal-item" onclick="openLb('images/8.jpg')">
-      <img src="images/8.jpg" alt="" loading="lazy" onerror="this.parentElement.style.background='#0c1620'">
+      <img src="images/8.jpg" alt="卡提希娅战斗 · 形态切换" loading="lazy" onerror="this.parentElement.style.background='#0c1620'">
       <div class="gal-caption">战斗 · 形态切换</div>
     </div>
   </div>
@@ -641,7 +669,8 @@
   const resize = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; };
   window.addEventListener('resize', resize); resize();
 
-  const stars = Array.from({ length: 120 }, () => ({
+  const starCount = window.innerWidth < 768 ? 40 : 120;
+  const stars = Array.from({ length: starCount }, () => ({
     x: Math.random() * 10000,
     y: Math.random() * 10000,
     r: Math.random() * 1.2 + .2,
@@ -685,6 +714,20 @@ document.querySelectorAll('.tnode').forEach((el, i) => {
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('solid', scrollY > 40);
   document.getElementById('top-btn').classList.toggle('on', scrollY > 300);
+});
+
+/* ── 汉堡菜单 ── */
+function toggleMenu() {
+  document.getElementById('nav-links').classList.toggle('open');
+  document.getElementById('nav-burger').classList.toggle('open');
+}
+function closeMenu() {
+  document.getElementById('nav-links').classList.remove('open');
+  document.getElementById('nav-burger').classList.remove('open');
+}
+document.addEventListener('click', e => {
+  const nav = document.getElementById('nav');
+  if (!nav.contains(e.target)) closeMenu();
 });
 
 /* ── 灯箱 ── */

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="香港旅行日记 —— 维多利亚港、旺角霓虹、太平山顶、天星小轮、庙街烟火。流光里的快门，2024年11月。">
 <title>香港 · 流光记 | 星光小站</title>
 <link rel="icon" href="favicon/13.ico?v=20240626" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -263,11 +264,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1617154219393-1a84be367f57?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1617154219393-1a84be367f57?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">维多利亚港</div>
     </div>
@@ -281,11 +279,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1573529034998-1d2e6eb2adf4?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1573529034998-1d2e6eb2adf4?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">旺角</div>
     </div>
@@ -299,11 +294,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1664179620257-a8a59d856971?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1664179620257-a8a59d856971?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">太平山顶</div>
     </div>
@@ -317,11 +309,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1619187269972-267d2b78a423?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1619187269972-267d2b78a423?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">天星小轮</div>
     </div>
@@ -335,11 +324,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1768321140168-fa4795cb03f8?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1768321140168-fa4795cb03f8?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">庙街</div>
     </div>
@@ -353,11 +339,8 @@ body::before{
 
   <div class="photo-card">
     <div class="card-img">
-      <div class="card-img-bg" style="
-        background-image:url('https://images.unsplash.com/photo-1741135742473-8b6120b4f248?w=800&q=85&auto=format&fit=crop');
-        background-size:cover;background-position:center;
-        filter:brightness(.88) saturate(.92);
-      "></div>
+      <div class="card-img-bg lazy-bg" data-src="https://images.unsplash.com/photo-1741135742473-8b6120b4f248?w=800&q=85&auto=format&fit=crop"
+        style="background-size:cover;background-position:center;filter:brightness(.88) saturate(.92);background-color:#ede9e0;"></div>
       <div class="card-img-overlay"></div>
       <div class="card-img-label">茶餐厅</div>
     </div>
@@ -426,5 +409,17 @@ body::before{
   <div class="footer-text">步履不停 &nbsp;·&nbsp; 此刻记录，是为了将来的某天回头看</div>
 </footer>
 
+<script>
+const lazyBgs = document.querySelectorAll('.lazy-bg');
+const bgObs = new IntersectionObserver((entries, obs) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.backgroundImage = `url('${e.target.dataset.src}')`;
+      obs.unobserve(e.target);
+    }
+  });
+}, { rootMargin: '200px' });
+lazyBgs.forEach(el => bgObs.observe(el));
+</script>
 </body>
 </html>
