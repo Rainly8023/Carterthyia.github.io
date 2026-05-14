@@ -58,11 +58,13 @@
       font-size: 11px; letter-spacing: 5px;
       color: rgba(167,139,250,.7); font-weight: 300;
     }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-user { font-size: 11px; letter-spacing: 1px; color: rgba(255,255,255,.35); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .nav-back {
       text-decoration: none; color: rgba(255,255,255,.35);
       font-size: 11px; letter-spacing: 2px;
       border: 1px solid var(--border); padding: 5px 16px; border-radius: 20px;
-      transition: .3s;
+      transition: .3s; background: none; cursor: pointer; font-family: var(--serif);
     }
     .nav-back:hover { border-color: rgba(167,139,250,.5); color: var(--glow); }
 
@@ -101,6 +103,20 @@
       opacity: .4;
     }
 
+
+    /* ── AUTH ── */
+    .auth-wrap { max-width: 400px; margin: 40px auto 80px; padding: 0 20px; position: relative; z-index: 1; }
+    .auth-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 36px 32px; animation: slideUp .5s cubic-bezier(.34,1.3,.64,1) both; }
+    .auth-tabs { display: flex; margin-bottom: 28px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .auth-tab { flex:1; padding:10px; text-align:center; font-size:12px; letter-spacing:3px; cursor:pointer; transition:.25s; background:none; border:none; color:rgba(255,255,255,.4); font-family:var(--serif); }
+    .auth-tab.on { background: var(--soft); color: var(--glow); }
+    .field { margin-bottom: 16px; }
+    .field label { display:block; font-size:10px; letter-spacing:3px; color:rgba(255,255,255,.35); margin-bottom:7px; }
+    .field input { width:100%; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:10px; padding:11px 14px; color:rgba(255,255,255,.85); font-size:13px; font-family:var(--serif); outline:none; transition:border-color .25s; }
+    .field input:focus { border-color: rgba(167,139,250,.5); }
+    .field input::placeholder { color: rgba(255,255,255,.2); }
+    .auth-err { font-size:11px; color:#f87171; text-align:center; margin-top:12px; letter-spacing:1px; }
+    .auth-hint { font-size:11px; color:rgba(255,255,255,.25); text-align:center; margin-top:14px; letter-spacing:1px; line-height:1.8; }
     /* ── STREAK BAR ── */
     .streak-wrap {
       max-width: 480px; margin: 36px auto 0;
@@ -442,7 +458,11 @@
   <!-- NAV -->
   <nav class="nav">
     <span class="nav-logo">CARTERTHYIA · STUDIO</span>
-    <a href="index.html" class="nav-back"><i class="fa fa-angle-left"></i> 返回主页</a>
+    <div class="nav-right">
+      <span class="nav-user" v-if="user">{{ userEmail }}</span>
+      <button v-if="user" class="nav-back" @click="logout">退出</button>
+      <a v-else href="index.html" class="nav-back"><i class="fa fa-angle-left"></i> 返回主页</a>
+    </div>
   </nav>
 
   <!-- HERO -->
@@ -452,6 +472,34 @@
     <div class="hero-sub">积跬步 · 以至千里</div>
     <div class="hero-line"></div>
   </div>
+
+  <!-- 未登录：显示登录注册 -->
+  <transition name="fade" mode="out-in">
+    <div v-if="!user && !authLoading" key="auth" class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab" :class="{on: authMode==='login'}" @click="authMode='login'; authErr=''">登 录</button>
+          <button class="auth-tab" :class="{on: authMode==='register'}" @click="authMode='register'; authErr=''">注 册</button>
+        </div>
+        <div class="field">
+          <label>邮 箱</label>
+          <input type="email" v-model="authEmail" placeholder="your@email.com" @keyup.enter="authSubmit">
+        </div>
+        <div class="field">
+          <label>密 码</label>
+          <input type="password" v-model="authPassword" :placeholder="authMode='register'?'至少6位':''" @keyup.enter="authSubmit">
+        </div>
+        <button class="btn-submit" :disabled="authBusy" @click="authSubmit">
+          {{ authBusy ? '处理中…' : (authMode==='login' ? '✦ 登录' : '✦ 注册') }}
+        </button>
+        <div class="auth-err" v-if="authErr">{{ authErr }}</div>
+        <div class="auth-hint" v-if="authMode==='register'">注册后直接登录，无需验证邮箱</div>
+      </div>
+    </div>
+  </transition>
+
+  <!-- 已登录：正常打卡区域 -->
+  <template v-if="user">
 
   <!-- STREAK -->
   <div class="streak-wrap">
@@ -578,6 +626,8 @@
     </div>
   </div>
 
+  </template><!-- end v-if user -->
+
   <!-- 灯箱 -->
   <transition name="fade">
     <div v-if="showLb" class="lb" @click.self="showLb=false">
@@ -643,6 +693,19 @@ const ENCOURAGEMENTS = [
 
 createApp({
   setup() {
+    // ── Auth state ──
+    const user        = ref(null);
+    const authLoading = ref(true);
+    const authMode    = ref('login');
+    const authEmail   = ref('');
+    const authPassword = ref('');
+    const authBusy    = ref(false);
+    const authErr     = ref('');
+    const userEmail   = Vue.computed(() => {
+      const e = user.value?.email || '';
+      return e.length > 20 ? e.slice(0, 17) + '…' : e;
+    });
+
     // ── state ──
     const todayDone      = ref(false);
     const todaySlot      = ref('');
@@ -680,8 +743,21 @@ createApp({
 
     // ── 加载数据 ──
     async function load() {
-      todaySlot.value = getCMT8Slot();
+      const slot = getCMT8Slot();
+      todaySlot.value = slot;
 
+      // 1. 先读 localStorage 立即恢复，避免刷新闪屏
+      const localDone      = localStorage.getItem('checkin_done_' + slot);
+      const localPreview   = localStorage.getItem('checkin_preview_' + slot);
+      const localSlotSaved = localStorage.getItem('checkin_last_slot');
+      if (localDone && localSlotSaved === slot) {
+        todayDone.value = true;
+        todayPreviewUrl.value = localPreview || '';
+        pickEncouragement();
+        streak.value = parseInt(localStorage.getItem('checkin_streak') || '1');
+      }
+
+      // 2. 后台从数据库校验并同步
       try {
         const { data, error } = await sb
           .from(TABLE)
@@ -689,42 +765,29 @@ createApp({
           .order('slot', { ascending: false });
 
         if (error) throw error;
+        // DB 返回空不代表今天没打（可能 RLS 拦截 / 网络问题），不清 localStorage
         if (!data || !data.length) return;
 
-        // 历史记录
         history.value = data.map(r => ({
           ...r,
           date_label: formatDateLabel(r.slot)
         }));
 
-        // 今日是否已打卡
-        const todayRecord = data.find(r => r.slot === todaySlot.value);
+        const todayRecord = data.find(r => r.slot === slot);
         if (todayRecord) {
           todayDone.value = true;
           todayPreviewUrl.value = todayRecord.url;
-          pickEncouragement();
+          if (!encouragement.value) pickEncouragement();
+          localStorage.setItem('checkin_done_' + slot, '1');
+          localStorage.setItem('checkin_preview_' + slot, todayRecord.url);
+          localStorage.setItem('checkin_last_slot', slot);
         }
+        // DB 无今日记录但 localStorage 有：以 localStorage 为准（RLS 可能拦截了查询）
 
-        // 计算连续天数
         calcStreak(data.map(r => r.slot));
       } catch (e) {
-        console.warn('load:', e);
-        // 降级：只读本地
-        loadFromLocal();
+        console.warn('DB load failed, using localStorage:', e);
       }
-    }
-
-    function loadFromLocal() {
-      const slot = getCMT8Slot();
-      todaySlot.value = slot;
-      const done = localStorage.getItem('checkin_done_' + slot);
-      if (done) {
-        todayDone.value = true;
-        todayPreviewUrl.value = localStorage.getItem('checkin_preview_' + slot) || '';
-        pickEncouragement();
-      }
-      const localStreak = parseInt(localStorage.getItem('checkin_streak') || '0');
-      streak.value = localStreak;
     }
 
     function calcStreak(slots) {
@@ -811,9 +874,10 @@ createApp({
         todayPreviewUrl.value = publicUrl;
         pickEncouragement();
 
-        // 5. 本地备份
+        // 5. 本地备份（三件套，刷新后可立即恢复）
         localStorage.setItem('checkin_done_' + slot, '1');
         localStorage.setItem('checkin_preview_' + slot, publicUrl);
+        localStorage.setItem('checkin_last_slot', slot);
 
         // 6. 更新历史 & streak
         history.value = [{ id: Date.now(), slot, url: publicUrl, date_label: formatDateLabel(slot) }, ...history.value];
@@ -828,12 +892,51 @@ createApp({
       }
     }
 
+    // ── Auth 函数 ──
+    async function authSubmit() {
+      if (!authEmail.value || !authPassword.value) { authErr.value = '请填写邮箱和密码'; return; }
+      authBusy.value = true; authErr.value = '';
+      try {
+        if (authMode.value === 'register') {
+          const { error } = await sb.auth.signUp({ email: authEmail.value, password: authPassword.value });
+          if (error) throw error;
+        } else {
+          const { error } = await sb.auth.signInWithPassword({ email: authEmail.value, password: authPassword.value });
+          if (error) throw error;
+        }
+      } catch (e) {
+        const msg = e.message || '';
+        if (msg.includes('Invalid login'))           authErr.value = '邮箱或密码错误';
+        else if (msg.includes('already registered')) authErr.value = '该邮箱已注册，请直接登录';
+        else if (msg.includes('Password should'))    authErr.value = '密码至少6位';
+        else authErr.value = msg || '操作失败，请重试';
+      }
+      authBusy.value = false;
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+      user.value = null;
+      toast('已退出登录');
+    }
+
     onMounted(() => {
+      // 监听登录态，登录后自动加载打卡数据
+      sb.auth.onAuthStateChange(async (event, session) => {
+        user.value = session?.user || null;
+        authLoading.value = false;
+        if (user.value) {
+          await load();
+        }
+      });
+      // 未登录时也尝试从 localStorage 恢复（游客模式兜底）
       load();
       window.addEventListener('paste', onPaste);
     });
 
     return {
+      user, authLoading, authMode, authEmail, authPassword,
+      authBusy, authErr, userEmail, authSubmit, logout,
       todayDone, todaySlot, todayLabel, todayPreviewUrl,
       streak, history, encouragement,
       dragging, picFile, previewSrc, fileName, fileKb,
