@@ -651,24 +651,17 @@
 const { createApp, ref, computed, onMounted } = Vue;
 const { createClient } = supabase;
 
-
 const sb = createClient(
   'https://yrfktypmcghrbozvxcmi.supabase.co',
   'sb_publishable_OySH4rZ_Md7kZ3WnWaVxBw_lCnV02Sy'
 );
-const BUCKET = 'word111'; // 
-const TABLE  = 'word111'; // 
+const BUCKET = 'word111';
+const TABLE  = 'word111';
 
-// ── CMT+8 日期段（每天04:00重置） ──
 function getCMT8Slot() {
-  // 获取当前 UTC 时间
-  const now = new Date();
-  const cmt8 = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-  // 如果 CMT+8 时间 < 04:00，算作前一天的打卡期
-  const h = cmt8.getUTCHours();
-  if (h < 4) {
-    cmt8.setUTCDate(cmt8.getUTCDate() - 1);
-  }
+  const now  = new Date();
+  const cmt8 = new Date(now.getTime() + 8 * 3600000);
+  if (cmt8.getUTCHours() < 4) cmt8.setUTCDate(cmt8.getUTCDate() - 1);
   const y = cmt8.getUTCFullYear();
   const m = String(cmt8.getUTCMonth() + 1).padStart(2, '0');
   const d = String(cmt8.getUTCDate()).padStart(2, '0');
@@ -693,44 +686,41 @@ const ENCOURAGEMENTS = [
 
 createApp({
   setup() {
-    // ── Auth state ──
-    const user        = ref(null);
-    const authLoading = ref(true);
-    const authMode    = ref('login');
-    const authEmail   = ref('');
+    // ── Auth ──
+    const user         = ref(null);
+    const authLoading  = ref(true);  // 等待 supabase 初始化
+    const authMode     = ref('login');
+    const authEmail    = ref('');
     const authPassword = ref('');
-    const authBusy    = ref(false);
-    const authErr     = ref('');
-    const userEmail   = Vue.computed(() => {
+    const authBusy     = ref(false);
+    const authErr      = ref('');
+    const userEmail    = computed(() => {
       const e = user.value?.email || '';
       return e.length > 20 ? e.slice(0, 17) + '…' : e;
     });
 
-    // ── state ──
-    const todayDone      = ref(false);
-    const todaySlot      = ref('');
+    // ── 打卡状态 ──
+    const todayDone       = ref(false);
+    const todaySlot       = ref('');
     const todayPreviewUrl = ref('');
-    const streak         = ref(0);
-    const history        = ref([]);
-    const encouragement  = ref('');
+    const streak          = ref(0);
+    const history         = ref([]);
+    const encouragement   = ref('');
+    const todayLabel      = computed(() => todaySlot.value ? formatDateLabel(todaySlot.value) : '');
 
-    const dragging = ref(false);
-    const picFile  = ref(null);
+    const dragging   = ref(false);
+    const picFile    = ref(null);
     const previewSrc = ref('');
-    const fileName = ref('');
-    const fileKb   = ref(0);
-    const busy     = ref(false);
-    const prog     = ref(0);
-    const errMsg   = ref('');
+    const fileName   = ref('');
+    const fileKb     = ref(0);
+    const busy       = ref(false);
+    const prog       = ref(0);
+    const errMsg     = ref('');
+    const showLb     = ref(false);
+    const lbUrl      = ref('');
+    const toasts     = ref([]);
 
-    const showLb = ref(false);
-    const lbUrl  = ref('');
-    const toasts = ref([]);
-    const fi     = ref(null);
-
-    const todayLabel = computed(() => formatDateLabel(todaySlot.value));
-
-    // ── 工具 ──
+    // ── Toast ──
     function toast(msg, type = 'success') {
       const id = Date.now();
       toasts.value.push({ id, msg, type });
@@ -741,200 +731,185 @@ createApp({
       encouragement.value = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
     }
 
-    // ── 加载数据 ──
+    // ── 登录 / 注册 ──
+    async function authSubmit() {
+      if (!authEmail.value || !authPassword.value) {
+        authErr.value = '请填写邮箱和密码'; return;
+      }
+      authBusy.value = true; authErr.value = '';
+      try {
+        if (authMode.value === 'register') {
+          const { error } = await sb.auth.signUp({
+            email: authEmail.value, password: authPassword.value
+          });
+          if (error) throw error;
+          toast('注册成功，正在登录…');
+          // 注册后自动登录
+          const { error: e2 } = await sb.auth.signInWithPassword({
+            email: authEmail.value, password: authPassword.value
+          });
+          if (e2) throw e2;
+        } else {
+          const { error } = await sb.auth.signInWithPassword({
+            email: authEmail.value, password: authPassword.value
+          });
+          if (error) throw error;
+        }
+        // 登录成功 → onAuthStateChange 会自动触发，user.value 会更新
+      } catch (e) {
+        const msg = e.message || '';
+        if (msg.includes('Invalid login'))            authErr.value = '邮箱或密码错误';
+        else if (msg.includes('already registered'))  authErr.value = '该邮箱已注册，请直接登录';
+        else if (msg.includes('Password should'))     authErr.value = '密码至少6位';
+        else if (msg.includes('Email not confirmed')) authErr.value = '请先验证邮箱';
+        else authErr.value = msg || '操作失败，请重试';
+        authBusy.value = false;
+      }
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+      // onAuthStateChange 会把 user 置 null，手动也置一下确保同步
+      user.value = null;
+      todayDone.value = false;
+      history.value = [];
+      streak.value = 0;
+      toast('已退出登录');
+    }
+
+    // ── 加载打卡数据 ──
     async function load() {
       const slot = getCMT8Slot();
       todaySlot.value = slot;
 
-      // 1. 先读 localStorage 立即恢复，避免刷新闪屏
-      const localDone      = localStorage.getItem('checkin_done_' + slot);
-      const localPreview   = localStorage.getItem('checkin_preview_' + slot);
-      const localSlotSaved = localStorage.getItem('checkin_last_slot');
-      if (localDone && localSlotSaved === slot) {
+      // 先读 localStorage，立即恢复状态
+      const localDone  = localStorage.getItem('checkin_done_' + slot);
+      const localSlot  = localStorage.getItem('checkin_last_slot');
+      if (localDone && localSlot === slot) {
         todayDone.value = true;
-        todayPreviewUrl.value = localPreview || '';
+        todayPreviewUrl.value = localStorage.getItem('checkin_preview_' + slot) || '';
         pickEncouragement();
         streak.value = parseInt(localStorage.getItem('checkin_streak') || '1');
       }
 
-      // 2. 后台从数据库校验并同步
+      // 再从数据库同步
       try {
         const { data, error } = await sb
-          .from(TABLE)
-          .select('*')
-          .order('slot', { ascending: false });
-
+          .from(TABLE).select('*').order('slot', { ascending: false });
         if (error) throw error;
-        // DB 返回空不代表今天没打（可能 RLS 拦截 / 网络问题），不清 localStorage
         if (!data || !data.length) return;
 
-        history.value = data.map(r => ({
-          ...r,
-          date_label: formatDateLabel(r.slot)
-        }));
+        history.value = data.map(r => ({ ...r, date_label: formatDateLabel(r.slot) }));
 
-        const todayRecord = data.find(r => r.slot === slot);
-        if (todayRecord) {
+        const rec = data.find(r => r.slot === slot);
+        if (rec) {
           todayDone.value = true;
-          todayPreviewUrl.value = todayRecord.url;
+          todayPreviewUrl.value = rec.url;
           if (!encouragement.value) pickEncouragement();
           localStorage.setItem('checkin_done_' + slot, '1');
-          localStorage.setItem('checkin_preview_' + slot, todayRecord.url);
+          localStorage.setItem('checkin_preview_' + slot, rec.url);
           localStorage.setItem('checkin_last_slot', slot);
         }
-        // DB 无今日记录但 localStorage 有：以 localStorage 为准（RLS 可能拦截了查询）
-
         calcStreak(data.map(r => r.slot));
       } catch (e) {
-        console.warn('DB load failed, using localStorage:', e);
+        console.warn('DB load:', e.message);
       }
     }
 
     function calcStreak(slots) {
       if (!slots.length) { streak.value = 0; return; }
-      // slots 已按倒序排列，计算从今日/昨日开始的连续天数
       const sorted = [...new Set(slots)].sort().reverse();
-      let count = 0;
-      let cur = getCMT8Slot();
-
+      let count = 0, cur = getCMT8Slot();
       for (const s of sorted) {
         if (s === cur) {
           count++;
-          // 前一个"日期段"
           const d = new Date(cur + 'T00:00:00Z');
           d.setUTCDate(d.getUTCDate() - 1);
           cur = d.toISOString().slice(0, 10);
-        } else if (s < cur) {
-          break;
-        }
+        } else if (s < cur) break;
       }
       streak.value = count;
       localStorage.setItem('checkin_streak', String(count));
     }
 
     // ── 文件处理 ──
+    function triggerFile() {
+      document.getElementById('fileInput').click();
+    }
     function handleFile(file) {
       errMsg.value = '';
-      if (!file.type.startsWith('image/')) { errMsg.value = '仅支持图片文件'; return; }
+      if (!file || !file.type.startsWith('image/')) { errMsg.value = '仅支持图片文件'; return; }
       if (file.size > 10 * 1024 * 1024) { errMsg.value = '图片不能超过 10MB'; return; }
       picFile.value = file;
       fileName.value = file.name;
       fileKb.value = (file.size / 1024).toFixed(0);
       previewSrc.value = URL.createObjectURL(file);
     }
-    function triggerFile() {
-      const el = document.getElementById('fileInput');
-      if (el) el.click();
-    }
-    function onFile(e) { if (e.target.files[0]) handleFile(e.target.files[0]); }
-    function onDrop(e) { dragging.value = false; if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }
-
-    // 粘贴截图
+    function onFile(e)  { handleFile(e.target.files[0]); }
+    function onDrop(e)  { dragging.value = false; handleFile(e.dataTransfer.files[0]); }
     function onPaste(e) {
-      const items = e.clipboardData?.items;
-      if (!items) return;
-      for (const item of items) {
-        if (item.type.startsWith('image/')) {
-          handleFile(item.getAsFile());
-          break;
-        }
+      if (todayDone.value) return;
+      for (const item of (e.clipboardData?.items || [])) {
+        if (item.type.startsWith('image/')) { handleFile(item.getAsFile()); break; }
       }
     }
 
-    // ── 提交 ──
+    // ── 提交打卡 ──
     async function submit() {
       if (!picFile.value) return;
       busy.value = true; prog.value = 15; errMsg.value = '';
-
-      const slot = getCMT8Slot(); // 再次计算确保准确
-      const ext  = picFile.value.name.split('.').pop() || 'jpg';
+      const slot = getCMT8Slot();
+      const ext  = (picFile.value.name.split('.').pop() || 'jpg').toLowerCase();
       const path = `${slot}_${Date.now()}.${ext}`;
-
       try {
-        // 1. 上传图片
         const { error: upErr } = await sb.storage
-          .from(BUCKET)
-          .upload(path, picFile.value, { upsert: false });
-        if (upErr) throw new Error('图片上传失败：' + upErr.message);
+          .from(BUCKET).upload(path, picFile.value, { upsert: false });
+        if (upErr) throw new Error('上传失败：' + upErr.message);
         prog.value = 60;
 
-        // 2. 获取公开 URL
         const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
         const publicUrl = urlData.publicUrl;
         prog.value = 75;
 
-        // 3. 写入数据库
         const { error: dbErr } = await sb.from(TABLE).insert([{
-          slot,
-          url: publicUrl,
-          storage_path: path,
-          ts: Date.now()
+          slot, url: publicUrl, storage_path: path, ts: Date.now()
         }]);
-        if (dbErr) throw new Error('记录保存失败：' + dbErr.message);
+        if (dbErr) throw new Error('保存失败：' + dbErr.message);
         prog.value = 100;
 
-        // 4. 更新本地状态
         todayDone.value = true;
         todayPreviewUrl.value = publicUrl;
         pickEncouragement();
-
-        // 5. 本地备份（三件套，刷新后可立即恢复）
         localStorage.setItem('checkin_done_' + slot, '1');
         localStorage.setItem('checkin_preview_' + slot, publicUrl);
         localStorage.setItem('checkin_last_slot', slot);
-
-        // 6. 更新历史 & streak
         history.value = [{ id: Date.now(), slot, url: publicUrl, date_label: formatDateLabel(slot) }, ...history.value];
         calcStreak(history.value.map(r => r.slot));
-
         toast('打卡成功！今天也超棒的 ✦');
       } catch (e) {
-        errMsg.value = e.message || '提交失败，请重试';
+        errMsg.value = e.message || '提交失败';
         toast(errMsg.value, 'error');
-        busy.value = false;
         prog.value = 0;
       }
-    }
-
-    // ── Auth 函数 ──
-    async function authSubmit() {
-      if (!authEmail.value || !authPassword.value) { authErr.value = '请填写邮箱和密码'; return; }
-      authBusy.value = true; authErr.value = '';
-      try {
-        if (authMode.value === 'register') {
-          const { error } = await sb.auth.signUp({ email: authEmail.value, password: authPassword.value });
-          if (error) throw error;
-        } else {
-          const { error } = await sb.auth.signInWithPassword({ email: authEmail.value, password: authPassword.value });
-          if (error) throw error;
-        }
-      } catch (e) {
-        const msg = e.message || '';
-        if (msg.includes('Invalid login'))           authErr.value = '邮箱或密码错误';
-        else if (msg.includes('already registered')) authErr.value = '该邮箱已注册，请直接登录';
-        else if (msg.includes('Password should'))    authErr.value = '密码至少6位';
-        else authErr.value = msg || '操作失败，请重试';
-      }
-      authBusy.value = false;
-    }
-
-    async function logout() {
-      await sb.auth.signOut();
-      user.value = null;
-      toast('已退出登录');
+      busy.value = false;
     }
 
     onMounted(() => {
-      // 监听登录态，登录后自动加载打卡数据
+      // 监听登录状态变化
       sb.auth.onAuthStateChange(async (event, session) => {
+        const prevId = user.value?.id;
         user.value = session?.user || null;
-        authLoading.value = false;
-        if (user.value) {
+        authLoading.value = false;  // 初始化完成，无论是否登录都取消 loading
+        if (user.value && user.value.id !== prevId) {
+          // 新用户登录：加载数据
+          todayDone.value = false; history.value = [];
           await load();
         }
       });
-      // 未登录时也尝试从 localStorage 恢复（游客模式兜底）
-      load();
+
+      // 兜底：500ms 后如果还在 loading 就强制关掉（防止 onAuthStateChange 不触发）
+      setTimeout(() => { authLoading.value = false; }, 500);
+
       window.addEventListener('paste', onPaste);
     });
 
@@ -945,11 +920,12 @@ createApp({
       streak, history, encouragement,
       dragging, picFile, previewSrc, fileName, fileKb,
       busy, prog, errMsg,
-      showLb, lbUrl, toasts, fi,
+      showLb, lbUrl, toasts,
       onFile, onDrop, submit, triggerFile
     };
   }
 }).mount('#app');
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </body>
 </html>
