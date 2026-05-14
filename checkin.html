@@ -382,7 +382,7 @@ const { createClient } = supabase;
 
 const sb = createClient(
   'https://yrfktypmcghrbozvxcmi.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlyZmt0eXBtY2docmJvenZ4Y21pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0MjEwNTEsImV4cCI6MjA5Mjk5NzA1MX0.4nDYEhcrhtc5vZ9llRn4dNHuaG5r512MngXiwCVKDCM'
+  'sb_publishable_OySH4rZ_Md7kZ3WnWaVxBw_lCnV02Sy'
 );
 const BUCKET = 'word-checkin';
 const TABLE  = 'word_checkin';
@@ -534,8 +534,17 @@ createApp({
       busy.value = true; prog.value = 15; errMsg.value = '';
       const ext  = picFile.value.name.split('.').pop() || 'jpg';
       const path = `${user.value.id}/${todaySlot}_${Date.now()}.${ext}`;
+      
+      // 超时处理
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('上传超时，请检查网络连接')), 30000);
+      });
+      
       try {
-        const { error: upErr, data: upData } = await sb.storage.from(BUCKET).upload(path, picFile.value);
+        prog.value = 25;
+        const uploadPromise = sb.storage.from(BUCKET).upload(path, picFile.value);
+        const { error: upErr, data: upData } = await Promise.race([uploadPromise, timeoutPromise]);
+        
         if (upErr) {
           console.error('Storage upload error:', upErr);
           throw new Error('存储上传失败：' + upErr.message);
@@ -549,10 +558,15 @@ createApp({
         }
         console.log('Public URL:', urlData.publicUrl);
         
-        const { error: dbErr, data: dbData } = await sb.from(TABLE).insert([{
+        prog.value = 80;
+        console.log('Inserting to database...');
+        
+        const dbPromise = sb.from(TABLE).insert([{
           slot: todaySlot, url: urlData.publicUrl,
           storage_path: path, ts: Date.now(), user_id: user.value.id
         }]).select().single();
+        
+        const { error: dbErr, data: dbData } = await Promise.race([dbPromise, timeoutPromise]);
         
         if (dbErr) {
           console.error('Database insert error:', dbErr);
@@ -575,6 +589,7 @@ createApp({
         prog.value = 0;
       }
       busy.value = false;
+      console.log('=== Submit End ===');
     }
 
     // ── Auth listener ──
