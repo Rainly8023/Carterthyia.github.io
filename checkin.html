@@ -487,7 +487,7 @@
         </div>
         <div class="field">
           <label>密 码</label>
-          <input type="password" v-model="authPassword" :placeholder="authMode='register'?'至少6位':''" @keyup.enter="authSubmit">
+          <input type="password" v-model="authPassword" :placeholder="authMode==='register'?'至少6位':''" @keyup.enter="authSubmit">
         </div>
         <button class="btn-submit" :disabled="authBusy" @click="authSubmit">
           {{ authBusy ? '处理中…' : (authMode==='login' ? '✦ 登录' : '✦ 注册') }}
@@ -586,7 +586,7 @@
         <h2>上传今日背单词截图</h2>
 
         <div class="drop-zone" :class="{over: dragging}"
-          @click="$refs.fi.click()"
+          @click="triggerFile"
           @dragover.prevent="dragging=true"
           @dragleave="dragging=false"
           @drop.prevent="onDrop">
@@ -594,7 +594,7 @@
           <div class="dz-txt">点击或拖拽截图至此</div>
           <div class="dz-hint">JPG / PNG / WEBP · 支持截图直接粘贴</div>
         </div>
-        <input type="file" ref="fi" accept="image/*" style="display:none" @change="onFile">
+        <input type="file" id="fileInput" ref="fi" accept="image/*" style="display:none" @change="onFile">
 
         <div class="preview-box" v-if="previewSrc">
           <img :src="previewSrc" alt="预览">
@@ -822,6 +822,10 @@ createApp({
       fileKb.value = (file.size / 1024).toFixed(0);
       previewSrc.value = URL.createObjectURL(file);
     }
+    function triggerFile() {
+      const el = document.getElementById('fileInput');
+      if (el) el.click();
+    }
     function onFile(e) { if (e.target.files[0]) handleFile(e.target.files[0]); }
     function onDrop(e) { dragging.value = false; if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }
 
@@ -942,7 +946,7 @@ createApp({
       dragging, picFile, previewSrc, fileName, fileKb,
       busy, prog, errMsg,
       showLb, lbUrl, toasts, fi,
-      onFile, onDrop, submit
+      onFile, onDrop, submit, triggerFile
     };
   }
 }).mount('#app');
