@@ -381,7 +381,7 @@ const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
 const { createClient } = supabase;
 
 const sb = createClient(
-  'https://jrhpeyqzntpmnzerhuil.supabase.co',
+  'https://yrfktypmcghrbozvxcmi.supabase.co',
   'sb_publishable_3yfGRhVBH2R99InGyyrDcQ_s1PyI4PZ'
 );
 const BUCKET = 'word-checkin';
@@ -534,22 +534,6 @@ createApp({
       busy.value = true; prog.value = 15; errMsg.value = '';
       const ext  = picFile.value.name.split('.').pop() || 'jpg';
       const path = `${user.value.id}/${todaySlot}_${Date.now()}.${ext}`;
-       
-       console.log('=== Upload Debug Info ===');
-       console.log('User:', user.value);
-       console.log('Bucket:', BUCKET);
-       console.log('Path:', path);
-       console.log('File size:', picFile.value.size);
-       
-       // 检查 bucket 是否存在
-       try {
-         const { data: buckets, error } = await sb.storage.listBuckets();
-         console.log('Available buckets:', buckets);
-         if (error) console.error('List buckets error:', error);
-       } catch (e) {
-         console.error('Bucket list error:', e);
-       }
-       
       try {
         const { error: upErr, data: upData } = await sb.storage.from(BUCKET).upload(path, picFile.value);
         if (upErr) {
@@ -595,23 +579,7 @@ createApp({
 
     // ── Auth listener ──
     let unsub = null;
-    onMounted(async () => {
-      // 验证 bucket 是否存在
-      try {
-        const { data: buckets, error } = await sb.storage.listBuckets();
-        console.log('Available buckets:', buckets);
-        if (error) {
-          console.error('Failed to list buckets:', error);
-        } else {
-          const hasBucket = buckets.some(b => b.name === BUCKET);
-          if (!hasBucket) {
-            console.warn(`Bucket "${BUCKET}" not found. Available buckets:`, buckets.map(b => b.name));
-          }
-        }
-      } catch (e) {
-        console.error('Bucket check error:', e);
-      }
-      
+    onMounted(() => {
       const { data } = sb.auth.onAuthStateChange(async (event, session) => {
         const prev = user.value?.id;
         user.value = session?.user || null;
