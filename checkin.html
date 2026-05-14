@@ -527,16 +527,32 @@ createApp({
       busy.value = true; prog.value = 15; errMsg.value = '';
       const ext  = picFile.value.name.split('.').pop() || 'jpg';
       const path = `${user.value.id}/${todaySlot}_${Date.now()}.${ext}`;
+      
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('上传超时，请检查网络连接')), 30000);
+      });
+      
       try {
-        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, picFile.value);
+        const uploadPromise = sb.storage.from(BUCKET).upload(path, picFile.value, {
+          cacheControl: '3600',
+          upsert: false
+        });
+        
+        const { error: upErr } = await Promise.race([uploadPromise, timeoutPromise]);
         if (upErr) throw new Error('上传失败：' + upErr.message);
         prog.value = 65;
+        
         const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
-        const { error: dbErr } = await sb.from(TABLE).insert([{
+        if (!urlData?.publicUrl) throw new Error('获取图片链接失败');
+        
+        const insertPromise = sb.from(TABLE).insert([{
           slot: todaySlot, url: urlData.publicUrl,
           storage_path: path, ts: Date.now(), user_id: user.value.id
         }]);
+        
+        const { error: dbErr } = await Promise.race([insertPromise, timeoutPromise]);
         if (dbErr) throw new Error(dbErr.message);
+        
         prog.value = 100;
         todayDone.value = true;
         todayPreviewUrl.value = urlData.publicUrl;
@@ -546,6 +562,7 @@ createApp({
         toast('打卡成功！今天也超棒的 ✦');
       } catch (e) {
         errMsg.value = e.message || '提交失败，请重试';
+        console.error('Upload error:', e);
         toast(errMsg.value, 'error');
         prog.value = 0;
       }
