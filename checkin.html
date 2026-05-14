@@ -601,13 +601,13 @@
 const { createApp, ref, computed, onMounted } = Vue;
 const { createClient } = supabase;
 
-// ── Supabase（复用你的项目） ──
+
 const sb = createClient(
-  'https://jrhpeyqzntpmnzerhuil.supabase.co',
-  'sb_publishable_3yfGRhVBH2R99InGyyrDcQ_s1PyI4PZ'
+  'https://yrfktypmcghrbozvxcmi.supabase.co',
+  'sb_publishable_OySH4rZ_Md7kZ3WnWaVxBw_lCnV02Sy'
 );
-const BUCKET = 'Word111'; // 你需要在 Supabase Storage 中创建这个 bucket
-const TABLE  = 'Word111'; // 你需要在 Supabase 中创建这个表
+const BUCKET = 'word111'; // 
+const TABLE  = 'word111'; // 
 
 // ── CMT+8 日期段（每天04:00重置） ──
 function getCMT8Slot() {
