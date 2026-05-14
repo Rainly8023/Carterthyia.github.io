@@ -534,9 +534,22 @@ createApp({
       busy.value = true; prog.value = 15; errMsg.value = '';
       const ext  = picFile.value.name.split('.').pop() || 'jpg';
       const path = `${user.value.id}/${todaySlot}_${Date.now()}.${ext}`;
-      
-      console.log('Starting upload:', { bucket: BUCKET, path, fileSize: picFile.value.size });
-      
+       
+       console.log('=== Upload Debug Info ===');
+       console.log('User:', user.value);
+       console.log('Bucket:', BUCKET);
+       console.log('Path:', path);
+       console.log('File size:', picFile.value.size);
+       
+       // 检查 bucket 是否存在
+       try {
+         const { data: buckets, error } = await sb.storage.listBuckets();
+         console.log('Available buckets:', buckets);
+         if (error) console.error('List buckets error:', error);
+       } catch (e) {
+         console.error('Bucket list error:', e);
+       }
+       
       try {
         const { error: upErr, data: upData } = await sb.storage.from(BUCKET).upload(path, picFile.value);
         if (upErr) {
