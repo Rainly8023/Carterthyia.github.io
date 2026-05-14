@@ -534,16 +534,35 @@ createApp({
       busy.value = true; prog.value = 15; errMsg.value = '';
       const ext  = picFile.value.name.split('.').pop() || 'jpg';
       const path = `${user.value.id}/${todaySlot}_${Date.now()}.${ext}`;
+      
+      console.log('Starting upload:', { bucket: BUCKET, path, fileSize: picFile.value.size });
+      
       try {
-        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, picFile.value);
-        if (upErr) throw new Error('上传失败：' + upErr.message);
+        const { error: upErr, data: upData } = await sb.storage.from(BUCKET).upload(path, picFile.value);
+        if (upErr) {
+          console.error('Storage upload error:', upErr);
+          throw new Error('存储上传失败：' + upErr.message);
+        }
+        console.log('Upload successful:', upData);
+        
         prog.value = 65;
         const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
-        const { error: dbErr } = await sb.from(TABLE).insert([{
+        if (!urlData?.publicUrl) {
+          throw new Error('无法获取图片公开链接');
+        }
+        console.log('Public URL:', urlData.publicUrl);
+        
+        const { error: dbErr, data: dbData } = await sb.from(TABLE).insert([{
           slot: todaySlot, url: urlData.publicUrl,
           storage_path: path, ts: Date.now(), user_id: user.value.id
-        }]);
-        if (dbErr) throw new Error(dbErr.message);
+        }]).select().single();
+        
+        if (dbErr) {
+          console.error('Database insert error:', dbErr);
+          throw new Error('数据库保存失败：' + dbErr.message);
+        }
+        console.log('Database insert successful:', dbData);
+        
         prog.value = 100;
         todayDone.value = true;
         todayPreviewUrl.value = urlData.publicUrl;
@@ -552,8 +571,10 @@ createApp({
         calcStreak(history.value.map(r => r.slot));
         toast('打卡成功！今天也超棒的 ✦');
       } catch (e) {
-        errMsg.value = e.message || '提交失败，请重试';
-        toast(errMsg.value, 'error');
+        const errorMsg = e.message || '提交失败，请重试';
+        errMsg.value = errorMsg;
+        console.error('Submit error:', e);
+        toast(errorMsg, 'error');
         prog.value = 0;
       }
       busy.value = false;
@@ -561,7 +582,23 @@ createApp({
 
     // ── Auth listener ──
     let unsub = null;
-    onMounted(() => {
+    onMounted(async () => {
+      // 验证 bucket 是否存在
+      try {
+        const { data: buckets, error } = await sb.storage.listBuckets();
+        console.log('Available buckets:', buckets);
+        if (error) {
+          console.error('Failed to list buckets:', error);
+        } else {
+          const hasBucket = buckets.some(b => b.name === BUCKET);
+          if (!hasBucket) {
+            console.warn(`Bucket "${BUCKET}" not found. Available buckets:`, buckets.map(b => b.name));
+          }
+        }
+      } catch (e) {
+        console.error('Bucket check error:', e);
+      }
+      
       const { data } = sb.auth.onAuthStateChange(async (event, session) => {
         const prev = user.value?.id;
         user.value = session?.user || null;
